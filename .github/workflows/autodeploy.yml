@@ -68,6 +68,7 @@ jobs:
         git init
         git config --global user.name '${{ secrets.GITHUBUSERNAME }}'
         git config --global user.email '${{ secrets.GITHUBEMAIL }}'
+        git branch -m main  # 切换默认分支为 main
         git add .
         git commit -m "${{ github.event.head_commit.message }} $(date +"%Z %Y-%m-%d %A %H:%M:%S") Updated By Github Actions"
         git push -v --force --quiet "https://${{ secrets.GITHUBUSERNAME }}:${{ secrets.GITHUBTOKEN }}@github.com/${{ secrets.GITHUBUSERNAME }}/${{ secrets.GITHUBUSERNAME }}.github.io.git" main:main
