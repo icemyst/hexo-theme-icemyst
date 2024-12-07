@@ -104,3 +104,19 @@ deploy:
   type: git
   repository: git@github.com:icedrm/icedrm.github.io.git
   branch: main
+
+algolia:
+  appId: "ISDJ00QU43"
+  apiKey: "487b1ffc0003ed6c3522ba6747b1d1e9"
+  adminApiKey: "0440712e501ea61ec6b9f9ea156798d7"
+  chunkSize: 5000
+  indexName: "hexo"
+  fields:
+    - content:strip:truncate,0,500
+    - excerpt:strip
+    - gallery
+    - permalink
+    - photos
+    - slug
+    - tags
+    - title

@@ -14,7 +14,7 @@ nav:
   logo:
   display_title: true
   # 是否固定导航栏
-  fixed: false
+  fixed: true
 
 menu:
   文 章:
@@ -44,9 +44,9 @@ menu:
 code_blocks:
   # 代码块主题: darker / pale night / light / ocean / false
   theme: light
-  macStyle: false
+  macStyle: true
   # 代码块高度限制 (unit: px)
-  height_limit: false
+  height_limit: 300
   word_wrap: false
 
   # 工具栏
@@ -67,10 +67,10 @@ social:
 # 图像设置
 # --------------------------------------
 
-favicon: /img/favicon.png
+favicon: /img/favicon.ico
 
 avatar:
-  img: /img/butterfly-icon.png
+  img: https://q1.qlogo.cn/g?b=qq&nk=1580777927&s=5
   effect: false
 
 # 禁用所有横幅图像
@@ -80,7 +80,7 @@ disable_top_img: false
 default_top_img:
 
 # 首页横幅图片
-index_img:
+index_img: https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
 
 # 档案页面的横幅图像
 archive_img:
@@ -102,11 +102,11 @@ category_img:
 category_per_img:
 
 # 页脚背景图片
-footer_img: false
+footer_img: transparent
 
 # 网站背景
 # 可以设置为颜色或图片网址
-background:
+background: https://api.boxmoe.com/random.php?size=large
 
 cover:
   # 是否禁用封面
@@ -115,32 +115,35 @@ cover:
   archives_enable: true
   # 未设置封面时，显示默认封面
   default_cover:
-    # - xxx.jpg
+    - https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
+    - https://pic4.zhimg.com/80/v2-5db05ca43bdb82d42f357cb581d384df_1440w.webp
+    - https://pic2.zhimg.com/v2-ef87585088748f4e087489aaa8dcecbd_r.jpg
+
 
 # 替换损坏的图像
 error_img:
   flink: /img/friend_404.gif
-  post_page: /img/404.jpg
+  post_page: /img/404.png
 
 # 一个简单的 404 页面
 error_404:
-  enable: false
-  subtitle: 'Page Not Found'
-  background: /img/error-page.png
+  enable: true
+  subtitle: '请尝试站内搜索寻找文章'
+  background: https://pic.imgdb.cn/item/64c7bada1ddac507cc135dd8.jpg
 
 post_meta:
   # 主页
   page:
     # 选择: created / updated / both
-    date_type: created
+    date_type: both
     # 选择: date / relative
-    date_format: date
+    date_format: relative
     categories: true
-    tags: false
+    tags: true
     label: true
   post:
     # 选择: left / center
-    position: left
+    position: center
     # 选择: created / updated / both
     date_type: both
     # 选择: date / relative
@@ -162,7 +165,7 @@ index_top_img_height:
 
 # 首页的副标题
 subtitle:
-  enable: false
+  enable: true
   # 打字机效应
   effect: true
   # 自定义 typed.js
@@ -175,7 +178,7 @@ subtitle:
   # 1 - hitokoto.cn
   # 2 - yijuzhan.com
   # 3 - jinrishici.com
-  source: false
+  source: 1
   # 如果关闭打字机效果，字幕将只显示第一行字幕
   sub:
 
@@ -200,7 +203,7 @@ index_post_content:
   length: 500
 
 # --------------------------------------
-# Post Settings
+# 文章设置
 # --------------------------------------
 
 toc:
@@ -221,15 +224,15 @@ post_copyright:
 
 # 贊助/獎勵
 reward:
-  enable: false
-  text:
+  enable: true
+  text: 打赏
   QR_code:
-    # - img: /img/wechat.jpg
-    #   link:
-    #   text: wechat
-    # - img: /img/alipay.jpg
-    #   link:
-    #   text: alipay
+    - img: /img/wechat.webp
+      link:
+      text: 微信
+    - img: /img/alipay.webp
+      link:
+      text: 支付宝
 
 # 文章编辑
 # 轻松在线浏览和编辑博客源代码。
@@ -255,15 +258,15 @@ post_pagination: 1
 
 # 显示文章的过期通知
 noticeOutdate:
-  enable: false
+  enable: true
   # 风格: simple / flat（简约/扁平）
   style: flat
   # 什么时候显示
-  limit_day: 365
+  limit_day: 30
   # 位置: top / bottom（顶部/底部）
   position: top
-  message_prev: It has been
-  message_next: days since the last update, the content of the article may be outdated.
+  message_prev: 距离上次更新已经过去
+  message_next: 天了，文章内容可能已经过时。若内容或图片失效，请留言反馈（部分素材来自网络）。
 
 # --------------------------------------
 # Footer Settings
@@ -294,15 +297,18 @@ aside:
     category: true
   card_author:
     enable: true
-    description:
+    description: 到不了的都叫远方，回不去的都叫故乡。
     button:
       enable: true
-      icon: fab fa-github
-      text: Follow Me
-      link: https://github.com/xxxxxx
+      icon: fas fa-arrow-circle-right
+      text: 了解更多
+      link: /about/
   card_announcement:
     enable: true
-    content: This is my Blog
+    content:
+      - <div><a style='display:flex;height:100%;width:100%;' href='https://hcer.top'><img style="height:100%;width:100%;" src="https://jsd.onmicrosoft.cn/gh/eudav/bingm-static/img/hcer.webp" alt="https://hcer.top" style="border-radius:0;"></a></div>
+        <b>GitHub站点：</b><a href='https://icemyst.github.io'>https://icemyst.github.io</a>
+        <div>CDN赞助者：@xinpro(鸣谢)</div><div>赞助者博客：<a href="https://xinpro.cn">https://xinpro.cn</a></div>
   card_recent_post:
     enable: true
     # 如果设置为 0 将显示全部
@@ -372,7 +378,7 @@ rightside_bottom:
 
 # 繁体中文与简体中文转换
 translate:
-  enable: false
+  enable: true
   # 按钮的文本
   default: 繁
   # 网站语言（1-繁体中文/ 2-简体中文）
@@ -402,7 +408,7 @@ darkmode:
   end:
 
 # 在滚动至顶部按钮中显示滚动百分比
-rightside_scroll_percent: false
+rightside_scroll_percent: true
 
 # 除非您知道以下设置如何工作，否则请不要修改它们
 # 选择: readmode,translate,darkmode,hideAside,toc,chat,comment（阅读模式，翻译，深色模式，隐藏，目录.聊天，评论）
@@ -424,18 +430,19 @@ anchor:
   # 点击标题滚动并更新锚点
   click_to_scroll: false
 
+# 图片描述文字
 photofigcaption: false
 
 copy:
   enable: true
   # 在复制内容后添加版权信息
   copyright:
-    enable: false
-    limit_count: 150
+    enable: true
+    limit_count: 50
 
 # 需要安装hexo-wordcount插件
 wordcount:
-  enable: false
+  enable: true
   # 在文章元信息中显示字数
   post_wordcount: true
   # 在文章元信息中显示阅读时间
@@ -480,7 +487,7 @@ math:
 search:
   # 选择: algolia_search / local_search / docsearch
   # 如果不需要搜索，请留空
-  use:
+  use: algolia_search
   placeholder:
 
   # Algolia Search
@@ -534,7 +541,7 @@ comments:
   # 如果不需要评论，可留空
   # 选择: Disqus/Disqusjs/Livere/Gitalk/Valine/Waline/Utterances/Facebook Comments/Twikoo/Giscus/Remark42/Artalk
   # 显示两个评论设置: Disqus,Waline
-  use:
+  use: Twikoo
   # 在按钮旁边显示评论名称
   text: true
   # Lazyload：当评论元素进入浏览器视口时，评论系统才会加载。
@@ -622,7 +629,7 @@ facebook_comments:
 # Twikoo
 # https://github.com/imaegoo/twikoo
 twikoo:
-  envId:
+  envId: https://twikoo.abeginner.top/.netlify/functions/twikoo
   region:
   # 使用 Twikoo 的访客计数作为页面浏览量统计
   visitor: false
@@ -686,7 +693,7 @@ crisp:
 # --------------------------------------
 
 # https://tongji.baidu.com/web/welcome/login
-baidu_analytics:
+baidu_analytics: ef832811ada62c5e8a9972ba80c825c0
 
 # https://analytics.google.com/analytics/web/
 google_analytics:
@@ -787,11 +794,11 @@ mask:
 
 # 加载动画
 preloader:
-  enable: false
+  enable: true
   # source
   # 1. fullpage-loading
   # 2. pace (progress bar)
-  source: 1
+  source: 2
   # pace theme (see https://codebyzach.github.io/pace/)
   pace_css_url:
 
@@ -815,14 +822,14 @@ beautify:
 # 除非您知道以下设置如何工作，否则请不要修改它们
 font:
   global_font_size:
-  code_font_size:
+  code_font_size: 16px
   font_family:
-  code_font_family:
+  code_font_family: Arial,-apple-system,BlinkMacSystemFont,'Microsoft YaHei','Segoe UI','Helvetica Neue',Lato,Roboto,'PingFang SC',sans-serif
 
 # 站点标题和副标题的字体设置
 blog_title_font:
   font_link:
-  font_family:
+  font_family: Arial,PingFang SC, 'Hiragino Sans GB', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif
 
 # 分隔线图标的设置
 hr_icon:
@@ -903,7 +910,7 @@ clickShowText:
 # https://github.com/francoischalifour/medium-zoom
 # https://fancyapps.com/fancybox/
 # 如果不需要灯箱，请将其留空
-lightbox:
+lightbox: fancybox
 
 # --------------------------------------
 # 标签插件设置
@@ -974,7 +981,7 @@ note:
 
 # https://github.com/MoOx/pjax
 pjax:
-  enable: false
+  enable: true
   # 将指定页面排除在 pjax 之外，例如 '/music/
   exclude:
     # - /xxxxxx/
@@ -988,30 +995,30 @@ aplayerInject:
 # https://github.com/polonel/SnackBar
 # 位置: top-left / top-center / top-right / bottom-left / bottom-center / bottom-right
 snackbar:
-  enable: false
-  position: bottom-left
+  enable: true
+  position: top-center
   # Toast 通知在浅色模式和深色模式下的背景颜色
   bg_light: '#49b1f5'
   bg_dark: '#1f1f1f'
 
 # Instant.page
 # https://instant.page/
-instantpage: false
+instantpage: true
 
 # Pangu - 在汉字和英文字母之间插入空格
 # https://github.com/vinta/pangu.js
 pangu:
-  enable: false
+  enable: true
   # 指定使用 Pangu 的字段（站点（site）或文章（post））
   field: site
 
 # Lazyload
 # https://github.com/verlok/vanilla-lazyload
 lazyload:
-  enable: false
+  enable: true
   # 指定使用懒加载的字段（站点（site）或文章（post））
   field: site
-  placeholder:
+  placeholder: /img/loading.webp
   blur: false
 
 # PWA
@@ -1019,11 +1026,11 @@ lazyload:
 # ---------------
 pwa:
   enable: false
-  manifest:
-  apple_touch_icon:
-  favicon_32_32:
-  favicon_16_16:
-  mask_icon:
+  manifest: /manifest.json
+  apple_touch_icon: /img/siteicon/apple-touch-icon.png
+  favicon_32_32: /img/siteicon/favicon-32x32.png
+  favicon_16_16: /img/siteicon/favicon-16x16.png
+  mask_icon: /img/siteicon/apple-touch-icon.png
 
 # Open Graph 元标签
 # https://hexo.io/docs/helpers#open-graph
@@ -1060,11 +1067,10 @@ CDN:
   third_party_provider: jsdelivr
 
   # 是否在 URL 中添加版本号, true or false
-  version: false
 
   # 自定义格式
   # For example: https://cdn.staticfile.org/${cdnjs_name}/${version}/${min_cdnjs_file}
-  custom_format:
+  custom_format: https://npm.elemecdn.com/${name}@latest/${file}
 
   option:
     # abcjs_basic_js:
