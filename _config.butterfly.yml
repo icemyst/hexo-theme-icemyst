@@ -1063,8 +1063,8 @@ CDN:
   # 可选项：local/jsdelivr/unpkg/cdnjs/custom
   # 注意：开发版本只能使用‘local’来加载内部脚本
   # 注意：将第三方脚本设置为‘local’时，需要安装 hexo-butterfly-extjs
-  internal_provider: local
-  third_party_provider: jsdelivr
+  internal_provider: onmicrosoft
+  third_party_provider: onmicrosoft
 
   # 是否在 URL 中添加版本号, true or false
 
