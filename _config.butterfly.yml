@@ -17,10 +17,25 @@ nav:
   fixed: false
 
 menu:
-  首页: / || fas fa-home
-  列表||fas fa-list:
-    音乐: /music/ || fas fa-music
-    电影: /movies/ || fas fa-video
+  文 章:
+    隧道: /archives/ || fa-fw fas fa-archive
+    分类: /categories/ || fa-fw fas fa-cubes
+    标签: /tags/ || fa-fw fas fa-tags
+  统 计:
+    友人帐: /link/ || fas fa-link
+    朋友圈: /fcircles/ || fa-brands fa-artstation
+    统计表: /charts/ || fas fa-chart-line
+    留言板: /comments/ || fa-fw fas fa-envelope
+    清单: /todolist/ || fa-fw fas fa-table-list
+  我 的:
+    音乐馆: /music/?id=7657374410&server=tencent || fa-fw fas fa-music
+    追番页: /bangumis/ || fa-fw fa-brands fa-bilibili
+    相册集: /album/ || fa-fw fas fa-images
+    藏宝阁: /collect/ || fa-fw fas fa-box
+  关 于:
+    关于本人: /about/ || fa-fw fas fa-dragon
+    闲言碎语: /essay/ || fas fa-lightbulb
+    随便逛逛: javascript:toRandomPost() || fas fa-shoe-prints
 
 # --------------------------------------
 # Code Blocks Settings
