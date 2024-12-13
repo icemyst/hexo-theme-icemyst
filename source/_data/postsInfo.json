@@ -1,0 +1,37 @@
+{
+    "global": 0,
+    "info": [
+      {
+        "version": "v1.0.1",
+        "change": [
+          {
+            "flag": "static",
+            "value": [
+              "css/index.css",
+              "js/main.js",
+              "img/favicon.ico"
+            ]
+          },
+          {
+            "flag": "html",
+            "value": [
+              "/index.html"
+            ]
+          }
+        ]
+      },
+      {
+        "version": "v1.0.0",
+        "change": [
+          {
+            "flag": "static",
+            "value": [
+                "css/index.css",
+                "js/main.js"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
