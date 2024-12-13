@@ -122,5 +122,5 @@ gulp.task("mini-font", cb => {
 // 执行 gulp 命令时执行的任务
 gulp.task(
   "default",
-  gulp.series("generate-service-worker", gulp.parallel("compress", "minify-html", "minify-css", "mini-font"))
+  gulp.series("generate-service-worker", gulp.parallel('compress','minify-html','minify-css'))
 );
