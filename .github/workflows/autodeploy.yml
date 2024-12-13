@@ -50,11 +50,12 @@ jobs:
     - name: 生成静态文件
       run: |
         hexo clean
-        # hexo bangumi -u #bilibili番剧更新
+        hexo bangumi -u # bilibili番剧更新
+        hexo cinema -u  # Bangumi追剧更新
         hexo generate
         hexo algolia -n
         # npx pwa-asset-generator ./public/img/siteicon/android-chrome-512x512.png ./public/img/siteicon --padding "calc(50vh - 20%) calc(50vw - 40%)" -s false -h true
-        # gulp
+        gulp
 
     - name: 输出当前 Git 状态
       run: |

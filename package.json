@@ -16,6 +16,7 @@
     "gulp-htmlmin": "^5.0.1",
     "hexo": "^7.0.0",
     "hexo-algoliasearch": "^2.0.1",
+    "hexo-bilibili-bangumi": "^1.10.7",
     "hexo-generator-archive": "^2.0.0",
     "hexo-generator-category": "^2.0.0",
     "hexo-generator-index": "^3.0.0",

@@ -120,3 +120,75 @@ algolia:
     - slug
     - tags
     - title
+
+bangumi: # 追番设置
+  enable: true
+  source: bili
+  bgmInfoSource: 'bgmv0'
+  path:
+  vmid: 62815361
+  title: '追番列表'
+  quote: '生命不息，追番不止！'
+  show: 1
+  lazyload: true
+  srcValue: '__image__'
+  lazyloadAttrName: 'data-src=__image__'
+  loading:
+  showMyComment: false
+  pagination: false
+  metaColor:
+  color:
+  webp:
+  progress:
+  progressBar:
+  extraOrder:
+  order: latest
+  proxy:
+    host: '代理host'
+    port: '代理端口'
+  extra_options:
+    key: value
+  coverMirror:
+cinema: # 追剧设置
+  enable: true
+  path:
+  vmid: 62815361
+  title: '追剧列表'
+  quote: '生命不息，追剧不止！'
+  show: 1
+  lazyload: true
+  srcValue: '__image__'
+  lazyloadAttrName: 'data-src=__image__'
+  loading:
+  metaColor:
+  color:
+  webp:
+  progress:
+  progressBar:
+  extraOrder:
+  order:
+  extra_options:
+    key: value
+  coverMirror:
+game: # 游戏设置，仅支持source: bgmv0
+  enable: false
+  path:
+  source: bgmv0
+  vmid: 942466
+  title: '游戏列表'
+  quote: '生命不息，游戏不止！'
+  show: 1
+  lazyload: true
+  srcValue: '__image__'
+  lazyloadAttrName: 'data-src=__image__'
+  loading:
+  metaColor:
+  color:
+  webp:
+  progress:
+  progressBar:
+  extraOrder:
+  order:
+  extra_options:
+    key: value
+  coverMirror: https://image.baidu.com/search/down?url=
