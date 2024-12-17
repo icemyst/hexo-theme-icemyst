@@ -16,3 +16,14 @@
       a(href='https://github.com/jerryc127/hexo-theme-butterfly')= 'Butterfly'
   if theme.footer.custom_text
     .footer_custom_text!= theme.footer.custom_text
+
+  if theme.footer.wordcount
+    .wordcount
+      - let allword = totalcount(site)
+      - allword = typeof allword === 'string' && allword.includes('k') ? parseFloat(allword) : Number(allword) / 1000
+      - allword = isNaN(allword) ? 0 : allword
+      - let displayWord = allword < 1 ? Math.round(allword * 1000) : `${allword.toFixed(1)}K`
+      - let message = site.data.footer.wordcount_messages.find(item => allword < item.max)?.message || site.data.footer.default_message
+
+      // 输出结果
+      span= `${config.subtitle}已经写了 ${displayWord} 字，${message}`

@@ -33,7 +33,7 @@
     const replaceList = {
         simple: {
             source: ['//cdn.jsdelivr.net/gh'],
-            dist: '//cdn1.tianli0.top/gh'
+            dist: '//jsd.onmicrosoft.cn/gh'
         }
     }
 

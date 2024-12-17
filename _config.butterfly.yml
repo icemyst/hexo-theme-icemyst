@@ -278,6 +278,8 @@ footer:
   custom_text:
   # 主题和框架的版权
   copyright: true
+  # 文章总字数统计
+  wordcount: true
 
 # --------------------------------------
 # Aside Settings
