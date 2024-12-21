@@ -106,7 +106,7 @@ footer_img: transparent
 
 # 网站背景
 # 可以设置为颜色或图片网址
-background: https://api.boxmoe.com/random.php?size=large
+background: # https://api.boxmoe.com/random.php?size=large
 
 cover:
   # 是否禁用封面
@@ -336,7 +336,7 @@ aside:
     enable: true
     # 如果设置为 0 将显示全部
     limit: 40
-    color: false
+    color: true
     # 标签顺序, random/name/length（随机/名称/长度）
     orderby: random
     # 排序顺序：1，表示升序；-1，表示降序

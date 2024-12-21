@@ -2,6 +2,19 @@ mixin indexPostUI()
   - const indexLayout = theme.index_layout
   - const masonryLayoutClass = (indexLayout === 6 || indexLayout === 7) ? 'masonry' : ''
   #recent-posts.recent-posts.nc(class=masonryLayoutClass)
+    .category-bar
+      .category-list-item
+        a(href="/") 首页
+        .category-lists!= list_categories()
+        a.category-more(href="/categories/")!= '更多'
+        script.
+          document.querySelector('.category-lists').addEventListener('wheel', function(event) {
+              if (event.deltaY !== 0) {
+                  event.preventDefault();
+                  this.scrollLeft += event.deltaY;
+              }
+          });
+
     .recent-post-items
       each article, index in page.posts.data
         .recent-post-item

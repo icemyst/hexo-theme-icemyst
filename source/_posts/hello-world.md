@@ -3,8 +3,8 @@ title: Hello World
 cover: >-
   https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.30/img_302_1920x1080_72_null_normal.jpg
 description: hello world
-categories: 学习笔记
-tags: hexo
+categories: [学习笔记]
+tags: [hexo,Windows,Android]
 abbrlink: 3eeb
 date: 2024-12-05 11:55:06
 ---
