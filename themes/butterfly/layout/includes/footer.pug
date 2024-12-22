@@ -2,11 +2,18 @@
   if theme.footer.owner.enable
     - const currentYear = new Date().getFullYear()
     - const sinceYear = theme.footer.owner.since
+    - const sourceType = theme.footer.owner.source ?? 1
     .copyright
-      if sinceYear && sinceYear != currentYear
-        != `&copy;${sinceYear} - ${currentYear} By ${config.author}`
-      else
-        != `&copy;${currentYear} By ${config.author}`
+      - const yearText = sinceYear && sinceYear != currentYear ? `&copy;${sinceYear} - ${currentYear}` : `&copy;${currentYear}`
+      != yearText
+      if sourceType === 1
+        != ` By ${config.author}`
+      else if sourceType === 2
+        != '&nbsp;'
+        svg(style="width:1.25em; height:1.25em;vertical-align:middle;" aria-hidden="true")
+          use(xlink:href="#icon-Butterfly")
+        != `&nbsp;${config.author}`
+
   if theme.footer.copyright
     .framework-info
       span= _p('footer.framework') + ' '
@@ -25,5 +32,5 @@
       - let displayWord = allword < 1 ? Math.round(allword * 1000) : `${allword.toFixed(1)}K`
       - let message = site.data.footer.wordcount_messages.find(item => allword < item.max)?.message || site.data.footer.default_message
 
-      // 输出结果
+      //- 输出结果
       span= `${config.subtitle}已经写了 ${displayWord} 字，${message}`

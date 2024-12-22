@@ -274,6 +274,8 @@ noticeOutdate:
 footer:
   owner:
     enable: true
+    # 显示： 'By' / '🦋'（1 / 2），默认为 1
+    source: 2
     since: 2019
   custom_text:
   # 主题和框架的版权
@@ -1056,7 +1058,7 @@ inject:
   head:
     # - <link rel="stylesheet" href="/xxx.css">
   bottom:
-    # - <script src="xxxx"></script>
+    - <script async src="//at.alicdn.com/t/font_2032782_8ns648avijk.js"></script> # 阿里云图标库
 
 # CDN 设置
 # 除非你知道它们的作用，否则不要修改以下设置
