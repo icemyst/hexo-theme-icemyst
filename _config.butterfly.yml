@@ -280,6 +280,19 @@ footer:
   custom_text:
   # 主题和框架的版权
   copyright: true
+  # 网站运行时间
+  runtime:
+    enable: true
+    text: 本站已苟活 # 自定义文字内容
+    launch_time: 04/01/2022 00:00:00 # 网站上线时间
+    work_img: https://jsd.onmicrosoft.cn/gh/eudav/bingm-static/img/icon/冰梦-上班摸鱼中-6adea8.svg # https://img.shields.io/badge/冰梦-上班摸鱼中-6adea8?style=social&logo=snowflake
+    work_description: 一个还在学习的萌新
+    offduty_img: https://jsd.onmicrosoft.cn/gh/eudav/bingm-static/img/icon/冰梦-下班休息中-6adea8.svg # https://img.shields.io/badge/冰梦-下班休息中-6adea8?style=social&logo=neutralinojs
+    offduty_description: 下班了就该开开心心的玩耍，嘿嘿~
+    working_start: 9 # 上班时间
+    working_end: 18 # 下班时间
+
+
   # 文章总字数统计
   wordcount: true
 

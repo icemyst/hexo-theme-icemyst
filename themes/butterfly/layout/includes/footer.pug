@@ -24,6 +24,66 @@
   if theme.footer.custom_text
     .footer_custom_text!= theme.footer.custom_text
 
+  if theme.footer.runtime.enable
+    #workboard
+      - const { text, launch_time, offduty_img, offduty_description, work_img, work_description, working_start, working_end } = theme.footer.runtime
+      img(class="workSituationImg" style="margin-top: 5px;")
+      #runtimeTextTip
+        | #{text}&nbsp
+        span#runtime-days 0
+        | &nbsp天&nbsp
+        span#runtime-hours 00
+        | &nbsp小时&nbsp
+        span#runtime-minutes 00
+        | &nbsp分&nbsp
+        span#runtime-seconds 00
+        | &nbsp秒
+
+    script(async=true).
+      (function () {
+        const launchTimeStr = "#{launch_time}"; // 获取上线时间字符串
+        const workingStart = #{working_start}; // 上班时间
+        const workingEnd = #{working_end}; // 下班时间
+        const launchTime = new Date(launchTimeStr || " "); // 使用默认值
+
+        if (isNaN(launchTime.getTime())) {
+          console.error("Invalid launch time:", launchTimeStr);
+          return;
+        }
+
+        function calculateElapsedTime() {
+          const now = new Date();
+          const elapsed = Math.floor((now - launchTime) / 1000); // 总秒数
+          const days = Math.floor(elapsed / 86400); // 天
+          const hours = String(Math.floor((elapsed % 86400) / 3600)).padStart(2, "0"); // 小时
+          const minutes = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0"); // 分钟
+          const seconds = String(elapsed % 60).padStart(2, "0"); // 秒
+          const nowHour = now.getHours(); // 当前小时数
+          return { days, hours, minutes, seconds, nowHour };
+        }
+
+        function updateRuntime() {
+          const { days, hours, minutes, seconds, nowHour } = calculateElapsedTime();
+          const isWorkTime = nowHour >= workingStart && nowHour < workingEnd; // 判断是否在工作时间
+
+          const img = document.querySelector("#workboard .workSituationImg");
+          if (img) {
+            img.src = isWorkTime ? "#{work_img}" : "#{offduty_img}";
+            img.title = isWorkTime ? "#{work_description}" : "#{offduty_description}";
+            img.alt = isWorkTime ? "#{work_description}" : "#{offduty_description}";
+          }
+
+          // 更新运行时间内容
+          document.getElementById("runtime-days").textContent = days;
+          document.getElementById("runtime-hours").textContent = hours;
+          document.getElementById("runtime-minutes").textContent = minutes;
+          document.getElementById("runtime-seconds").textContent = seconds;
+        }
+
+        // 每秒更新一次
+        setInterval(updateRuntime, 1000);
+      })();
+
   if theme.footer.wordcount
     .wordcount
       - let allword = totalcount(site)
