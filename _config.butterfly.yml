@@ -314,7 +314,7 @@ aside:
     category: true
   card_author:
     enable: true
-    description: 到不了的都叫远方，回不去的都叫故乡。
+    description: <div style="line-height:1.38;margin:0.6rem 0;text-align:center;font-family:fangsong;">到不了的都叫远方，回不去的都叫故乡。</div>
     button:
       enable: true
       icon: fas fa-arrow-circle-right
