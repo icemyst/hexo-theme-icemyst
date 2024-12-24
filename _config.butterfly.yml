@@ -77,7 +77,7 @@ avatar:
 disable_top_img: false
 
 # 如果页面没有设置横幅，则显示default_top_img
-default_top_img:
+default_top_img: false
 
 # 首页横幅图片
 index_img: https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
@@ -222,7 +222,7 @@ post_copyright:
   license: CC BY-NC-SA 4.0
   license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
-# 贊助/獎勵
+# 赞助/奖励
 reward:
   enable: true
   text: 打赏
@@ -291,8 +291,6 @@ footer:
     offduty_description: 下班了就该开开心心的玩耍，嘿嘿~
     working_start: 9 # 上班时间
     working_end: 18 # 下班时间
-
-
   # 文章总字数统计
   wordcount: true
 
@@ -305,13 +303,13 @@ aside:
   hide: false
   # 在右下角按钮中显示隐藏按钮
   button: true
-  mobile: true
+  mobile: false
   # 位置: left / right（左 / 右）
   position: right
   display:
-    archive: true
-    tag: true
-    category: true
+    archive: false
+    tag: false
+    category: false
   card_author:
     enable: true
     description: <div style="line-height:1.38;margin:0.6rem 0;text-align:center;font-family:fangsong;">到不了的都叫远方，回不去的都叫故乡。</div>
