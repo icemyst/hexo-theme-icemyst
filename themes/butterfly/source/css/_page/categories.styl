@@ -49,7 +49,7 @@
   ul li
     margin: 0 3px
     &:hover
-      color: var(--light-grey)
+      color: var(--btn-color)
 
   .category-list-item
     position: relative
@@ -69,18 +69,18 @@
       addBorderRadius(8)
       &:not(.category-list-link):first-child
         padding: 0 .5rem
-        color: var(--light-grey)
+        color: var(--btn-color)
         background: var(--default-bg-color)
 
       &:not(.category-more):hover
         background: var(--default-bg-color)
-        color: var(--light-grey)
+        color: var(--btn-color)
         addBorderRadius(8)
 
   .category-more
     transition: color 0.3s ease-in-out
     &:hover
-      color: #49b1f5
+      color: $text-bg-hover
 
   .category-list-count
     position: absolute
