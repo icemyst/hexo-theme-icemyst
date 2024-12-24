@@ -37,7 +37,8 @@ hexo.extend.helper.register('cloudTags', function (options = {}) {
     const ratio = length ? sizes.indexOf(tag.length) / length : 0
     const size = minfontsize + ((maxfontsize - minfontsize) * ratio)
     const style = generateStyle(size, unit)
-    return `<a href="${env.url_for(tag.path)}" style="${style}">${tag.name}</a>`
+    const tagCount = tag.posts.length || 0
+    return `<a href="${env.url_for(tag.path)}" style="${style}">${tag.name}<sup style="font-style:italic;font-size:10px">${tagCount}</sup></a>`
   }).join('')
 
   return result
