@@ -106,7 +106,7 @@ footer_img: transparent
 
 # 网站背景
 # 可以设置为颜色或图片网址
-background: # https://api.boxmoe.com/random.php?size=large
+background: https://api.boxmoe.com/random.php?size=large
 
 cover:
   # 是否禁用封面
