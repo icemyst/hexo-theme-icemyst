@@ -999,7 +999,7 @@ pjax:
   enable: true
   # 将指定页面排除在 pjax 之外，例如 '/music/
   exclude:
-    # - /xxxxxx/
+    - /charts/
 
 # 注入 CSS 和脚本（aplayer/meting）
 aplayerInject:
