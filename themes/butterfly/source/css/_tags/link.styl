@@ -1,0 +1,64 @@
+#article-container
+  .tag.link
+    background var(--guest-background-color)
+    border-radius 12px
+    min-width 200px
+    max-width 300px
+    margin 0.25rem auto
+    padding .25rem .5rem
+    &:hover
+      background var(--default-bg-color)
+      box-shadow 0 4px 8px 0 rgba(0, 0, 0, 0.1)
+      a
+        color var(--white)
+  a
+    &.link-card
+      text-decoration none
+      color var(--text-highlight-color)
+      .link-group
+        position relative
+        display flex
+        align-items center
+      div
+        &.left
+          width 48px
+          height 48px
+          margin 5px 0
+          overflow hidden
+          flex-shrink 0
+          position relative
+          border-radius 12px
+          background-size cover
+        &.right
+          overflow hidden
+          margin-left .5rem
+          .title,
+          .text
+            overflow hidden
+            text-overflow ellipsis
+            white-space nowrap
+          .title
+            font-size 1rem
+            font-weight bold
+          .text
+            font-size .7rem
+            font-weight 400
+        i
+          display flex
+          position absolute
+          right 4px
+    .tips
+      display flex
+      border-bottom 1px solid var(--text-highlight-color)
+      font-size .6rem
+      font-weight 400
+
+#article-container a.link-card div.left,
+#article-container a.link-card div.right
+  pointer-events none
+
+[data-theme="dark"]
+  #article-container
+    a
+      &.link-card
+        filter brightness(0.7)
