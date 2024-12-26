@@ -16,6 +16,11 @@ const ECHARTS_CDN = 'https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min
 class ChartsManager {
   static instances = new Map();
   static loadingPromise = null;
+  static charts = [
+    { type: 'Posts', selector: '#posts-chart' },
+    { type: 'Tags', selector: '#tags-chart' },
+    { type: 'Categories', selector: '#categories-chart' }
+  ];
 
   static async init() {
     try {
@@ -36,7 +41,7 @@ class ChartsManager {
         const script = document.createElement('script');
         script.src = ECHARTS_CDN;
         script.onload = resolve;
-        script.onerror = (e) => {
+        script.onerror = () => {
           this.loadingPromise = null;
           reject(new Error('Failed to load ECharts'));
         };
@@ -48,15 +53,9 @@ class ChartsManager {
   }
 
   static async initAllCharts() {
-    const charts = [
-      { type: 'Posts', selector: '#posts-chart' },
-      { type: 'Tags', selector: '#tags-chart' },
-      { type: 'Categories', selector: '#categories-chart' }
-    ];
-
-    for (const { type, selector } of charts) {
+    const initPromises = this.charts.map(async ({ type, selector }) => {
       const element = document.querySelector(selector);
-      if (!element) continue;
+      if (!element) return;
 
       try {
         element.setAttribute('data-loading', 'true');
@@ -69,7 +68,9 @@ class ChartsManager {
         console.error(`Failed to initialize ${type} chart:`, error);
         element.setAttribute('data-error', 'true');
       }
-    }
+    });
+
+    await Promise.allSettled(initPromises);
   }
 
   static setupEventListeners() {

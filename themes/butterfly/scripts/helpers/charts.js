@@ -4,6 +4,47 @@ const moment = require('moment');
 // 公共颜色设置
 const getChartColor = () => document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
 
+// 添加常量配置
+const CHART_CONFIG = {
+  colors: {
+    gradient: [{
+      offset: 0,
+      color: 'rgba(128, 255, 165)'
+    }, {
+      offset: 1,
+      color: 'rgba(1, 191, 236)'
+    }],
+    hoverGradient: [{
+      offset: 0,
+      color: 'rgba(128, 255, 195)'
+    }, {
+      offset: 1,
+      color: 'rgba(1, 211, 255)'
+    }]
+  }
+};
+
+// 添加工具函数
+function createGradient(echarts, colors) {
+  return new echarts.graphic.LinearGradient(0, 0, 0, 1, colors);
+}
+
+// 优化图表初始化函数
+function initChart(chartId, option) {
+  const chartDom = document.getElementById(chartId);
+  if (!chartDom || !window.echarts) return null;
+
+  const existingChart = echarts.getInstanceByDom(chartDom);
+  if (existingChart) {
+    existingChart.dispose();
+  }
+
+  const chart = echarts.init(chartDom, 'light');
+  chart.setOption(option);
+
+  return chart;
+}
+
 hexo.extend.filter.register('after_render:html', function (locals) {
     const $ = cheerio.load(locals);
 
@@ -75,23 +116,12 @@ function postsChart(el) {
     return `
     <script id="postsChart">
         function initPostsChart() {
-            const postsChart = document.getElementById('posts-chart');
-            if (!postsChart || !window.echarts) return;
-            
-            // 如果已经初始化过，先销毁
-            const existingChart = echarts.getInstanceByDom(postsChart);
-            if (existingChart) {
-                existingChart.dispose();
-            }
-            
-            var color = document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
-            var chart = echarts.init(postsChart, 'light');
-            var postsOption = {
+            const chart = initChart('posts-chart', {
                 title: {
                     text: '文章发布统计图',
                     x: 'center',
                     textStyle: {
-                        color: color
+                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
                     }
                 },
                 tooltip: {
@@ -102,19 +132,19 @@ function postsChart(el) {
                     type: 'category',
                     boundaryGap: false,
                     nameTextStyle: {
-                        color: color
+                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
                     },
                     axisTick: {
                         show: false
                     },
                     axisLabel: {
                         show: true,
-                        color: color
+                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
                     },
                     axisLine: {
                         show: true,
                         lineStyle: {
-                            color: color
+                            color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
                         }
                     },
                     data: ${monthArr}
@@ -123,7 +153,7 @@ function postsChart(el) {
                     name: '文章篇数',
                     type: 'value',
                     nameTextStyle: {
-                        color: color
+                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
                     },
                     splitLine: {
                         show: false
@@ -133,12 +163,12 @@ function postsChart(el) {
                     },
                     axisLabel: {
                         show: true,
-                        color: color
+                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
                     },
                     axisLine: {
                         show: true,
                         lineStyle: {
-                            color: color
+                            color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
                         }
                     }
                 },
@@ -152,50 +182,26 @@ function postsChart(el) {
                     showSymbol: false,
                     itemStyle: {
                         opacity: 1,
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                            offset: 0,
-                            color: 'rgba(128, 255, 165)'
-                        },
-                        {
-                            offset: 1,
-                            color: 'rgba(1, 191, 236)'
-                        }])
+                        color: createGradient(echarts, CHART_CONFIG.colors.gradient)
                     },
                     areaStyle: {
                         opacity: 1,
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                            offset: 0,
-                            color: 'rgba(128, 255, 165)'
-                        }, {
-                            offset: 1,
-                            color: 'rgba(1, 191, 236)'
-                        }])
+                        color: createGradient(echarts, CHART_CONFIG.colors.gradient)
                     },
-                    data: ${monthValueArr},
-                    markLine: {
-                        data: [{
-                            name: '平均值',
-                            type: 'average',
-                            label: {
-                                color: color
-                            }
-                        }]
-                    }
+                    data: ${monthValueArr}
                 }]
-            };
-            chart.setOption(postsOption);
-            
-            function resizeChart() {
-                if (chart && !chart.isDisposed()) {
-                    chart.resize();
-                }
-            }
-            
-            window.addEventListener('resize', resizeChart);
-            
-            chart.on('click', 'series', (event) => {
-                if (event.componentType === 'series') window.location.href = '/archives/' + event.name.replace('-', '/');
             });
+
+            if (chart) {
+                const handleResize = () => chart.resize();
+                window.addEventListener('resize', handleResize);
+                
+                chart.on('click', 'series', (event) => {
+                    if (event.componentType === 'series') {
+                        window.location.href = '/archives/' + event.name.replace('-', '/');
+                    }
+                });
+            }
         }
     </script>`;
 }
