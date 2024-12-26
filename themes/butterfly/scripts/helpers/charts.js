@@ -83,15 +83,115 @@ hexo.extend.filter.register('after_render:html', function (locals) {
 }, 15);
 
 function postsChart(el) {
-    // Fetch the earliest post date dynamically
+    // 获取文章数据和日期范围
     const posts = hexo.locals.get('posts');
+    const { monthMap, startMonth } = getPostsDateRange(posts);
+
+    // 生成图表数据
+    const monthArr = JSON.stringify([...monthMap.keys()]);
+    const monthValueArr = JSON.stringify([...monthMap.values()]);
+
+    el.attr('data-start', startMonth);
+
+    return `
+    <script id="postsChart">
+        // 图表配置
+        const chartConfig = {
+            colors: {
+                text: () => document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)',
+                gradient: {
+                    normal: [
+                        { offset: 0, color: 'rgba(128, 255, 165)' },
+                        { offset: 1, color: 'rgba(1, 191, 236)' }
+                    ]
+                }
+            }
+        };
+
+        // 工具函数
+        const createGradient = (colors) => new window.echarts.graphic.LinearGradient(0, 0, 0, 1, colors);
+        const getTextColor = () => chartConfig.colors.text();
+
+        function initPostsChart() {
+            const chart = initChart('posts-chart', {
+                title: {
+                    text: '文章发布统计图',
+                    x: 'center',
+                    textStyle: { color: getTextColor() }
+                },
+                tooltip: { trigger: 'axis' },
+                xAxis: {
+                    name: '日期',
+                    type: 'category',
+                    boundaryGap: false,
+                    nameTextStyle: { color: getTextColor() },
+                    axisTick: { show: false },
+                    axisLabel: { 
+                        show: true,
+                        color: getTextColor()
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: { color: getTextColor() }
+                    },
+                    data: ${monthArr}
+                },
+                yAxis: {
+                    name: '文章篇数',
+                    type: 'value',
+                    nameTextStyle: { color: getTextColor() },
+                    splitLine: { show: false },
+                    axisTick: { show: false },
+                    axisLabel: {
+                        show: true,
+                        color: getTextColor()
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: { color: getTextColor() }
+                    }
+                },
+                series: [{
+                    name: '文章篇数',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: { width: 0 },
+                    showSymbol: false,
+                    itemStyle: {
+                        opacity: 1,
+                        color: createGradient(chartConfig.colors.gradient.normal)
+                    },
+                    areaStyle: {
+                        opacity: 1,
+                        color: createGradient(chartConfig.colors.gradient.normal)
+                    },
+                    data: ${monthValueArr}
+                }]
+            });
+
+            if (chart) {
+                // 事件处理
+                window.addEventListener('resize', () => chart.resize());
+                chart.on('click', 'series', (event) => {
+                    if (event.componentType === 'series') {
+                        window.location.href = '/archives/' + event.name.replace('-', '/');
+                    }
+                });
+            }
+        }
+    </script>`;
+}
+
+// 辅助函数：获取文章日期范围和统计数据
+function getPostsDateRange(posts) {
     const startDate = posts.reduce((earliest, post) => {
         return post.date.isBefore(earliest) ? post.date : earliest;
-    }, moment()); // Default to current date if no posts found
-
+    }, moment());
+    
     const startMonth = startDate.format('YYYY-MM');
     const endDate = moment();
 
+    // 初始化月份映射
     const monthMap = new Map();
     const dayTime = 3600 * 24 * 1000;
     for (let time = startDate; time <= endDate; time += dayTime) {
@@ -101,147 +201,15 @@ function postsChart(el) {
         }
     }
 
-    posts.forEach(function (post) {
+    // 统计每月文章数
+    posts.forEach(post => {
         const month = post.date.format('YYYY-MM');
         if (monthMap.has(month)) {
             monthMap.set(month, monthMap.get(month) + 1);
         }
     });
 
-    const monthArr = JSON.stringify([...monthMap.keys()]);
-    const monthValueArr = JSON.stringify([...monthMap.values()]);
-
-    el.attr('data-start', startMonth);  // Set the start date dynamically to the first post's date
-
-    return `
-    <script id="postsChart">
-        function initChart(chartId, option) {
-            const chartDom = document.getElementById(chartId);
-            if (!chartDom || !window.echarts) return null;
-
-            const existingChart = echarts.getInstanceByDom(chartDom);
-            if (existingChart) {
-                existingChart.dispose();
-            }
-
-            const chart = echarts.init(chartDom, 'light');
-            chart.setOption(option);
-
-            return chart;
-        }
-
-        function createGradient(echarts, colors) {
-            return new echarts.graphic.LinearGradient(0, 0, 0, 1, colors);
-        }
-
-        const CHART_CONFIG = {
-            colors: {
-                gradient: [{
-                    offset: 0,
-                    color: 'rgba(128, 255, 165)'
-                }, {
-                    offset: 1,
-                    color: 'rgba(1, 191, 236)'
-                }],
-                hoverGradient: [{
-                    offset: 0,
-                    color: 'rgba(128, 255, 195)'
-                }, {
-                    offset: 1,
-                    color: 'rgba(1, 211, 255)'
-                }]
-            }
-        };
-
-        function initPostsChart() {
-            const chart = initChart('posts-chart', {
-                title: {
-                    text: '文章发布统计图',
-                    x: 'center',
-                    textStyle: {
-                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
-                    }
-                },
-                tooltip: {
-                    trigger: 'axis'
-                },
-                xAxis: {
-                    name: '日期',
-                    type: 'category',
-                    boundaryGap: false,
-                    nameTextStyle: {
-                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
-                    },
-                    axisTick: {
-                        show: false
-                    },
-                    axisLabel: {
-                        show: true,
-                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
-                    },
-                    axisLine: {
-                        show: true,
-                        lineStyle: {
-                            color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
-                        }
-                    },
-                    data: ${monthArr}
-                },
-                yAxis: {
-                    name: '文章篇数',
-                    type: 'value',
-                    nameTextStyle: {
-                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
-                    },
-                    splitLine: {
-                        show: false
-                    },
-                    axisTick: {
-                        show: false
-                    },
-                    axisLabel: {
-                        show: true,
-                        color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
-                    },
-                    axisLine: {
-                        show: true,
-                        lineStyle: {
-                            color: document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)'
-                        }
-                    }
-                },
-                series: [{
-                    name: '文章篇数',
-                    type: 'line',
-                    smooth: true,
-                    lineStyle: {
-                        width: 0
-                    },
-                    showSymbol: false,
-                    itemStyle: {
-                        opacity: 1,
-                        color: createGradient(window.echarts, CHART_CONFIG.colors.gradient)
-                    },
-                    areaStyle: {
-                        opacity: 1,
-                        color: createGradient(window.echarts, CHART_CONFIG.colors.gradient)
-                    },
-                    data: ${monthValueArr}
-                }]
-            });
-
-            if (chart) {
-                const handleResize = () => chart.resize();
-                window.addEventListener('resize', handleResize);
-                
-                chart.on('click', 'series', (event) => {
-                    if (event.componentType === 'series') {
-                        window.location.href = '/archives/' + event.name.replace('-', '/');
-                    }
-                });
-            }
-        }
-    </script>`;
+    return { monthMap, startMonth };
 }
 
 function tagsChart(len) {
