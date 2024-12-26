@@ -13,6 +13,22 @@ type: "charts"
 <script>
 const ECHARTS_CDN = 'https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js';
 
+// 添加全局 initChart 函数
+window.initChart = function(chartId, option) {
+    const chartDom = document.getElementById(chartId);
+    if (!chartDom || !window.echarts) return null;
+
+    const existingChart = echarts.getInstanceByDom(chartDom);
+    if (existingChart) {
+        existingChart.dispose();
+    }
+
+    const chart = echarts.init(chartDom, 'light');
+    chart.setOption(option);
+
+    return chart;
+};
+
 class ChartsManager {
   static instances = new Map();
   static loadingPromise = null;
@@ -61,8 +77,13 @@ class ChartsManager {
         element.setAttribute('data-loading', 'true');
         const initFn = window[`init${type}Chart`];
         if (typeof initFn === 'function') {
+          console.log(`Initializing ${type} chart...`);
+          await new Promise(resolve => setTimeout(resolve, 100));
           await initFn();
+          console.log(`${type} chart initialized successfully`);
           element.setAttribute('data-loading', 'false');
+        } else {
+          console.error(`Init function not found for ${type} chart`);
         }
       } catch (error) {
         console.error(`Failed to initialize ${type} chart:`, error);

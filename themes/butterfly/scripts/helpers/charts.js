@@ -16,7 +16,7 @@ const CHART_CONFIG = {
     }],
     hoverGradient: [{
       offset: 0,
-      color: 'rgba(128, 255, 195)'
+      color: 'rgba(128, 255, 195)' 
     }, {
       offset: 1,
       color: 'rgba(1, 211, 255)'
@@ -115,6 +115,44 @@ function postsChart(el) {
 
     return `
     <script id="postsChart">
+        function initChart(chartId, option) {
+            const chartDom = document.getElementById(chartId);
+            if (!chartDom || !window.echarts) return null;
+
+            const existingChart = echarts.getInstanceByDom(chartDom);
+            if (existingChart) {
+                existingChart.dispose();
+            }
+
+            const chart = echarts.init(chartDom, 'light');
+            chart.setOption(option);
+
+            return chart;
+        }
+
+        function createGradient(echarts, colors) {
+            return new echarts.graphic.LinearGradient(0, 0, 0, 1, colors);
+        }
+
+        const CHART_CONFIG = {
+            colors: {
+                gradient: [{
+                    offset: 0,
+                    color: 'rgba(128, 255, 165)'
+                }, {
+                    offset: 1,
+                    color: 'rgba(1, 191, 236)'
+                }],
+                hoverGradient: [{
+                    offset: 0,
+                    color: 'rgba(128, 255, 195)'
+                }, {
+                    offset: 1,
+                    color: 'rgba(1, 211, 255)'
+                }]
+            }
+        };
+
         function initPostsChart() {
             const chart = initChart('posts-chart', {
                 title: {
@@ -182,11 +220,11 @@ function postsChart(el) {
                     showSymbol: false,
                     itemStyle: {
                         opacity: 1,
-                        color: createGradient(echarts, CHART_CONFIG.colors.gradient)
+                        color: createGradient(window.echarts, CHART_CONFIG.colors.gradient)
                     },
                     areaStyle: {
                         opacity: 1,
-                        color: createGradient(echarts, CHART_CONFIG.colors.gradient)
+                        color: createGradient(window.echarts, CHART_CONFIG.colors.gradient)
                     },
                     data: ${monthValueArr}
                 }]
