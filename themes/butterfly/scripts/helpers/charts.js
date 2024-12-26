@@ -74,112 +74,129 @@ function postsChart(el) {
 
     return `
     <script id="postsChart">
-        var color = document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
-        var postsChart = echarts.init(document.getElementById('posts-chart'), 'light');
-        var postsOption = {
-            title: {
-                text: '文章发布统计图',
-                x: 'center',
-                textStyle: {
-                    color: color
-                }
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            xAxis: {
-                name: '日期',
-                type: 'category',
-                boundaryGap: false,
-                nameTextStyle: {
-                    color: color
-                },
-                axisTick: {
-                    show: false
-                },
-                axisLabel: {
-                    show: true,
-                    color: color
-                },
-                axisLine: {
-                    show: true,
-                    lineStyle: {
+        function initPostsChart() {
+            const postsChart = document.getElementById('posts-chart');
+            if (!postsChart || !window.echarts) return;
+            
+            // 如果已经初始化过，先销毁
+            const existingChart = echarts.getInstanceByDom(postsChart);
+            if (existingChart) {
+                existingChart.dispose();
+            }
+            
+            var color = document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
+            var chart = echarts.init(postsChart, 'light');
+            var postsOption = {
+                title: {
+                    text: '文章发布统计图',
+                    x: 'center',
+                    textStyle: {
                         color: color
                     }
                 },
-                data: ${monthArr}
-            },
-            yAxis: {
-                name: '文章篇数',
-                type: 'value',
-                nameTextStyle: {
-                    color: color
+                tooltip: {
+                    trigger: 'axis'
                 },
-                splitLine: {
-                    show: false
-                },
-                axisTick: {
-                    show: false
-                },
-                axisLabel: {
-                    show: true,
-                    color: color
-                },
-                axisLine: {
-                    show: true,
-                    lineStyle: {
+                xAxis: {
+                    name: '日期',
+                    type: 'category',
+                    boundaryGap: false,
+                    nameTextStyle: {
                         color: color
-                    }
-                }
-            },
-            series: [{
-                name: '文章篇数',
-                type: 'line',
-                smooth: true,
-                lineStyle: {
-                    width: 0
-                },
-                showSymbol: false,
-                itemStyle: {
-                    opacity: 1,
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: 'rgba(128, 255, 165)'
                     },
-                    {
-                        offset: 1,
-                        color: 'rgba(1, 191, 236)'
-                    }])
-                },
-                areaStyle: {
-                    opacity: 1,
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: 'rgba(128, 255, 165)'
-                    }, {
-                        offset: 1,
-                        color: 'rgba(1, 191, 236)'
-                    }])
-                },
-                data: ${monthValueArr},
-                markLine: {
-                    data: [{
-                        name: '平均值',
-                        type: 'average',
-                        label: {
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        show: true,
+                        color: color
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
                             color: color
                         }
-                    }]
+                    },
+                    data: ${monthArr}
+                },
+                yAxis: {
+                    name: '文章篇数',
+                    type: 'value',
+                    nameTextStyle: {
+                        color: color
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        show: true,
+                        color: color
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: color
+                        }
+                    }
+                },
+                series: [{
+                    name: '文章篇数',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        width: 0
+                    },
+                    showSymbol: false,
+                    itemStyle: {
+                        opacity: 1,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0,
+                            color: 'rgba(128, 255, 165)'
+                        },
+                        {
+                            offset: 1,
+                            color: 'rgba(1, 191, 236)'
+                        }])
+                    },
+                    areaStyle: {
+                        opacity: 1,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0,
+                            color: 'rgba(128, 255, 165)'
+                        }, {
+                            offset: 1,
+                            color: 'rgba(1, 191, 236)'
+                        }])
+                    },
+                    data: ${monthValueArr},
+                    markLine: {
+                        data: [{
+                            name: '平均值',
+                            type: 'average',
+                            label: {
+                                color: color
+                            }
+                        }]
+                    }
+                }]
+            };
+            chart.setOption(postsOption);
+            
+            function resizeChart() {
+                if (chart && !chart.isDisposed()) {
+                    chart.resize();
                 }
-            }]
-        };
-        postsChart.setOption(postsOption);
-        window.addEventListener('resize', () => {
-            postsChart.resize();
-        });
-        postsChart.on('click', 'series', (event) => {
-            if (event.componentType === 'series') window.location.href = '/archives/' + event.name.replace('-', '/');
-        });
+            }
+            
+            window.addEventListener('resize', resizeChart);
+            
+            chart.on('click', 'series', (event) => {
+                if (event.componentType === 'series') window.location.href = '/archives/' + event.name.replace('-', '/');
+            });
+        }
     </script>`;
 }
 
@@ -200,107 +217,124 @@ function tagsChart(len) {
 
     return `
     <script id="tagsChart">
-        var color = document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
-        var tagsChart = echarts.init(document.getElementById('tags-chart'), 'light');
-        var tagsOption = {
-            title: {
-                text: 'Top ${dataLength} 标签统计图',
-                x: 'center',
-                textStyle: {
-                    color: color
-                }
-            },
-            tooltip: {},
-            xAxis: {
-                name: '标签',
-                type: 'category',
-                nameTextStyle: {
-                    color: color
-                },
-                axisTick: {
-                    show: false
-                },
-                axisLabel: {
-                    show: true,
-                    color: color,
-                    interval: 0
-                },
-                axisLine: {
-                    show: true,
-                    lineStyle: {
+        function initTagsChart() {
+            const tagsChart = document.getElementById('tags-chart');
+            if (!tagsChart || !window.echarts) return;
+            
+            // 如果已经初始化过，先销毁
+            const existingChart = echarts.getInstanceByDom(tagsChart);
+            if (existingChart) {
+                existingChart.dispose();
+            }
+            
+            var color = document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
+            var chart = echarts.init(tagsChart, 'light');
+            var tagsOption = {
+                title: {
+                    text: 'Top ${dataLength} 标签统计图',
+                    x: 'center',
+                    textStyle: {
                         color: color
                     }
                 },
-                data: ${tagNameArrJson}
-            },
-            yAxis: {
-                name: '文章篇数',
-                type: 'value',
-                splitLine: {
-                    show: false
-                },
-                nameTextStyle: {
-                    color: color
-                },
-                axisTick: {
-                    show: false
-                },
-                axisLabel: {
-                    show: true,
-                    color: color
-                },
-                axisLine: {
-                    show: true,
-                    lineStyle: {
+                tooltip: {},
+                xAxis: {
+                    name: '标签',
+                    type: 'category',
+                    nameTextStyle: {
                         color: color
-                    }
-                }
-            },
-            series: [{
-                name: '文章篇数',
-                type: 'bar',
-                data: ${tagArrJson},
-                itemStyle: {
-                    borderRadius: [5, 5, 0, 0],
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: 'rgba(128, 255, 165)'
                     },
-                    {
-                        offset: 1,
-                        color: 'rgba(1, 191, 236)'
-                    }])
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        show: true,
+                        color: color,
+                        interval: 0
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: color
+                        }
+                    },
+                    data: ${tagNameArrJson}
                 },
-                emphasis: {
+                yAxis: {
+                    name: '文章篇数',
+                    type: 'value',
+                    splitLine: {
+                        show: false
+                    },
+                    nameTextStyle: {
+                        color: color
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        show: true,
+                        color: color
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: color
+                        }
+                    }
+                },
+                series: [{
+                    name: '文章篇数',
+                    type: 'bar',
+                    data: ${tagArrJson},
                     itemStyle: {
+                        borderRadius: [5, 5, 0, 0],
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                             offset: 0,
-                            color: 'rgba(128, 255, 195)'
+                            color: 'rgba(128, 255, 165)'
                         },
                         {
                             offset: 1,
-                            color: 'rgba(1, 211, 255)'
+                            color: 'rgba(1, 191, 236)'
                         }])
-                    }
-                },
-                markLine: {
-                    data: [{
-                        name: '平均值',
-                        type: 'average',
-                        label: {
-                            color: color
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: 'rgba(128, 255, 195)'
+                            },
+                            {
+                                offset: 1,
+                                color: 'rgba(1, 211, 255)'
+                            }])
                         }
-                    }]
+                    },
+                    markLine: {
+                        data: [{
+                            name: '平均值',
+                            type: 'average',
+                            label: {
+                                color: color
+                            }
+                        }]
+                    }
+                }]
+            };
+            chart.setOption(tagsOption);
+            
+            function resizeChart() {
+                if (chart && !chart.isDisposed()) {
+                    chart.resize();
                 }
-            }]
-        };
-        tagsChart.setOption(tagsOption);
-        window.addEventListener('resize', () => {
-            tagsChart.resize();
-        });
-        tagsChart.on('click', 'series', (event) => {
-            if(event.data.path) window.location.href = '/' + event.data.path;
-        });
+            }
+            
+            window.addEventListener('resize', resizeChart);
+            
+            chart.on('click', 'series', (event) => {
+                if(event.data.path) window.location.href = '/' + event.data.path;
+            });
+        }
     </script>`;
 }
 
@@ -341,76 +375,93 @@ function categoriesChart(dataParent) {
 
     return `
     <script id="categoriesChart">
-        var color = document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
-        var categoriesChart = echarts.init(document.getElementById('categories-chart'), 'light');
-        var categoryParentFlag = ${categoryParentFlag};
-        var categoriesOption = {
-            title: {
-                text: '文章分类统计图',
-                x: 'center',
-                textStyle: {
-                    color: color
-                }
-            },
-            legend: {
-                top: 'bottom',
-                data: ${categoryNameJson},
-                textStyle: {
-                    color: color
-                }
-            },
-            tooltip: {
-                trigger: 'item'
-            },
-            series: []
-        };
-        categoriesOption.series.push(
-            categoryParentFlag ?
-            {
-                nodeClick: false,
-                name: '文章篇数',
-                type: 'sunburst',
-                radius: ['15%', '90%'],
-                center: ['50%', '55%'],
-                sort: 'desc',
-                data: ${categoryArrParentJson},
-                itemStyle: {
-                    borderColor: '#fff',
-                    borderWidth: 2,
-                    emphasis: {
-                        focus: 'ancestor',
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(255, 255, 255, 0.5)'
-                    }
-                }
+        function initCategoriesChart() {
+            const categoriesChart = document.getElementById('categories-chart');
+            if (!categoriesChart || !window.echarts) return;
+            
+            // 如果已经初始化过，先销毁
+            const existingChart = echarts.getInstanceByDom(categoriesChart);
+            if (existingChart) {
+                existingChart.dispose();
             }
-            :
-            {
-                name: '文章篇数',
-                type: 'pie',
-                radius: [30, 80],
-                roseType: 'area',
-                label: {
-                    color: color,
-                    formatter: '{b} : {c} ({d}%)'
+            
+            var color = document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
+            var chart = echarts.init(categoriesChart, 'light');
+            var categoryParentFlag = ${categoryParentFlag};
+            var categoriesOption = {
+                title: {
+                    text: '文章分类统计图',
+                    x: 'center',
+                    textStyle: {
+                        color: color
+                    }
                 },
-                data: ${categoryArrJson},
-                itemStyle: {
-                    emphasis: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(255, 255, 255, 0.5)'
+                legend: {
+                    top: 'bottom',
+                    data: ${categoryNameJson},
+                    textStyle: {
+                        color: color
+                    }
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                series: []
+            };
+            categoriesOption.series.push(
+                categoryParentFlag ?
+                {
+                    nodeClick: false,
+                    name: '文章篇数',
+                    type: 'sunburst',
+                    radius: ['15%', '90%'],
+                    center: ['50%', '55%'],
+                    sort: 'desc',
+                    data: ${categoryArrParentJson},
+                    itemStyle: {
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                        emphasis: {
+                            focus: 'ancestor',
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(255, 255, 255, 0.5)'
+                        }
                     }
                 }
+                :
+                {
+                    name: '文章篇数',
+                    type: 'pie',
+                    radius: [30, 80],
+                    roseType: 'area',
+                    label: {
+                        color: color,
+                        formatter: '{b} : {c} ({d}%)'
+                    },
+                    data: ${categoryArrJson},
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(255, 255, 255, 0.5)'
+                        }
+                    }
+                }
+            );
+            chart.setOption(categoriesOption);
+            
+            function resizeChart() {
+                if (chart && !chart.isDisposed()) {
+                    chart.resize();
+                }
             }
-        );
-        categoriesChart.setOption(categoriesOption);
-        window.addEventListener('resize', () => {
-            categoriesChart.resize();
-        });
-        categoriesChart.on('click', 'series', (event) => {
-            if(event.data.path) window.location.href = '/' + event.data.path;
-        });
+            
+            window.addEventListener('resize', resizeChart);
+            
+            chart.on('click', 'series', (event) => {
+                if(event.data.path) window.location.href = '/' + event.data.path;
+            });
+        }
     </script>`;
 }

@@ -85,7 +85,7 @@ index_img: https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.w
 # 档案页面的横幅图像
 archive_img:
 
-# 注意：标签页面，不是标签页
+# 注意：标签页面，不是标签
 tag_img:
 
 # 标签页的横幅图片，可以为每个标签设置横幅图片
@@ -477,7 +477,7 @@ busuanzi:
 
 # About the per_page
 # 如果将其设置为 true，它将在每个页面中加载 mathjax/katex 脚本
-# 如果将其设置为 false，它将根据您的设置加载 mathjax/katex 脚本（在页面的正面添加“mathjax：true”或“katex：true”）
+# 如果将其设置为 false，它将根据您的设置加载 mathjax/katex 脚本（在页面的正面添加"mathjax：true"或"katex：true"）
 math:
   # 选择：mathjax、katex
   # 如果不需要数学运算，请将其留空
@@ -770,7 +770,7 @@ site_verification:
 # --------------------------------------
 
 # 自定义主题颜色
-# 注意：颜色值必须用双引号括起来，如“#000”，否则可能会出错！
+# 注意：颜色值必须用双引号括起来，如"#000"，否则可能会出错！
 
 # theme_color:
 #   enable: true
@@ -813,7 +813,7 @@ preloader:
   # source
   # 1. fullpage-loading
   # 2. pace (progress bar)
-  source: 2
+  source: 1
   # pace theme (see https://codebyzach.github.io/pace/)
   pace_css_url:
 
@@ -999,7 +999,7 @@ pjax:
   enable: true
   # 将指定页面排除在 pjax 之外，例如 '/music/
   exclude:
-    - /charts/
+    # - /charts/
 
 # 注入 CSS 和脚本（aplayer/meting）
 aplayerInject:
@@ -1076,8 +1076,8 @@ inject:
 CDN:
   # 内部和第三方脚本的 CDN 提供商
   # 可选项：local/jsdelivr/unpkg/cdnjs/custom
-  # 注意：开发版本只能使用‘local’来加载内部脚本
-  # 注意：将第三方脚本设置为‘local’时，需要安装 hexo-butterfly-extjs
+  # 注意：开发版本只能使用'local'来加载内部脚本
+  # 注意：将第三方脚本设置为'local'时，需要安装 hexo-butterfly-extjs
   internal_provider: onmicrosoft
   third_party_provider: onmicrosoft
 

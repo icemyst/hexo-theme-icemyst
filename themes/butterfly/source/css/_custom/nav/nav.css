@@ -12,6 +12,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: var(--white);
     width: 100%;
     background: var(--default-bg-color) !important;
     border-radius: 50px;
