@@ -1,5 +1,5 @@
 {
-  "total": 1,
+  "total": 2,
   "posts": [
     {
       "title": "Hello World",
@@ -11,12 +11,26 @@
       ],
       "tags": [
         "hexo",
-        "butterfly",
         "Windows",
         "Android"
       ],
       "date": "2024-12-05",
       "updated": "2024-12-27"
+    },
+    {
+      "title": "hexo+butterfly 主题标签使用",
+      "path": "posts/3d94.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.36/img_365_2615x1200_96_null_normal.jpg",
+      "description": "技术教程",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "Hexo",
+        "Butterfly"
+      ],
+      "date": "2020-11-14",
+      "updated": "2022-04-29"
     }
   ],
   "categories": [
@@ -32,10 +46,6 @@
   "tags": [
     {
       "name": "hexo",
-      "count": 1
-    },
-    {
-      "name": "butterfly",
       "count": 1
     },
     {
