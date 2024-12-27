@@ -45,6 +45,7 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
+  - "_data/update.json"
 
 # Writing
 new_post_name: :title.md # 新文章的文件名

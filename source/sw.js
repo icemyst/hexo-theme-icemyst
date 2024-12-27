@@ -205,7 +205,7 @@
                 resolve({list: list, version: newVersion})
             })
         })
-        const url = `/update.json` //需要修改JSON地址的在这里改
+        const url = `/_data/update.json` //修改JSON地址到_data目录
         return new Promise(resolve => fetchNoCache(url)
             .then(response => response.text().then(text => {
                 const json = JSON.parse(text)

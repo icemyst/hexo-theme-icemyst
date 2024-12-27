@@ -1,33 +1,23 @@
 {
-    "global": 0,
+    "global": 1,
     "info": [
       {
-        "version": "v1.0.1",
+        "version": "1.0.0",
         "change": [
           {
-            "flag": "static",
+            "flag": "file",
             "value": [
               "css/index.css",
-              "js/main.js",
-              "img/favicon.ico"
+              "css/custom.css",
+              "js/main.js"
             ]
           },
           {
-            "flag": "html",
+            "flag": "page",
             "value": [
-              "/index.html"
-            ]
-          }
-        ]
-      },
-      {
-        "version": "v1.0.0",
-        "change": [
-          {
-            "flag": "static",
-            "value": [
-                "css/index.css",
-                "js/main.js"
+              "tags",
+              "categories",
+              "archives"
             ]
           }
         ]
