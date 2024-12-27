@@ -4,7 +4,7 @@ const moment = require('moment');
 // 公共颜色设置
 const getChartColor = () => document.documentElement.getAttribute('data-theme') === 'light' ? '#4c4948' : 'rgba(255,255,255,0.7)';
 
-// 添加常量配置
+// 优化常量配置
 const CHART_CONFIG = {
   colors: {
     gradient: [{
@@ -21,10 +21,14 @@ const CHART_CONFIG = {
       offset: 1,
       color: 'rgba(1, 211, 255)'
     }]
+  },
+  animation: {
+    duration: 1000,
+    easing: 'cubicOut'
   }
 };
 
-// 添加工具函数
+// 优化工具函数
 function createGradient(echarts, colors) {
   return new echarts.graphic.LinearGradient(0, 0, 0, 1, colors);
 }
@@ -40,6 +44,7 @@ function initChart(chartId, option) {
   }
 
   const chart = echarts.init(chartDom, 'light');
+  option.animation = CHART_CONFIG.animation;
   chart.setOption(option);
 
   return chart;

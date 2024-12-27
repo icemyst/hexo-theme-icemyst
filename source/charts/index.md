@@ -13,7 +13,7 @@ type: "charts"
 <script>
 const ECHARTS_CDN = 'https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js';
 
-// 添加全局 initChart 函数
+// 优化全局 initChart 函数
 window.initChart = function(chartId, option) {
     const chartDom = document.getElementById(chartId);
     if (!chartDom || !window.echarts) return null;
@@ -24,14 +24,21 @@ window.initChart = function(chartId, option) {
     }
 
     const chart = echarts.init(chartDom, 'light');
+    
+    // 添加默认动画配置
+    option.animation = {
+        duration: 1000,
+        easing: 'cubicOut'
+    };
+    
     chart.setOption(option);
-
     return chart;
 };
 
 class ChartsManager {
   static instances = new Map();
   static loadingPromise = null;
+  
   static charts = [
     { type: 'Posts', selector: '#posts-chart' },
     { type: 'Tags', selector: '#tags-chart' },
@@ -76,14 +83,10 @@ class ChartsManager {
       try {
         element.setAttribute('data-loading', 'true');
         const initFn = window[`init${type}Chart`];
+        
         if (typeof initFn === 'function') {
-          console.log(`Initializing ${type} chart...`);
-          await new Promise(resolve => setTimeout(resolve, 100));
           await initFn();
-          console.log(`${type} chart initialized successfully`);
           element.setAttribute('data-loading', 'false');
-        } else {
-          console.error(`Init function not found for ${type} chart`);
         }
       } catch (error) {
         console.error(`Failed to initialize ${type} chart:`, error);
@@ -95,7 +98,7 @@ class ChartsManager {
   }
 
   static setupEventListeners() {
-    // 主题切换时重新渲染图表
+    // 主题切换监听
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'data-theme') {
@@ -116,9 +119,11 @@ class ChartsManager {
         .catch(console.error);
     });
 
-    // 窗口大小改变时自动调整图表大小
+    // 优化窗口大小改变处理
     const debouncedResize = this.debounce(() => {
-      this.refreshAllCharts();
+      requestAnimationFrame(() => {
+        this.refreshAllCharts();
+      });
     }, 250);
 
     window.addEventListener('resize', debouncedResize);
@@ -127,7 +132,8 @@ class ChartsManager {
   static refreshAllCharts() {
     const charts = document.querySelectorAll('.chart-item');
     charts.forEach(chart => {
-      const initFn = window[`init${chart.id.split('-')[0].charAt(0).toUpperCase() + chart.id.split('-')[0].slice(1)}Chart`];
+      const type = chart.id.split('-')[0];
+      const initFn = window[`init${type.charAt(0).toUpperCase() + type.slice(1)}Chart`];
       if (typeof initFn === 'function') {
         initFn();
       }
@@ -136,13 +142,9 @@ class ChartsManager {
 
   static debounce(func, wait) {
     let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
+    return function(...args) {
       clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
+      timeout = setTimeout(() => func.apply(this, args), wait);
     };
   }
 
