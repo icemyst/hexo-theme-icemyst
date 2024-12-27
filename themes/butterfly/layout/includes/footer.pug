@@ -27,7 +27,7 @@
   if theme.footer.runtime.enable
     #workboard
       - const { text, launch_time, offduty_img, offduty_description, work_img, work_description, working_start, working_end } = theme.footer.runtime
-      img(class="workSituationImg" style="margin-top: 5px;")
+      img.workSituationImg(style="margin-top: 5px;")
       #runtimeTextTip
         | #{text}&nbsp
         span#runtime-days 0
@@ -39,12 +39,12 @@
         span#runtime-seconds 00
         | &nbsp秒
 
-    script(async=true).
+    script.
       (function () {
-        const launchTimeStr = "#{launch_time}"; // 获取上线时间字符串
-        const workingStart = #{working_start}; // 上班时间
-        const workingEnd = #{working_end}; // 下班时间
-        const launchTime = new Date(launchTimeStr || " "); // 使用默认值
+        const launchTimeStr = "#{launch_time}";
+        const workingStart = #{working_start};
+        const workingEnd = #{working_end};
+        const launchTime = new Date(launchTimeStr || " ");
 
         if (isNaN(launchTime.getTime())) {
           console.error("Invalid launch time:", launchTimeStr);
@@ -53,18 +53,18 @@
 
         function calculateElapsedTime() {
           const now = new Date();
-          const elapsed = Math.floor((now - launchTime) / 1000); // 总秒数
-          const days = Math.floor(elapsed / 86400); // 天
-          const hours = String(Math.floor((elapsed % 86400) / 3600)).padStart(2, "0"); // 小时
-          const minutes = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0"); // 分钟
-          const seconds = String(elapsed % 60).padStart(2, "0"); // 秒
-          const nowHour = now.getHours(); // 当前小时数
+          const elapsed = Math.floor((now - launchTime) / 1000);
+          const days = Math.floor(elapsed / 86400);
+          const hours = String(Math.floor((elapsed % 86400) / 3600)).padStart(2, "0");
+          const minutes = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
+          const seconds = String(elapsed % 60).padStart(2, "0");
+          const nowHour = now.getHours();
           return { days, hours, minutes, seconds, nowHour };
         }
 
         function updateRuntime() {
           const { days, hours, minutes, seconds, nowHour } = calculateElapsedTime();
-          const isWorkTime = nowHour >= workingStart && nowHour < workingEnd; // 判断是否在工作时间
+          const isWorkTime = nowHour >= workingStart && nowHour < workingEnd;
 
           const img = document.querySelector("#workboard .workSituationImg");
           if (img) {
@@ -73,14 +73,12 @@
             img.alt = isWorkTime ? "#{work_description}" : "#{offduty_description}";
           }
 
-          // 更新运行时间内容
           document.getElementById("runtime-days").textContent = days;
           document.getElementById("runtime-hours").textContent = hours;
           document.getElementById("runtime-minutes").textContent = minutes;
           document.getElementById("runtime-seconds").textContent = seconds;
         }
 
-        // 每秒更新一次
         setInterval(updateRuntime, 1000);
       })();
 
@@ -91,6 +89,4 @@
       - allword = isNaN(allword) ? 0 : allword
       - let displayWord = allword < 1 ? Math.round(allword * 1000) : `${allword.toFixed(1)}K`
       - let message = site.data.footer.wordcount_messages.find(item => allword < item.max)?.message || site.data.footer.default_message
-
-      //- 输出结果
       span= `${config.subtitle}已经写了 ${displayWord} 字，${message}`
