@@ -11,7 +11,7 @@ type: "charts"
 </div>
 
 <script>
-const ECHARTS_CDN = 'https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js';
+const ECHARTS_CDN = 'https://unpkg.com/echarts@5.5.1/dist/echarts.min.js';
 
 // 优化全局 initChart 函数
 window.initChart = function(chartId, option) {

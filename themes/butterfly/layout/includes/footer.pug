@@ -21,6 +21,7 @@
       span.footer-separator |
       span= _p('footer.theme') + ' '
       a(href='https://github.com/jerryc127/hexo-theme-butterfly')= 'Butterfly'
+
   if theme.footer.custom_text
     .footer_custom_text!= theme.footer.custom_text
 
@@ -41,52 +42,103 @@
 
     script.
       (function () {
-        const launchTimeStr = "#{launch_time}";
-        const workingStart = #{working_start};
-        const workingEnd = #{working_end};
-        const launchTime = new Date(launchTimeStr || " ");
+        const CONFIG = {
+          launchTime: "#{launch_time}",
+          workHours: { start: #{working_start}, end: #{working_end} },
+          images: { work: "#{work_img}", offduty: "#{offduty_img}" },
+          descriptions: { work: "#{work_description}", offduty: "#{offduty_description}" }
+        };
 
-        if (isNaN(launchTime.getTime())) {
-          console.error("Invalid launch time:", launchTimeStr);
-          return;
-        }
+        const padZero = num => String(num).padStart(2, "0");
+        const getElements = () => ({
+          days: document.getElementById("runtime-days"),
+          hours: document.getElementById("runtime-hours"),
+          minutes: document.getElementById("runtime-minutes"),
+          seconds: document.getElementById("runtime-seconds"),
+          img: document.querySelector("#workboard .workSituationImg")
+        });
 
-        function calculateElapsedTime() {
-          const now = new Date();
-          const elapsed = Math.floor((now - launchTime) / 1000);
-          const days = Math.floor(elapsed / 86400);
-          const hours = String(Math.floor((elapsed % 86400) / 3600)).padStart(2, "0");
-          const minutes = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
-          const seconds = String(elapsed % 60).padStart(2, "0");
-          const nowHour = now.getHours();
-          return { days, hours, minutes, seconds, nowHour };
-        }
-
-        function updateRuntime() {
-          const { days, hours, minutes, seconds, nowHour } = calculateElapsedTime();
-          const isWorkTime = nowHour >= workingStart && nowHour < workingEnd;
-
-          const img = document.querySelector("#workboard .workSituationImg");
-          if (img) {
-            img.src = isWorkTime ? "#{work_img}" : "#{offduty_img}";
-            img.title = isWorkTime ? "#{work_description}" : "#{offduty_description}";
-            img.alt = isWorkTime ? "#{work_description}" : "#{offduty_description}";
+        class RuntimeCounter {
+          constructor(config) {
+            this.config = config;
+            this.launchTime = new Date(config.launchTime);
+            this.elements = getElements();
+            
+            if (isNaN(this.launchTime.getTime())) {
+              throw new Error(`无效的启动时间: ${config.launchTime}`);
+            }
           }
 
-          document.getElementById("runtime-days").textContent = days;
-          document.getElementById("runtime-hours").textContent = hours;
-          document.getElementById("runtime-minutes").textContent = minutes;
-          document.getElementById("runtime-seconds").textContent = seconds;
+          getTimeInfo() {
+            const now = new Date();
+            const elapsed = Math.floor((now - this.launchTime) / 1000);
+            const hour = now.getHours();
+            
+            return {
+              days: Math.floor(elapsed / 86400),
+              hours: Math.floor((elapsed % 86400) / 3600),
+              minutes: Math.floor((elapsed % 3600) / 60),
+              seconds: elapsed % 60,
+              isWorkTime: hour >= this.config.workHours.start && hour < this.config.workHours.end
+            };
+          }
+
+          updateDisplay() {
+            try {
+              const { days, hours, minutes, seconds, isWorkTime } = this.getTimeInfo();
+              
+              // 更新工作状态图片
+              if (this.elements.img) {
+                const status = isWorkTime ? 'work' : 'offduty';
+                Object.assign(this.elements.img, {
+                  src: this.config.images[status],
+                  title: this.config.descriptions[status],
+                  alt: this.config.descriptions[status]
+                });
+              }
+
+              // 更新时间显示
+              this.elements.days.textContent = days;
+              this.elements.hours.textContent = padZero(hours);
+              this.elements.minutes.textContent = padZero(minutes);
+              this.elements.seconds.textContent = padZero(seconds);
+            } catch (error) {
+              console.error("运行时间更新失败:", error);
+            }
+          }
+
+          start() {
+            this.updateDisplay();
+            setInterval(() => this.updateDisplay(), 1000);
+          }
         }
 
-        setInterval(updateRuntime, 1000);
+        try {
+          new RuntimeCounter(CONFIG).start();
+        } catch (error) {
+          console.error("运行时间计数器初始化失败:", error);
+        }
       })();
 
   if theme.footer.wordcount
     .wordcount
-      - let allword = totalcount(site)
-      - allword = typeof allword === 'string' && allword.includes('k') ? parseFloat(allword) : Number(allword) / 1000
-      - allword = isNaN(allword) ? 0 : allword
-      - let displayWord = allword < 1 ? Math.round(allword * 1000) : `${allword.toFixed(1)}K`
-      - let message = site.data.footer.wordcount_messages.find(item => allword < item.max)?.message || site.data.footer.default_message
+      - const formatNumber = (num, unit) => {
+      -   const formatted = num.toFixed(1)
+      -   return formatted.endsWith('.0') ? Math.floor(num) + unit : formatted + unit
+      - }
+      - const formatWordCount = count => {
+      -   if (count >= 10000) return formatNumber(count / 10000, 'W')
+      -   if (count >= 1000) return formatNumber(count / 1000, 'K')
+      -   return Math.round(count)
+      - }
+      - const parseWordCount = str => {
+      -   if (typeof str === 'string') {
+      -     return str.includes('k') ? parseFloat(str) * 1000 : parseFloat(str)
+      -   }
+      -   return Number(str)
+      - }
+      - const wordCount = parseWordCount(totalcount(site))
+      - const displayWord = formatWordCount(wordCount)
+      - const message = site.data.footer?.wordcount_messages?.find(item => wordCount < (item.max || Infinity) * 1000)?.message || site.data.footer?.default_message || '继续加油！'
+      i.fas.fa-pencil-alt
       span= `${config.subtitle}已经写了 ${displayWord} 字，${message}`
