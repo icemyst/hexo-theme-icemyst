@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isChatBtn = typeof chatBtn !== 'undefined'
     const isShowPercent = GLOBAL_CONFIG.percent.rightside
 
-    // 檢查文檔高度是否小於視窗高度
+    // 检查文档高度是否小于视窗高度
     const checkDocumentHeight = () => {
       if (document.body.scrollHeight <= innerHeight) {
         $rightside.classList.add('rightside-show')
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       isShowPercent && rightsideScrollPercent(currentTop)
       checkDocumentHeight()
-    }, 300)
+    }, 100) // 降低节流时间提高响应速度
 
     btf.addEventListenerPjax(window, 'scroll', scrollTask, { passive: true })
   }

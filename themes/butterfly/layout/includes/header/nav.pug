@@ -14,11 +14,12 @@ nav#nav
   #menus
     if theme.menu
       != partial('includes/header/menu_item', {}, {cache: true})
+
     if theme.search.use
       #search-button
         span.site-page.social-icon.search(title=' '+_p('search.title'))
           i.fas.fa-search.fa-fw
 
-      #toggle-menu
-        span.site-page
-          i.fas.fa-bars.fa-fw
+  #toggle-menu
+    span.site-page
+      i.fas.fa-bars.fa-fw
