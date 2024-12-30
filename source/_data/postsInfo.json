@@ -16,21 +16,6 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "BPB Panel面板搭建",
-      "path": "posts/1687.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.27/img_277_1500x1038_72_null_normal.jpg",
-      "description": "",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "科学上网",
-        "Cloudflare"
-      ],
-      "date": "2024-06-29",
-      "updated": "2024-09-28"
-    },
-    {
       "title": "Android SDK安装及配置",
       "path": "posts/f62d.html",
       "cover": "https://npm.elemecdn.com/sarakale-assets@v1/bg/bg12.jpg",
@@ -43,6 +28,21 @@
         "Java"
       ],
       "date": "2023-09-23",
+      "updated": "2024-09-28"
+    },
+    {
+      "title": "BPB Panel面板搭建",
+      "path": "posts/1687.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.27/img_277_1500x1038_72_null_normal.jpg",
+      "description": "",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "科学上网",
+        "Cloudflare"
+      ],
+      "date": "2024-06-29",
       "updated": "2024-09-28"
     },
     {
@@ -117,18 +117,18 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "Hexo文章锚点设置",
-      "path": "posts/e7e0.html",
-      "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.44/img_448_1840x1145_600_null_normal.jpg",
-      "description": "实现文章内部跳转",
+      "title": "GUI.For.SingBox 轻量级（详细配置记录）",
+      "path": "posts/3585.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.5/img_58_1668x1000_72_null_normal.jpg",
+      "description": "",
       "categories": [
-        "魔改教程"
+        "实用工具"
       ],
       "tags": [
-        "hexo"
+        "科学上网"
       ],
-      "date": "2023-02-02",
-      "updated": "2024-06-26"
+      "date": "2024-08-19",
+      "updated": "2024-09-28"
     },
     {
       "title": "Hyper-V 虚拟机",
@@ -142,34 +142,6 @@
         "Windows"
       ],
       "date": "2024-01-14",
-      "updated": "2024-09-28"
-    },
-    {
-      "title": "IDM 激活（脚本）",
-      "path": "posts/b8bd.html",
-      "cover": "https://image.baidu.com/search/down?url=https://tvax3.sinaimg.cn//large/0072Vf1pgy1foxk3iad2ij31kw0w0x0a.jpg",
-      "description": "使用脚本实现激活最新版",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "idm激活"
-      ],
-      "date": "2024-03-13",
-      "updated": "2024-09-28"
-    },
-    {
-      "title": "GUI.For.SingBox 轻量级（详细配置记录）",
-      "path": "posts/3585.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.5/img_58_1668x1000_72_null_normal.jpg",
-      "description": "",
-      "categories": [
-        "实用工具"
-      ],
-      "tags": [
-        "科学上网"
-      ],
-      "date": "2024-08-19",
       "updated": "2024-09-28"
     },
     {
@@ -189,6 +161,48 @@
       "updated": "2024-09-28"
     },
     {
+      "title": "IDM 激活（脚本）",
+      "path": "posts/b8bd.html",
+      "cover": "https://image.baidu.com/search/down?url=https://tvax3.sinaimg.cn//large/0072Vf1pgy1foxk3iad2ij31kw0w0x0a.jpg",
+      "description": "使用脚本实现激活最新版",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "idm激活"
+      ],
+      "date": "2024-03-13",
+      "updated": "2024-09-28"
+    },
+    {
+      "title": "Let's Encrypt（免费https证书）",
+      "path": "posts/f1a3.html",
+      "cover": "https://pic2.zhimg.com/v2-ef87585088748f4e087489aaa8dcecbd_r.jpg",
+      "description": "可以申请泛用ssl证书",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "ssl证书"
+      ],
+      "date": "2023-07-28",
+      "updated": "2024-06-26"
+    },
+    {
+      "title": "Hexo文章锚点设置",
+      "path": "posts/e7e0.html",
+      "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.44/img_448_1840x1145_600_null_normal.jpg",
+      "description": "实现文章内部跳转",
+      "categories": [
+        "魔改教程"
+      ],
+      "tags": [
+        "hexo"
+      ],
+      "date": "2023-02-02",
+      "updated": "2024-06-26"
+    },
+    {
       "title": "JMeter和java8安装",
       "path": "posts/f8bc.html",
       "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.68/img_687_1920x1080_72_null_normal.jpg",
@@ -203,17 +217,17 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "Let's Encrypt（免费https证书）",
-      "path": "posts/f1a3.html",
-      "cover": "https://pic2.zhimg.com/v2-ef87585088748f4e087489aaa8dcecbd_r.jpg",
-      "description": "可以申请泛用ssl证书",
+      "title": "NovelAI云端版",
+      "path": "posts/e147.html",
+      "cover": "https://pic1.zhimg.com/80/v2-ee51b94ea9a6aa0bea10aa64c5f80b70_1440w.webp",
+      "description": "前面分享了本地配置，这次分享一个在云端执行的NovelAI",
       "categories": [
         "技术教程"
       ],
       "tags": [
-        "ssl证书"
+        "NovelAI"
       ],
-      "date": "2023-07-28",
+      "date": "2023-08-11",
       "updated": "2024-06-26"
     },
     {
@@ -233,17 +247,17 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "NovelAI云端版",
-      "path": "posts/e147.html",
-      "cover": "https://pic1.zhimg.com/80/v2-ee51b94ea9a6aa0bea10aa64c5f80b70_1440w.webp",
-      "description": "前面分享了本地配置，这次分享一个在云端执行的NovelAI",
+      "title": "NovelAI本地部署教程（详细）",
+      "path": "posts/4c370a1a.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.67/img_671_1920x1080_72_null_normal.jpg",
+      "description": "关于一些在本地配置NovelAI的过程",
       "categories": [
         "技术教程"
       ],
       "tags": [
         "NovelAI"
       ],
-      "date": "2023-08-11",
+      "date": "2022-11-21",
       "updated": "2024-06-26"
     },
     {
@@ -275,34 +289,6 @@
       "updated": "2024-11-26"
     },
     {
-      "title": "OneManager使用美化",
-      "path": "posts/1d15.html",
-      "cover": "https://pic2.zhimg.com/v2-ef87585088748f4e087489aaa8dcecbd_r.jpg",
-      "description": "白嫖OneDrive云盘的1T的空间，挺不错的。",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "OneDrive"
-      ],
-      "date": "2023-07-19",
-      "updated": "2024-06-26"
-    },
-    {
-      "title": "NovelAI本地部署教程（详细）",
-      "path": "posts/4c370a1a.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.67/img_671_1920x1080_72_null_normal.jpg",
-      "description": "关于一些在本地配置NovelAI的过程",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "NovelAI"
-      ],
-      "date": "2022-11-21",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "PE工具推荐",
       "path": "posts/f234.html",
       "cover": "https://jsd.onmicrosoft.cn/gh/eudav/bingm-static@master/img/computer/014.jpg",
@@ -315,6 +301,20 @@
         "PE工具"
       ],
       "date": "2024-01-03",
+      "updated": "2024-06-26"
+    },
+    {
+      "title": "OneManager使用美化",
+      "path": "posts/1d15.html",
+      "cover": "https://pic2.zhimg.com/v2-ef87585088748f4e087489aaa8dcecbd_r.jpg",
+      "description": "白嫖OneDrive云盘的1T的空间，挺不错的。",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "OneDrive"
+      ],
+      "date": "2023-07-19",
       "updated": "2024-06-26"
     },
     {
@@ -400,21 +400,6 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "Stable-diffusion-webui（Android端）",
-      "path": "posts/6128.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.92/img_922_2039x1222_368.299987792969_null_normal.jpg",
-      "description": "可以在Android端使用NovelAI。",
-      "categories": [
-        "实用工具"
-      ],
-      "tags": [
-        "Android",
-        "NovelAI"
-      ],
-      "date": "2024-02-28",
-      "updated": "2024-09-28"
-    },
-    {
       "title": "Selenium 基本用法",
       "path": "posts/be1c.html",
       "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.5/img_58_1668x1000_72_null_normal.jpg",
@@ -426,20 +411,6 @@
         "软件测试"
       ],
       "date": "2022-12-09",
-      "updated": "2024-06-26"
-    },
-    {
-      "title": "WSL（Windows）简要介绍和Linux子系统安装及迁移",
-      "path": "posts/69dc.html",
-      "cover": "https://cdn.cdnjson.com/tvax3.sinaimg.cn//large/a15b4afegy1fmvjki84imj21hc0u0trj.jpg",
-      "description": "记录我安装Linux子系统的过程，后续重装电脑用的上。",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "Windows"
-      ],
-      "date": "2023-06-02",
       "updated": "2024-06-26"
     },
     {
@@ -456,6 +427,35 @@
       ],
       "date": "2023-11-18",
       "updated": "2024-09-28"
+    },
+    {
+      "title": "Stable-diffusion-webui（Android端）",
+      "path": "posts/6128.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.92/img_922_2039x1222_368.299987792969_null_normal.jpg",
+      "description": "可以在Android端使用NovelAI。",
+      "categories": [
+        "实用工具"
+      ],
+      "tags": [
+        "Android",
+        "NovelAI"
+      ],
+      "date": "2024-02-28",
+      "updated": "2024-09-28"
+    },
+    {
+      "title": "WSL（Windows）简要介绍和Linux子系统安装及迁移",
+      "path": "posts/69dc.html",
+      "cover": "https://cdn.cdnjson.com/tvax3.sinaimg.cn//large/a15b4afegy1fmvjki84imj21hc0u0trj.jpg",
+      "description": "记录我安装Linux子系统的过程，后续重装电脑用的上。",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "Windows"
+      ],
+      "date": "2023-06-02",
+      "updated": "2024-06-26"
     },
     {
       "title": "Waline 实现动态说说",
@@ -514,20 +514,6 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "Win11 一键轻松设置器",
-      "path": "posts/bd3d.html",
-      "cover": "https://npm.elemecdn.com/blogcoverimgs@1.0.0/blogs/wallhaven-qz6gjl.jpg",
-      "description": "可以设置Windows的一些更新项目，比如特别烦躁的系统更新",
-      "categories": [
-        "实用工具"
-      ],
-      "tags": [
-        "Windows"
-      ],
-      "date": "2023-09-19",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "Windows 11使用Windows 10资源管理器",
       "path": "posts/b888.html",
       "cover": "https://unpkg.com/ushio-img-moe@0.0.1/img_2_1583x1000_347.97998046875_null_normal.jpg",
@@ -540,6 +526,20 @@
       ],
       "date": "2024-11-03",
       "updated": "2024-11-03"
+    },
+    {
+      "title": "Win11 一键轻松设置器",
+      "path": "posts/bd3d.html",
+      "cover": "https://npm.elemecdn.com/blogcoverimgs@1.0.0/blogs/wallhaven-qz6gjl.jpg",
+      "description": "可以设置Windows的一些更新项目，比如特别烦躁的系统更新",
+      "categories": [
+        "实用工具"
+      ],
+      "tags": [
+        "Windows"
+      ],
+      "date": "2023-09-19",
+      "updated": "2024-06-26"
     },
     {
       "title": "Windows11极限精简版",
@@ -739,6 +739,21 @@
       "updated": "2024-06-26"
     },
     {
+      "title": "css/js备忘录",
+      "path": "posts/6ed5.html",
+      "cover": "https://pic3.zhimg.com/80/v2-a20d9d837d6670cdb2232cc4e28faa22_1440w.webp",
+      "description": "自己的一些笔记，记录自己的学习过程中的记录，以免忘记。",
+      "categories": [
+        "学习笔记"
+      ],
+      "tags": [
+        "web前端",
+        "备忘录"
+      ],
+      "date": "2023-06-27",
+      "updated": "2024-06-26"
+    },
+    {
       "title": "esd打包为ISO那些事（补充）",
       "path": "posts/53c1.html",
       "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.37/img_374_1600x1006_256_null_normal.jpg",
@@ -798,21 +813,6 @@
       "updated": "2024-12-27"
     },
     {
-      "title": "css/js备忘录",
-      "path": "posts/6ed5.html",
-      "cover": "https://pic3.zhimg.com/80/v2-a20d9d837d6670cdb2232cc4e28faa22_1440w.webp",
-      "description": "自己的一些笔记，记录自己的学习过程中的记录，以免忘记。",
-      "categories": [
-        "学习笔记"
-      ],
-      "tags": [
-        "web前端",
-        "备忘录"
-      ],
-      "date": "2023-06-27",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "heo 同款页脚部署",
       "path": "posts/d0e8.html",
       "cover": "https://pic2.zhimg.com/80/v2-d225c02096103c63307e46745ba5f8b5_1440w.webp",
@@ -824,6 +824,20 @@
         "hexo"
       ],
       "date": "2023-06-28",
+      "updated": "2024-06-26"
+    },
+    {
+      "title": "hexo 文章加密",
+      "path": "posts/beb7.html",
+      "cover": "https://images.wallpaperscraft.com/image/single/girl_kimono_ball_902684_1920x1080.jpg",
+      "description": "",
+      "categories": [
+        "魔改教程"
+      ],
+      "tags": [
+        "hexo"
+      ],
+      "date": "2023-06-24",
       "updated": "2024-06-26"
     },
     {
@@ -840,20 +854,6 @@
       ],
       "date": "2020-11-14",
       "updated": "2022-04-29"
-    },
-    {
-      "title": "hexo 文章加密",
-      "path": "posts/beb7.html",
-      "cover": "https://images.wallpaperscraft.com/image/single/girl_kimono_ball_902684_1920x1080.jpg",
-      "description": "",
-      "categories": [
-        "魔改教程"
-      ],
-      "tags": [
-        "hexo"
-      ],
-      "date": "2023-06-24",
-      "updated": "2024-06-26"
     },
     {
       "title": "hexo分类卡片化",
@@ -898,31 +898,19 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "hexo+butterfly添加背景特效",
-      "path": "posts/b4da.html",
-      "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.5/img_58_1668x1000_72_null_normal.jpg",
-      "description": "添加一些好看的背景特效",
+      "title": "npm 图床搭建",
+      "path": "posts/c7bd.html",
+      "cover": "https://images5.alphacoders.com/314/314574.png",
+      "description": "分享个人主页面头像修改过程。",
       "categories": [
-        "魔改教程"
+        "技术教程"
       ],
       "tags": [
-        "hexo"
+        "GitHub",
+        "图床",
+        "npm"
       ],
-      "date": "2022-12-10",
-      "updated": "2024-06-26"
-    },
-    {
-      "title": "hexo-butterfly主题美化记录",
-      "path": "posts/88bbc922.html",
-      "cover": "https://jsd.onmicrosoft.cn/npm/ushio-api-img-moe@5.0.82/img_822_1597x920_96_null_normal.jpg",
-      "description": "一些关于我安装一些插件的记录",
-      "categories": [
-        "魔改教程"
-      ],
-      "tags": [
-        "hexo"
-      ],
-      "date": "2022-08-26",
+      "date": "2023-06-04",
       "updated": "2024-06-26"
     },
     {
@@ -941,19 +929,17 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "npm 图床搭建",
-      "path": "posts/c7bd.html",
-      "cover": "https://images5.alphacoders.com/314/314574.png",
-      "description": "分享个人主页面头像修改过程。",
+      "title": "hexo+butterfly添加背景特效",
+      "path": "posts/b4da.html",
+      "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.5/img_58_1668x1000_72_null_normal.jpg",
+      "description": "添加一些好看的背景特效",
       "categories": [
-        "技术教程"
+        "魔改教程"
       ],
       "tags": [
-        "GitHub",
-        "图床",
-        "npm"
+        "hexo"
       ],
-      "date": "2023-06-04",
+      "date": "2022-12-10",
       "updated": "2024-06-26"
     },
     {
@@ -1283,34 +1269,6 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "一键科学上网工具包",
-      "path": "posts/4ded.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.35/img_359_1920x1080_72_null_normal.jpg",
-      "description": "一个一键科学上网工具包，支持 Google chrome，Firefox，Microsoft Edge 三大主流浏览器。",
-      "categories": [
-        "实用工具"
-      ],
-      "tags": [
-        "科学上网"
-      ],
-      "date": "2023-11-16",
-      "updated": "2024-09-28"
-    },
-    {
-      "title": "一些收藏的css动画库",
-      "path": "posts/2a1a.html",
-      "cover": "https://picx.zhimg.com/80/v2-3a9c17a3015189dbffb7c5c52565ee91_1440w.webp",
-      "description": "CSS动画库，可以实现你的博客动态美化效果。",
-      "categories": [
-        "干货资源"
-      ],
-      "tags": [
-        "web前端"
-      ],
-      "date": "2023-09-03",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "个人主页头像修改",
       "path": "posts/3414.html",
       "cover": "https://pic3.zhimg.com/80/v2-3f64bb6d935a652ddc3aec3bd74f6c7a_1440w.webp",
@@ -1340,6 +1298,20 @@
       "updated": "2024-06-26"
     },
     {
+      "title": "一键科学上网工具包",
+      "path": "posts/4ded.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.35/img_359_1920x1080_72_null_normal.jpg",
+      "description": "一个一键科学上网工具包，支持 Google chrome，Firefox，Microsoft Edge 三大主流浏览器。",
+      "categories": [
+        "实用工具"
+      ],
+      "tags": [
+        "科学上网"
+      ],
+      "date": "2023-11-16",
+      "updated": "2024-09-28"
+    },
+    {
       "title": "使用 Github Action 自动部署",
       "path": "posts/10d9.html",
       "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.30/img_307_1920x1080_300_null_normal.jpg",
@@ -1352,6 +1324,20 @@
         "GitHub"
       ],
       "date": "2023-01-07",
+      "updated": "2024-06-26"
+    },
+    {
+      "title": "一些收藏的css动画库",
+      "path": "posts/2a1a.html",
+      "cover": "https://picx.zhimg.com/80/v2-3a9c17a3015189dbffb7c5c52565ee91_1440w.webp",
+      "description": "CSS动画库，可以实现你的博客动态美化效果。",
+      "categories": [
+        "干货资源"
+      ],
+      "tags": [
+        "web前端"
+      ],
+      "date": "2023-09-03",
       "updated": "2024-06-26"
     },
     {
@@ -1412,6 +1398,21 @@
       "updated": "2024-09-28"
     },
     {
+      "title": "使用cloudflare的Worker搭建vless节点",
+      "path": "posts/cd65.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.50/img_506_1967x1360_72_null_normal.jpg",
+      "description": "免费搭建，解锁GPT、netflix等",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "科学上网",
+        "Cloudflare"
+      ],
+      "date": "2024-03-14",
+      "updated": "2024-09-28"
+    },
+    {
       "title": "使用onedrive-vercel-index部署OneDrive网盘",
       "path": "posts/25b0.html",
       "cover": "https://images.wallpaperscraft.com/image/single/girl_kimono_wings_936446_1920x1080.jpg",
@@ -1426,19 +1427,19 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "使用cloudflare的Worker搭建vless节点",
-      "path": "posts/cd65.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.50/img_506_1967x1360_72_null_normal.jpg",
-      "description": "免费搭建，解锁GPT、netflix等",
+      "title": "使用python爬取文章",
+      "path": "posts/376c.html",
+      "cover": "https://images.wallpaperscraft.com/image/single/girl_wings_light_703645_2560x1024.jpg",
+      "description": "使用python爬取博客文章",
       "categories": [
         "技术教程"
       ],
       "tags": [
-        "科学上网",
-        "Cloudflare"
+        "hexo",
+        "python"
       ],
-      "date": "2024-03-14",
-      "updated": "2024-09-28"
+      "date": "2023-06-14",
+      "updated": "2024-06-26"
     },
     {
       "title": "使用shields.io徽标出现的问题记录",
@@ -1465,21 +1466,6 @@
       ],
       "tags": [
         "阿里云盘"
-      ],
-      "date": "2023-06-14",
-      "updated": "2024-06-26"
-    },
-    {
-      "title": "使用python爬取文章",
-      "path": "posts/376c.html",
-      "cover": "https://images.wallpaperscraft.com/image/single/girl_wings_light_703645_2560x1024.jpg",
-      "description": "使用python爬取博客文章",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "hexo",
-        "python"
       ],
       "date": "2023-06-14",
       "updated": "2024-06-26"
@@ -1513,20 +1499,6 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "免费图床",
-      "path": "posts/5798.html",
-      "cover": "https://i0.hdslb.com/bfs/article/7dd6d0529b6f41bd16b5835bcd881aadd5c71b5f.jpg@1256w_818h_!web-article-pic.webp",
-      "description": "",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "图床"
-      ],
-      "date": "2023-08-24",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "免费白嫖微软云电脑",
       "path": "posts/5a63.html",
       "cover": "https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp",
@@ -1541,6 +1513,20 @@
       "updated": "2024-09-28"
     },
     {
+      "title": "免费图床",
+      "path": "posts/5798.html",
+      "cover": "https://i0.hdslb.com/bfs/article/7dd6d0529b6f41bd16b5835bcd881aadd5c71b5f.jpg@1256w_818h_!web-article-pic.webp",
+      "description": "",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "图床"
+      ],
+      "date": "2023-08-24",
+      "updated": "2024-06-26"
+    },
+    {
       "title": "免费科学上网使用",
       "path": "posts/8bfd.html",
       "cover": "https://images.wallpaperscraft.com/image/single/girl_sweater_bag_910849_1920x1080.jpg",
@@ -1552,6 +1538,18 @@
         "科学上网"
       ],
       "date": "2023-06-24",
+      "updated": "2024-06-26"
+    },
+    {
+      "title": "免费网盘：InfiniCLOUD",
+      "path": "posts/b3e6.html",
+      "cover": "https://i0.hdslb.com/bfs/article/61bd6a5c8ce54b909a6cc05761ff2a777a57f63d.jpg@1256w_734h_!web-article-pic.webp",
+      "description": "一个可以在国内使用的日本网盘，支持WebDAV同步",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [],
+      "date": "2023-08-24",
       "updated": "2024-06-26"
     },
     {
@@ -1610,15 +1608,17 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "免费网盘：InfiniCLOUD",
-      "path": "posts/b3e6.html",
-      "cover": "https://i0.hdslb.com/bfs/article/61bd6a5c8ce54b909a6cc05761ff2a777a57f63d.jpg@1256w_734h_!web-article-pic.webp",
-      "description": "一个可以在国内使用的日本网盘，支持WebDAV同步",
+      "title": "前期使用的藏宝阁模板",
+      "path": "posts/595b.html",
+      "cover": "https://images.wallpaperscraft.com/image/single/girl_winter_snowflake_9869_1920x1200.jpg",
+      "description": "这里做一个记录，原文章暂无找到。",
       "categories": [
-        "技术教程"
+        "魔改教程"
       ],
-      "tags": [],
-      "date": "2023-08-24",
+      "tags": [
+        "hexo"
+      ],
+      "date": "2023-06-18",
       "updated": "2024-06-26"
     },
     {
@@ -1665,20 +1665,6 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "前期使用的藏宝阁模板",
-      "path": "posts/595b.html",
-      "cover": "https://images.wallpaperscraft.com/image/single/girl_winter_snowflake_9869_1920x1200.jpg",
-      "description": "这里做一个记录，原文章暂无找到。",
-      "categories": [
-        "魔改教程"
-      ],
-      "tags": [
-        "hexo"
-      ],
-      "date": "2023-06-18",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "国内 CDN 搜索服务",
       "path": "posts/37e.html",
       "cover": "https://npm.elemecdn.com/zhuangimgblogs@1.0.0/categoryBar/wallhaven-we1e9x.jpg",
@@ -1719,20 +1705,6 @@
       ],
       "date": "2023-08-05",
       "updated": "2024-06-26"
-    },
-    {
-      "title": "在VMware安装gho、esd（wim）格式镜像",
-      "path": "posts/6f0.html",
-      "cover": "https://cdn.jsdelivr.net/gh/Andesome/assets@master/images/GINKA.webp",
-      "description": "使用VMware虚拟机安装gho、esd（wim）格式的镜像文件。",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "Windows"
-      ],
-      "date": "2023-11-15",
-      "updated": "2024-09-28"
     },
     {
       "title": "在Windows下导入.sql文件",
@@ -1792,6 +1764,20 @@
       "updated": "2024-06-26"
     },
     {
+      "title": "在VMware安装gho、esd（wim）格式镜像",
+      "path": "posts/6f0.html",
+      "cover": "https://cdn.jsdelivr.net/gh/Andesome/assets@master/images/GINKA.webp",
+      "description": "使用VMware虚拟机安装gho、esd（wim）格式的镜像文件。",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "Windows"
+      ],
+      "date": "2023-11-15",
+      "updated": "2024-09-28"
+    },
+    {
       "title": "搭建个人博客（二）",
       "path": "posts/38690.html",
       "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.4/img_48_1920x1080_1200_null_normal.jpg",
@@ -1848,20 +1834,6 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "学习笔记",
-      "path": "posts/3eeb.html",
-      "cover": "https://img.xjh.me/img/63788867_p0.jpg",
-      "description": "关于我的一些笔记，以免忘记",
-      "categories": [
-        "学习笔记"
-      ],
-      "tags": [
-        "软件测试"
-      ],
-      "date": "2022-01-15",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "宝塔WebHook插件，实现与Github同步",
       "path": "posts/5d9c.html",
       "cover": "https://npm.elemecdn.com/sarakale-assets@v1/bg/bg7.jpg",
@@ -1892,18 +1864,29 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "实现E5自动订阅",
-      "path": "posts/b97d.html",
-      "cover": "https://pic2.zhimg.com/v2-ef87585088748f4e087489aaa8dcecbd_r.jpg",
-      "description": "实现E5自动订阅，本人等了三个月进行的测试，真实可靠。",
+      "title": "学习笔记",
+      "path": "posts/3eeb.html",
+      "cover": "https://img.xjh.me/img/63788867_p0.jpg",
+      "description": "关于我的一些笔记，以免忘记",
+      "categories": [
+        "学习笔记"
+      ],
+      "tags": [
+        "软件测试"
+      ],
+      "date": "2022-01-15",
+      "updated": "2024-06-26"
+    },
+    {
+      "title": "实现bilibili在PotPlayer上播放",
+      "path": "posts/cc1b.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.53/img_532_1920x1080_96_null_normal.jpg",
+      "description": "使用bilibili插件实现在PotPlayer上播放视频。",
       "categories": [
         "技术教程"
       ],
-      "tags": [
-        "微软",
-        "OneDrive"
-      ],
-      "date": "2023-09-11",
+      "tags": [],
+      "date": "2023-09-16",
       "updated": "2024-09-28"
     },
     {
@@ -1919,18 +1902,6 @@
       ],
       "date": "2023-10-13",
       "updated": "2024-06-26"
-    },
-    {
-      "title": "实现bilibili在PotPlayer上播放",
-      "path": "posts/cc1b.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.53/img_532_1920x1080_96_null_normal.jpg",
-      "description": "使用bilibili插件实现在PotPlayer上播放视频。",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [],
-      "date": "2023-09-16",
-      "updated": "2024-09-28"
     },
     {
       "title": "截图工具推荐（Snipaste）",
@@ -1959,6 +1930,21 @@
       ],
       "date": "2023-08-20",
       "updated": "2024-06-26"
+    },
+    {
+      "title": "实现E5自动订阅",
+      "path": "posts/b97d.html",
+      "cover": "https://pic2.zhimg.com/v2-ef87585088748f4e087489aaa8dcecbd_r.jpg",
+      "description": "实现E5自动订阅，本人等了三个月进行的测试，真实可靠。",
+      "categories": [
+        "技术教程"
+      ],
+      "tags": [
+        "微软",
+        "OneDrive"
+      ],
+      "date": "2023-09-11",
+      "updated": "2024-09-28"
     },
     {
       "title": "手机端阅读软件",
@@ -2033,6 +2019,18 @@
       "updated": "2024-09-28"
     },
     {
+      "title": "文叔叔互传文件网站",
+      "path": "posts/7083.html",
+      "cover": "https://picx.zhimg.com/80/v2-487cde32c59816d951871b9566d789c1_1440w.webp",
+      "description": "一个非常好的互传网站，使用很稳定。",
+      "categories": [
+        "实用工具"
+      ],
+      "tags": [],
+      "date": "2023-09-08",
+      "updated": "2024-06-26"
+    },
+    {
       "title": "易控(Easycontrol)",
       "path": "posts/b0a2.html",
       "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.47/img_475_2300x1210_350_null_normal.jpg",
@@ -2061,18 +2059,6 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "文叔叔互传文件网站",
-      "path": "posts/7083.html",
-      "cover": "https://picx.zhimg.com/80/v2-487cde32c59816d951871b9566d789c1_1440w.webp",
-      "description": "一个非常好的互传网站，使用很稳定。",
-      "categories": [
-        "实用工具"
-      ],
-      "tags": [],
-      "date": "2023-09-08",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "最近一个比较火的网盘，注册送2TB空间",
       "path": "posts/264c.html",
       "cover": "https://cdn.adunm.top/images/essay/1.webp",
@@ -2087,20 +2073,6 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "测试代码层",
-      "path": "posts/d208.html",
-      "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.6/img_68_2560x1440_72_null_normal.jpg",
-      "description": "一些笔记",
-      "categories": [
-        "学习笔记"
-      ],
-      "tags": [
-        "软件测试"
-      ],
-      "date": "2022-12-08",
-      "updated": "2024-06-26"
-    },
-    {
       "title": "每日一言",
       "path": "posts/b7b0.html",
       "cover": "https://picx.zhimg.com/80/v2-d09d2f64caafb051c17df2b03c521739_1440w.webp",
@@ -2112,6 +2084,20 @@
         "hexo"
       ],
       "date": "2023-08-29",
+      "updated": "2024-06-26"
+    },
+    {
+      "title": "测试代码层",
+      "path": "posts/d208.html",
+      "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.6/img_68_2560x1440_72_null_normal.jpg",
+      "description": "一些笔记",
+      "categories": [
+        "学习笔记"
+      ],
+      "tags": [
+        "软件测试"
+      ],
+      "date": "2022-12-08",
       "updated": "2024-06-26"
     },
     {
@@ -2143,6 +2129,21 @@
       "updated": "2024-06-26"
     },
     {
+      "title": "添加百度、谷歌引擎收录",
+      "path": "posts/4c6b.html",
+      "cover": "https://pic1.zhimg.com/80/v2-527d079b457a7e628e933454c9d54618_1440w.webp",
+      "description": "记录一次博客的加载百度，谷歌收录的过程",
+      "categories": [
+        "魔改教程"
+      ],
+      "tags": [
+        "hexo",
+        "SEO"
+      ],
+      "date": "2023-08-01",
+      "updated": "2024-09-28"
+    },
+    {
       "title": "添加追番页面",
       "path": "posts/cc06.html",
       "cover": "https://img.paulzzh.com/touhou/konachan/jpeg/1de2bbd54eed268fe5e60eb2ade0f796.jpg",
@@ -2157,18 +2158,31 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "添加百度、谷歌引擎收录",
-      "path": "posts/4c6b.html",
-      "cover": "https://pic1.zhimg.com/80/v2-527d079b457a7e628e933454c9d54618_1440w.webp",
-      "description": "记录一次博客的加载百度，谷歌收录的过程",
+      "title": "火毅盾 免费CDN加速",
+      "path": "posts/10a3.html",
+      "cover": "https://pic1.zhimg.com/80/v2-98f819bc12fa71bd80afc4eaa4d26616_1440w.webp",
+      "description": "一个免费的CDN，适合非盈利的个人网站。",
       "categories": [
-        "魔改教程"
+        "技术教程"
       ],
       "tags": [
-        "hexo",
-        "SEO"
+        "CDN"
       ],
-      "date": "2023-08-01",
+      "date": "2023-09-08",
+      "updated": "2024-09-28"
+    },
+    {
+      "title": "王者荣耀（减CD一体脚本）",
+      "path": "posts/3efd.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.49/img_491_3715x2090_72_null_normal.jpg",
+      "description": "一个可以减CD的脚本，有封号风险，建议用小号玩",
+      "categories": [
+        "实用工具"
+      ],
+      "tags": [
+        "Android"
+      ],
+      "date": "2023-10-24",
       "updated": "2024-09-28"
     },
     {
@@ -2186,18 +2200,18 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "王者荣耀（减CD一体脚本）",
-      "path": "posts/3efd.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.49/img_491_3715x2090_72_null_normal.jpg",
-      "description": "一个可以减CD的脚本，有封号风险，建议用小号玩",
+      "title": "站长在线工具SEO工具",
+      "path": "posts/d25b.html",
+      "cover": "https://picx.zhimg.com/80/v2-267e0150fe9daa9ffdd8fa3b5574e4da_1440w.webp",
+      "description": "",
       "categories": [
         "实用工具"
       ],
       "tags": [
-        "Android"
+        "SEO"
       ],
-      "date": "2023-10-24",
-      "updated": "2024-09-28"
+      "date": "2023-08-18",
+      "updated": "2024-06-26"
     },
     {
       "title": "百度网盘不限速下载",
@@ -2228,34 +2242,6 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "站长在线工具SEO工具",
-      "path": "posts/d25b.html",
-      "cover": "https://picx.zhimg.com/80/v2-267e0150fe9daa9ffdd8fa3b5574e4da_1440w.webp",
-      "description": "",
-      "categories": [
-        "实用工具"
-      ],
-      "tags": [
-        "SEO"
-      ],
-      "date": "2023-08-18",
-      "updated": "2024-06-26"
-    },
-    {
-      "title": "火毅盾 免费CDN加速",
-      "path": "posts/10a3.html",
-      "cover": "https://pic1.zhimg.com/80/v2-98f819bc12fa71bd80afc4eaa4d26616_1440w.webp",
-      "description": "一个免费的CDN，适合非盈利的个人网站。",
-      "categories": [
-        "技术教程"
-      ],
-      "tags": [
-        "CDN"
-      ],
-      "date": "2023-09-08",
-      "updated": "2024-09-28"
-    },
-    {
       "title": "给butterfly添加顶部加载进度条",
       "path": "posts/5e3a.html",
       "cover": "https://gcore.jsdelivr.net/npm/ushio-api-img-moe@5.0.82/img_827_1920x1200_350_null_normal.jpg",
@@ -2268,18 +2254,6 @@
       ],
       "date": "2022-12-10",
       "updated": "2024-06-26"
-    },
-    {
-      "title": "网名在线生成器",
-      "path": "posts/79f1.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.68/img_680_1920x1080_71.1199951171875_null_normal.jpg",
-      "description": "一个网名在线生成器，不用自己想一个英文名了。",
-      "categories": [
-        "实用工具"
-      ],
-      "tags": [],
-      "date": "2023-10-24",
-      "updated": "2024-09-28"
     },
     {
       "title": "给word文件加密",
@@ -2297,19 +2271,16 @@
       "updated": "2024-09-28"
     },
     {
-      "title": "解决Google pixel机“网络连接受限”问题",
-      "path": "posts/87c.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.50/img_505_2200x1024_72_null_normal.jpg",
-      "description": "Google pixel机“网络连接受限”问题解决",
+      "title": "网名在线生成器",
+      "path": "posts/79f1.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.68/img_680_1920x1080_71.1199951171875_null_normal.jpg",
+      "description": "一个网名在线生成器，不用自己想一个英文名了。",
       "categories": [
-        "学习笔记"
+        "实用工具"
       ],
-      "tags": [
-        "Android",
-        "Windows"
-      ],
-      "date": "2024-10-09",
-      "updated": "2024-10-09"
+      "tags": [],
+      "date": "2023-10-24",
+      "updated": "2024-09-28"
     },
     {
       "title": "美国edu教育邮箱注册",
@@ -2341,6 +2312,35 @@
       "updated": "2024-06-26"
     },
     {
+      "title": "藏宝阁（整改版）",
+      "path": "posts/e90.html",
+      "cover": "https://cdn.cdnjson.com/tvax3.sinaimg.cn//large/0072Vf1pgy1foxk7pair6j31hc0u0000.jpg",
+      "description": "自己整改的藏宝阁版本，结合了两种不同类型的版本。",
+      "categories": [
+        "魔改教程"
+      ],
+      "tags": [
+        "hexo"
+      ],
+      "date": "2023-06-21",
+      "updated": "2024-06-26"
+    },
+    {
+      "title": "解决Google pixel机“网络连接受限”问题",
+      "path": "posts/87c.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.50/img_505_2200x1024_72_null_normal.jpg",
+      "description": "Google pixel机“网络连接受限”问题解决",
+      "categories": [
+        "学习笔记"
+      ],
+      "tags": [
+        "Android",
+        "Windows"
+      ],
+      "date": "2024-10-09",
+      "updated": "2024-10-09"
+    },
+    {
       "title": "解决gitee图床防盗链问题",
       "path": "posts/3733.html",
       "cover": "https://npm.elemecdn.com/falling42-cdn@1.0.0/cover/6833939bly1gicis3attqj20zk0m8k7l.jpg",
@@ -2355,18 +2355,18 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "藏宝阁（整改版）",
-      "path": "posts/e90.html",
-      "cover": "https://cdn.cdnjson.com/tvax3.sinaimg.cn//large/0072Vf1pgy1foxk7pair6j31hc0u0000.jpg",
-      "description": "自己整改的藏宝阁版本，结合了两种不同类型的版本。",
+      "title": "解决“下载”变成“Downloads”",
+      "path": "posts/ec73.html",
+      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.5/img_53_3000x1688_72_null_normal.jpg",
+      "description": "",
       "categories": [
-        "魔改教程"
+        "学习笔记"
       ],
       "tags": [
-        "hexo"
+        "Windows"
       ],
-      "date": "2023-06-21",
-      "updated": "2024-06-26"
+      "date": "2024-08-26",
+      "updated": "2024-09-28"
     },
     {
       "title": "记录一次hexo版本及插件更新",
@@ -2398,20 +2398,6 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "解决“下载”变成“Downloads”",
-      "path": "posts/ec73.html",
-      "cover": "https://npm.elemecdn.com/ushio-api-img-moe@5.0.5/img_53_3000x1688_72_null_normal.jpg",
-      "description": "",
-      "categories": [
-        "学习笔记"
-      ],
-      "tags": [
-        "Windows"
-      ],
-      "date": "2024-08-26",
-      "updated": "2024-09-28"
-    },
-    {
       "title": "轻快图床搭建",
       "path": "posts/1f15.html",
       "cover": "https://pic4.zhimg.com/80/v2-5db05ca43bdb82d42f357cb581d384df_1440w.webp",
@@ -2441,18 +2427,16 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "通过 Clash 使用 Cloudflare Warp+",
-      "path": "posts/e4d6.html",
-      "cover": "https://jsd.onmicrosoft.cn/gh/ciraos/ciraos-static@master/img/atri.webp",
-      "description": "通过转换实现在 CLash 中使用 Cloudflare Warp+",
+      "title": "通告！Gmail账号近期注册限制解除",
+      "path": "posts/b2a9.html",
+      "cover": "https://pic1.zhimg.com/80/v2-0e93dd91ca02b6bdc128e72c663b2714_1440w.webp",
+      "description": "近期突然发现Gmail注册手机号注册限制解除，可以跳过手机号注册，想注册Gmail的赶快注册了。",
       "categories": [
-        "实用工具"
+        "干货资源"
       ],
-      "tags": [
-        "科学上网"
-      ],
-      "date": "2023-09-19",
-      "updated": "2024-09-28"
+      "tags": [],
+      "date": "2023-08-22",
+      "updated": "2024-06-26"
     },
     {
       "title": "进行一次Twikoo评论模板美化",
@@ -2467,6 +2451,20 @@
         "Twikoo"
       ],
       "date": "2023-11-30",
+      "updated": "2024-09-28"
+    },
+    {
+      "title": "通过 Clash 使用 Cloudflare Warp+",
+      "path": "posts/e4d6.html",
+      "cover": "https://jsd.onmicrosoft.cn/gh/ciraos/ciraos-static@master/img/atri.webp",
+      "description": "通过转换实现在 CLash 中使用 Cloudflare Warp+",
+      "categories": [
+        "实用工具"
+      ],
+      "tags": [
+        "科学上网"
+      ],
+      "date": "2023-09-19",
       "updated": "2024-09-28"
     },
     {
@@ -2498,15 +2496,17 @@
       "updated": "2024-06-26"
     },
     {
-      "title": "通告！Gmail账号近期注册限制解除",
-      "path": "posts/b2a9.html",
-      "cover": "https://pic1.zhimg.com/80/v2-0e93dd91ca02b6bdc128e72c663b2714_1440w.webp",
-      "description": "近期突然发现Gmail注册手机号注册限制解除，可以跳过手机号注册，想注册Gmail的赶快注册了。",
+      "title": "hexo-butterfly主题美化记录",
+      "path": "posts/88bbc922.html",
+      "cover": "https://jsd.onmicrosoft.cn/npm/ushio-api-img-moe@5.0.82/img_822_1597x920_96_null_normal.jpg",
+      "description": "一些关于我安装一些插件的记录",
       "categories": [
-        "干货资源"
+        "魔改教程"
       ],
-      "tags": [],
-      "date": "2023-08-22",
+      "tags": [
+        "hexo"
+      ],
+      "date": "2022-08-26",
       "updated": "2024-06-26"
     }
   ],
@@ -2538,20 +2538,20 @@
       "count": 41
     },
     {
-      "name": "科学上网",
-      "count": 13
-    },
-    {
-      "name": "Cloudflare",
-      "count": 5
-    },
-    {
       "name": "Android",
       "count": 11
     },
     {
       "name": "Java",
       "count": 1
+    },
+    {
+      "name": "科学上网",
+      "count": 13
+    },
+    {
+      "name": "Cloudflare",
+      "count": 5
     },
     {
       "name": "镜像工具",
@@ -2562,10 +2562,6 @@
       "count": 38
     },
     {
-      "name": "idm激活",
-      "count": 1
-    },
-    {
       "name": "Gmail",
       "count": 1
     },
@@ -2574,12 +2570,20 @@
       "count": 3
     },
     {
-      "name": "软件测试",
-      "count": 9
+      "name": "idm激活",
+      "count": 1
     },
     {
       "name": "ssl证书",
       "count": 2
+    },
+    {
+      "name": "软件测试",
+      "count": 9
+    },
+    {
+      "name": "NovelAI",
+      "count": 4
     },
     {
       "name": "微软",
@@ -2588,10 +2592,6 @@
     {
       "name": "OneDrive",
       "count": 8
-    },
-    {
-      "name": "NovelAI",
-      "count": 4
     },
     {
       "name": "PE工具",
@@ -2614,6 +2614,14 @@
       "count": 2
     },
     {
+      "name": "web前端",
+      "count": 20
+    },
+    {
+      "name": "备忘录",
+      "count": 1
+    },
+    {
       "name": "Git",
       "count": 1
     },
@@ -2626,14 +2634,6 @@
       "count": 3
     },
     {
-      "name": "web前端",
-      "count": 20
-    },
-    {
-      "name": "备忘录",
-      "count": 1
-    },
-    {
       "name": "Hexo",
       "count": 1
     },
@@ -2642,15 +2642,15 @@
       "count": 1
     },
     {
-      "name": "office",
-      "count": 3
-    },
-    {
       "name": "图床",
       "count": 7
     },
     {
       "name": "npm",
+      "count": 3
+    },
+    {
+      "name": "office",
       "count": 3
     },
     {
@@ -2674,11 +2674,11 @@
       "count": 2
     },
     {
-      "name": "shields.io徽标",
+      "name": "python",
       "count": 1
     },
     {
-      "name": "python",
+      "name": "shields.io徽标",
       "count": 1
     },
     {

@@ -4,7 +4,7 @@
     - const sinceYear = theme.footer.owner.since
     - const sourceType = theme.footer.owner.source ?? 1
     .copyright
-      - const yearText = sinceYear && sinceYear != currentYear ? `&copy;${sinceYear} - ${currentYear}` : `&copy;${currentYear}`
+      - const yearText = sinceYear && sinceYear !== currentYear ? `&copy;${sinceYear} - ${currentYear}` : `&copy;${currentYear}`
       != yearText
       if sourceType === 1
         != ` By ${config.author}`
@@ -28,117 +28,77 @@
   if theme.footer.runtime.enable
     #workboard
       - const { text, launch_time, offduty_img, offduty_description, work_img, work_description, working_start, working_end } = theme.footer.runtime
-      img.workSituationImg(style="margin-top: 5px;")
+      img.workSituationImg
       #runtimeTextTip
         | #{text}&nbsp
-        span#runtime-days 0
-        | &nbsp天&nbsp
-        span#runtime-hours 00
-        | &nbsp小时&nbsp
-        span#runtime-minutes 00
-        | &nbsp分&nbsp
-        span#runtime-seconds 00
-        | &nbsp秒
+        each unit, i in ['天', '小时', '分', '秒']
+          span(id=`runtime-${['days', 'hours', 'minutes', 'seconds'][i]}`)= i === 0 ? '0' : '00'
+          | &nbsp#{unit}&nbsp
 
     script.
-      (function () {
-        const CONFIG = {
+      (() => {
+        const config = {
           launchTime: "#{launch_time}",
           workHours: { start: #{working_start}, end: #{working_end} },
           images: { work: "#{work_img}", offduty: "#{offduty_img}" },
           descriptions: { work: "#{work_description}", offduty: "#{offduty_description}" }
         };
 
-        const padZero = num => String(num).padStart(2, "0");
-        const getElements = () => ({
+        const elements = {
           days: document.getElementById("runtime-days"),
           hours: document.getElementById("runtime-hours"),
           minutes: document.getElementById("runtime-minutes"),
           seconds: document.getElementById("runtime-seconds"),
-          img: document.querySelector("#workboard .workSituationImg")
-        });
+          img: document.querySelector(".workSituationImg")
+        };
 
-        class RuntimeCounter {
-          constructor(config) {
-            this.config = config;
-            this.launchTime = new Date(config.launchTime);
-            this.elements = getElements();
-            
-            if (isNaN(this.launchTime.getTime())) {
-              throw new Error(`无效的启动时间: ${config.launchTime}`);
-            }
-          }
-
-          getTimeInfo() {
+        const updateRuntime = () => {
+          try {
             const now = new Date();
-            const elapsed = Math.floor((now - this.launchTime) / 1000);
-            const hour = now.getHours();
-            
-            return {
+            const launch = new Date(config.launchTime);
+            if (isNaN(launch.getTime())) throw new Error('无效的启动时间');
+
+            const elapsed = Math.floor((now - launch) / 1000);
+            const times = {
               days: Math.floor(elapsed / 86400),
               hours: Math.floor((elapsed % 86400) / 3600),
               minutes: Math.floor((elapsed % 3600) / 60),
-              seconds: elapsed % 60,
-              isWorkTime: hour >= this.config.workHours.start && hour < this.config.workHours.end
+              seconds: elapsed % 60
             };
-          }
 
-          updateDisplay() {
-            try {
-              const { days, hours, minutes, seconds, isWorkTime } = this.getTimeInfo();
-              
-              // 更新工作状态图片
-              if (this.elements.img) {
-                const status = isWorkTime ? 'work' : 'offduty';
-                Object.assign(this.elements.img, {
-                  src: this.config.images[status],
-                  title: this.config.descriptions[status],
-                  alt: this.config.descriptions[status]
-                });
-              }
+            // 更新时间显示
+            Object.entries(times).forEach(([key, value]) => {
+              elements[key].textContent = key === 'days' ? value : String(value).padStart(2, '0');
+            });
 
-              // 更新时间显示
-              this.elements.days.textContent = days;
-              this.elements.hours.textContent = padZero(hours);
-              this.elements.minutes.textContent = padZero(minutes);
-              this.elements.seconds.textContent = padZero(seconds);
-            } catch (error) {
-              console.error("运行时间更新失败:", error);
+            // 更新工作状态图片
+            if (elements.img) {
+              const hour = now.getHours();
+              const status = (hour >= config.workHours.start && hour < config.workHours.end) ? 'work' : 'offduty';
+              Object.assign(elements.img, {
+                src: config.images[status],
+                title: config.descriptions[status],
+                alt: config.descriptions[status]
+              });
             }
+          } catch (error) {
+            console.error("运行时间更新失败:", error);
           }
+        };
 
-          start() {
-            this.updateDisplay();
-            setInterval(() => this.updateDisplay(), 1000);
-          }
-        }
-
-        try {
-          new RuntimeCounter(CONFIG).start();
-        } catch (error) {
-          console.error("运行时间计数器初始化失败:", error);
-        }
+        updateRuntime();
+        setInterval(updateRuntime, 1000);
       })();
 
   if theme.footer.wordcount
     .wordcount
-      - const formatNumber = (num, unit) => {
-      -   const formatted = num.toFixed(1)
-      -   return formatted.endsWith('.0') ? Math.floor(num) + unit : formatted + unit
-      - }
-      - const formatWordCount = count => {
-      -   if (count >= 10000) return formatNumber(count / 10000, 'W')
-      -   if (count >= 1000) return formatNumber(count / 1000, 'K')
+      - const formatCount = count => {
+      -   if (count >= 10000) return (count/10000).toFixed(1).replace('.0','') + 'W'
+      -   if (count >= 1000) return (count/1000).toFixed(1).replace('.0','') + 'K'
       -   return Math.round(count)
       - }
-      - const parseWordCount = str => {
-      -   if (typeof str === 'string') {
-      -     return str.includes('k') ? parseFloat(str) * 1000 : parseFloat(str)
-      -   }
-      -   return Number(str)
-      - }
-      - const wordCount = parseWordCount(totalcount(site))
-      - const displayWord = formatWordCount(wordCount)
-      - const message = site.data.footer?.wordcount_messages?.find(item => wordCount < (item.max || Infinity) * 1000)?.message || site.data.footer?.default_message || '继续加油！'
+      - const count = typeof totalcount(site) === 'string' ? parseFloat(totalcount(site).replace('k','') * 1000) : totalcount(site)
+      - const displayCount = formatCount(count)
+      - const message = site.data.footer?.wordcount_messages?.find(m => count < (m.max || Infinity) * 1000)?.message || site.data.footer?.default_message || '继续加油！'
       i.fas.fa-pencil-alt
-      span= `${config.subtitle}已经写了 ${displayWord} 字，${message}`
+      span= `${config.subtitle}已经写了 ${displayCount} 字，${message}`
