@@ -37,10 +37,31 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
 script.
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(() => {
-      if (localStorage.getItem('install') !== 'true') {
-        localStorage.setItem('install', 'true')
-        location.reload()
-      }
-    })
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker 注册成功:', registration.scope);
+        
+        if (localStorage.getItem('install') !== 'true') {
+          localStorage.setItem('install', 'true');
+          window.location.reload();
+        }
+        
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                console.log('发现新版本,准备更新...');
+              }
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.error('ServiceWorker 注册失败:', error);
+      });
+    
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('页面已更新到新版本');
+    });
   }
