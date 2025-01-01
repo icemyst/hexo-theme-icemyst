@@ -1,7 +1,8 @@
 const CONFIG = {
   // 基础配置
   workbox: {
-    cdnUrl: 'https://storage.googleapis.com/workbox-cdn/releases/7.x',
+    cdnUrl: 'https://unpkg.com/workbox-sw/build',
+    // cdnUrl: 'https://storage.googleapis.com/workbox-cdn/releases/7.3.0',
     cacheName: {
       prefix: "冰梦",
       precache: "precache",
