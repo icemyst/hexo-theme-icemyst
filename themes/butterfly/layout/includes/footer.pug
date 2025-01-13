@@ -2,18 +2,11 @@
   if theme.footer.owner.enable
     - const currentYear = new Date().getFullYear()
     - const sinceYear = theme.footer.owner.since
-    - const sourceType = theme.footer.owner.source ?? 1
     .copyright
-      - const yearText = sinceYear && sinceYear !== currentYear ? `&copy;${sinceYear} - ${currentYear}` : `&copy;${currentYear}`
-      != yearText
-      if sourceType === 1
-        != ` By ${config.author}`
-      else if sourceType === 2
-        != '&nbsp;'
-        svg(style="width:1.25em; height:1.25em;vertical-align:middle;" aria-hidden="true")
-          use(xlink:href="#icon-Butterfly")
-        != `&nbsp;${config.author}`
-
+      if sinceYear && sinceYear != currentYear
+        != `&copy;${sinceYear} - ${currentYear} By ${config.author}`
+      else
+        != `&copy;${currentYear} By ${config.author}`
   if theme.footer.copyright
     .framework-info
       span= _p('footer.framework') + ' '
@@ -21,84 +14,5 @@
       span.footer-separator |
       span= _p('footer.theme') + ' '
       a(href='https://github.com/jerryc127/hexo-theme-butterfly')= 'Butterfly'
-
   if theme.footer.custom_text
     .footer_custom_text!= theme.footer.custom_text
-
-  if theme.footer.runtime.enable
-    #workboard
-      - const { text, launch_time, offduty_img, offduty_description, work_img, work_description, working_start, working_end } = theme.footer.runtime
-      img.workSituationImg
-      #runtimeTextTip
-        | #{text}&nbsp
-        each unit, i in ['天', '小时', '分', '秒']
-          span(id=`runtime-${['days', 'hours', 'minutes', 'seconds'][i]}`)= i === 0 ? '0' : '00'
-          | &nbsp#{unit}&nbsp
-
-    script.
-      (() => {
-        const config = {
-          launchTime: "#{launch_time}",
-          workHours: { start: #{working_start}, end: #{working_end} },
-          images: { work: "#{work_img}", offduty: "#{offduty_img}" },
-          descriptions: { work: "#{work_description}", offduty: "#{offduty_description}" }
-        };
-
-        const elements = {
-          days: document.getElementById("runtime-days"),
-          hours: document.getElementById("runtime-hours"),
-          minutes: document.getElementById("runtime-minutes"),
-          seconds: document.getElementById("runtime-seconds"),
-          img: document.querySelector(".workSituationImg")
-        };
-
-        const updateRuntime = () => {
-          try {
-            const now = new Date();
-            const launch = new Date(config.launchTime);
-            if (isNaN(launch.getTime())) throw new Error('无效的启动时间');
-
-            const elapsed = Math.floor((now - launch) / 1000);
-            const times = {
-              days: Math.floor(elapsed / 86400),
-              hours: Math.floor((elapsed % 86400) / 3600),
-              minutes: Math.floor((elapsed % 3600) / 60),
-              seconds: elapsed % 60
-            };
-
-            // 更新时间显示
-            Object.entries(times).forEach(([key, value]) => {
-              elements[key].textContent = key === 'days' ? value : String(value).padStart(2, '0');
-            });
-
-            // 更新工作状态图片
-            if (elements.img) {
-              const hour = now.getHours();
-              const status = (hour >= config.workHours.start && hour < config.workHours.end) ? 'work' : 'offduty';
-              Object.assign(elements.img, {
-                src: config.images[status],
-                title: config.descriptions[status],
-                alt: config.descriptions[status]
-              });
-            }
-          } catch (error) {
-            console.error("运行时间更新失败:", error);
-          }
-        };
-
-        updateRuntime();
-        setInterval(updateRuntime, 1000);
-      })();
-
-  if theme.footer.wordcount
-    .wordcount
-      - const formatCount = count => {
-      -   if (count >= 10000) return (count/10000).toFixed(1).replace('.0','') + 'W'
-      -   if (count >= 1000) return (count/1000).toFixed(1).replace('.0','') + 'K'
-      -   return Math.round(count)
-      - }
-      - const count = typeof totalcount(site) === 'string' ? parseFloat(totalcount(site).replace('k','') * 1000) : totalcount(site)
-      - const displayCount = formatCount(count)
-      - const message = site.data.footer?.wordcount_messages?.find(m => count < (m.max || Infinity) * 1000)?.message || site.data.footer?.default_message || '继续加油！'
-      i.fas.fa-pencil-alt
-      span= `${config.subtitle}已经写了 ${displayCount} 字，${message}`

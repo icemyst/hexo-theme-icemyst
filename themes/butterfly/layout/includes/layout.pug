@@ -1,7 +1,8 @@
+- var globalPageType = getPageType(page, is_home)
 - var htmlClassHideAside = theme.aside.enable && theme.aside.hide ? 'hide-aside' : ''
-- page.aside = is_archive() ? theme.aside.display.archive: is_category() ? theme.aside.display.category : is_tag() ? theme.aside.display.tag : page.aside
+- page.aside = globalPageType === 'archive' ? theme.aside.display.archive: globalPageType === 'category' ? theme.aside.display.category : globalPageType === 'tag' ? theme.aside.display.tag : page.aside
 - var hideAside = !theme.aside.enable || page.aside === false ? 'hide-aside' : ''
-- var pageType = is_post() ? 'post' : 'page'
+- var pageType = globalPageType === 'post' ? 'post' : 'page'
 - pageType = page.type ? pageType + ' type-' + page.type : pageType
 
 doctype html
@@ -13,7 +14,7 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
     if theme.background
       #web_bg(style=getBgPath(theme.background))
-      
+
     !=partial('includes/sidebar', {}, {cache: true})
 
     #body-wrap(class=pageType)
@@ -34,57 +35,3 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
     include ./rightside.pug
     include ./additional-js.pug
-
-    script.
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js', {
-            scope: '/',
-            updateViaCache: 'none'
-          })
-            .then(registration => {
-              console.log('SW registered:', registration)
-              
-              registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing
-                newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    const notification = document.createElement('div')
-                    notification.className = 'sw-update-notification'
-                    notification.innerHTML = `
-                      <div class="sw-update-content">
-                        <div class="update-text">
-                          <i class="update-icon fas fa-sync-alt"></i>
-                          发现新版本
-                        </div>
-                        <div class="sw-update-buttons">
-                          <button class="update-now">立即更新</button>
-                          <button class="update-later">稍后再说</button>
-                        </div>
-                      </div>
-                    `
-                    
-                    document.body.appendChild(notification)
-                    setTimeout(() => notification.classList.add('show'), 100)
-                    
-                    notification.querySelector('.update-now').addEventListener('click', () => {
-                      notification.classList.add('fade-out')
-                      setTimeout(() => {
-                        notification.remove()
-                        window.location.reload()
-                      }, 300)
-                    })
-                    
-                    notification.querySelector('.update-later').addEventListener('click', () => {
-                      notification.classList.add('fade-out')
-                      setTimeout(() => notification.remove(), 300)
-                    })
-                  }
-                })
-              })
-              
-              setInterval(() => registration.update(), 1000 * 60 * 60)
-            })
-            .catch(error => console.error('SW registration failed:', error))
-        })
-      }
