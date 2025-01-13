@@ -1,91 +1,37 @@
 .category-lists
-  position: relative
-  display: flex
-  overflow-x: auto
-  white-space: nowrap
-  -webkit-overflow-scrolling: touch
-  &::-webkit-scrollbar
-    display: none
-
   .category-title
     font-size: 2.57em
-
-  .category-list
-    padding: 0
-    margin: 0
 
     +maxWidth768()
       font-size: 2em
 
-  ul
-    display: inline-flex
-    white-space: nowrap
-
-  li
-    list-style: none
-
-  a
-    color: var(--font-color)
-    transition: color 0.3s ease, background 0.3s ease
-    &:hover
-      color: $text-hover
-
-  &:only-child
-    justify-content: space-between
-    width: 100%
-
-.category-bar
-  @extend .cardHover
-  display: flex
-  position: relative
-  justify-content: space-between
-  font-weight: 700
-  border: 1px solid var(--dark-grey)
-  padding: .4rem .5rem
-  margin-bottom: 10px
-  overflow: hidden
-  white-space: nowrap
-
-  ul li
-    margin: 0 3px
-    &:hover
-      color: var(--btn-color)
-
-  .category-list-item
-    position: relative
-    width: 100%
-    display: flex
-    align-items: center
-    .category-lists
-      flex-grow: 1
-      addBorderRadius(8)
+  .category-list
+    margin-bottom: 0
 
     a
       color: var(--font-color)
-      padding: 0 .5rem
+
+      &:hover
+        color: $text-hover
+
+    .category-list-count
+      margin-left: 8px
+      color: var(--card-meta)
+
+      &:before
+        content: '('
+
+      &:after
+        content: ')'
+
+  ul
+    padding: 0 0 0 20px
+    @extend .list-beauty
+
+    ul
+      padding-left: 4px
+
+    li
       position: relative
-      display: block
-      transition: all .3s ease-in-out
-      addBorderRadius(8)
-      &:not(.category-list-link):first-child
-        padding: 0 .5rem
-        color: var(--btn-color)
-        background: var(--default-bg-color)
-
-      &:not(.category-more):hover
-        background: var(--default-bg-color)
-        color: var(--btn-color)
-        addBorderRadius(8)
-
-  .category-more
-    transition: color 0.3s ease-in-out
-    &:hover
-      color: $text-bg-hover
-
-  .category-list-count
-    position: absolute
-    top: 0
-    right: 0
-    font-size: 8px
-    font-style: italic
-    transition: all .3s ease-in-out
+      margin: 6px 0
+      padding: .12em .4em .12em 1.4em

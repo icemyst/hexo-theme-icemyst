@@ -817,7 +817,7 @@ preloader:
   # source
   # 1. fullpage-loading
   # 2. pace (progress bar)
-  source: 2
+  source: 1
   # pace theme (see https://codebyzach.github.io/pace/)
   pace_css_url:
 
@@ -964,7 +964,7 @@ mermaid:
 # chartjs
 # see https://www.chartjs.org/docs/latest/
 chartjs:
-  enable: false
+  enable: true
   # 除非您了解它们的工作原理，否则请不要进行修改。
   # 仅当未指定 MD 语法时才使用默认设置。
   # 图表的常规字体颜色

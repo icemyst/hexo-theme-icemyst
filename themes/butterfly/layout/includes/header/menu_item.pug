@@ -16,6 +16,7 @@ if theme.menu
             if groupIcon
               i.fa-fw(class=groupIcon)
             span= ' ' + groupLabel
+            i.fas.fa-chevron-down
           ul.menus_item_child
             each val, lab in value
               - const [childLink, childIcon] = val.split('||').map(part => trim(part))

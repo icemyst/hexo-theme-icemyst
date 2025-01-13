@@ -1,0 +1,113 @@
+.sw-update-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99999;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  padding: 16px;
+  transform: translateY(150%);
+  transition: transform 0.3s ease;
+  max-width: 320px;
+  width: calc(100% - 40px);
+  border: 1px solid #eee;
+}
+
+.sw-update-notification.show {
+  transform: translateY(0);
+}
+
+.sw-update-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.update-icon {
+  font-size: 1.2em;
+  margin-right: 8px;
+}
+
+.update-text {
+  font-size: 1rem;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.sw-update-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.sw-update-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.update-now {
+  background: #49b1f5;
+  color: #fff;
+  flex: 1;
+}
+
+.update-now:hover {
+  background: #3c8dbb;
+  transform: translateY(-1px);
+}
+
+.update-later {
+  background: #f0f0f0;
+  color: #666;
+  flex: 1;
+}
+
+.update-later:hover {
+  background: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+.fade-out {
+  transform: translateY(20px) !important;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+/* 暗色模式支持 */
+[data-theme="dark"] .sw-update-notification {
+  background: #2d2d2d;
+  border-color: #3d3d3d;
+}
+
+[data-theme="dark"] .update-text {
+  color: #fff;
+}
+
+[data-theme="dark"] .update-later {
+  background: #3d3d3d;
+  color: #ddd;
+}
+
+[data-theme="dark"] .update-later:hover {
+  background: #4d4d4d;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .sw-update-notification {
+    bottom: 10px;
+    right: 10px;
+    width: calc(100% - 20px);
+    padding: 12px;
+  }
+  
+  .sw-update-buttons button {
+    padding: 6px 12px;
+  }
+} 
