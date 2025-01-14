@@ -1,26 +1,42 @@
-# Hexo Configuration
-## Docs: https://hexo.io/docs/configuration.html
-## Source: https://github.com/hexojs/hexo/
+# Hexo 配置
+## 文档: https://hexo.io/docs/configuration.html
+## 源码: https://github.com/hexojs/hexo/
 
-# Site
-title: Hexo
-subtitle: ''
-description: ''
-keywords:
-author: John Doe
-language: en
-timezone: ''
+# 网站
+title: 冰刻无痕
+subtitle: '冰梦'
+description: '一个分享和记录的地方'
+keywords: '冰梦,冰梦の博客'
+author: 冰梦
+language: zh-CN
+timezone: 'Asia/Shanghai'
 
-# URL
-## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
-permalink: :year/:month/:day/:title/
+# 网址
+## 在这里设置你的网站 URL。例如，如果你使用 GitHub Pages，将 url 设置为 'https://username.github.io/project'
+url: https://icedrm.github.io/
+permalink: posts/:abbrlink.html
 permalink_defaults:
 pretty_urls:
-  trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
-  trailing_html: true # Set to false to remove trailing '.html' from permalinks
+  trailing_index: true # 设置为 false 可以移除永久链接中的尾部 'index.html'
+  trailing_html: true # 设置为 false 可以移除永久链接中的尾部 '.html'
 
-# Directory
+
+# 文章链接转数字或字母：https://github.com/rozbo/hexo-abbrlink
+abbrlink:
+  alg: crc16      #support crc16(default) and crc32
+  rep: hex        #support dec(default) and hex
+  drafts: false   #(true）处理草稿，（false）不处理草稿。false（默认值）
+  # Generate categories from directory-tree
+  # depth: the max_depth of directory-tree you want to generate, should > 0
+  auto_category:
+    enable: true  #true(default)
+    depth:        #3(default)
+    over_write: false
+  auto_title: false # 启用自动标题，它可以按路径自动填充标题
+  auto_date: false # 启用自动日期，它可以按当前的时间自动填充日期
+  force: false # 启用强制模式，在这种模式下，插件将忽略缓存，并为每个帖子重新计算abbrlink值，即使它已经有abbrlink值。
+
+# 目录
 source_dir: source
 public_dir: public
 tag_dir: tags
@@ -30,13 +46,13 @@ code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
 
-# Writing
-new_post_name: :title.md # File name of new posts
+# 写作
+new_post_name: :title.md # 新文章的文件名
 default_layout: post
-titlecase: false # Transform title into titlecase
+titlecase: false # 将标题转换为标题大小写
 external_link:
-  enable: true # Open external links in new tab
-  field: site # Apply to the whole site
+  enable: true # 在新标签页中打开外部链接
+  field: site # 应用于整个网站
   exclude: ''
 filename_case: 0
 render_drafts: false
@@ -55,50 +71,139 @@ prismjs:
   line_number: true
   tab_replace: ''
 
-# Home page setting
-# path: Root path for your blogs index page. (default = '')
-# per_page: Posts displayed per page. (0 = disable pagination)
-# order_by: Posts order. (Order by date descending by default)
+# 首页设置
+# path: 博客索引页的根路径（默认 = ''）
+# per_page: 每页显示的文章数（0 = 禁用分页）
+# order_by: 文章排序方式（默认按日期降序）
 index_generator:
   path: ''
   per_page: 10
   order_by: -date
 
-# Category & Tag
+# 分类 & 标签
 default_category: uncategorized
 category_map:
 tag_map:
 
-# Metadata elements
+# 元数据元素
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
 meta_generator: true
 
-# Date / Time format
-## Hexo uses Moment.js to parse and display date
-## You can customize the date format as defined in
-## http://momentjs.com/docs/#/displaying/format/
+# 日期 / 时间格式
+## Hexo 使用 Moment.js 来解析和显示日期
+## 你可以按照 http://momentjs.com/docs/#/displaying/format/ 定义的格式来自定义日期格式
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
-## updated_option supports 'mtime', 'date', 'empty'
+## updated_option 支持 'mtime'（文件修改时间）, 'date'（日期）, 'empty'（空）
 updated_option: 'mtime'
 
-# Pagination
-## Set per_page to 0 to disable pagination
+# 分页
+## 设置 per_page 为 0 来禁用分页
 per_page: 10
 pagination_dir: page
 
-# Include / Exclude file(s)
-## include:/exclude: options only apply to the 'source/' folder
+# 包含/排除 文件
+## include:/exclude: 选项仅适用于 'source/' 文件夹
 include:
 exclude:
 ignore:
 
-# Extensions
-## Plugins: https://hexo.io/plugins/
-## Themes: https://hexo.io/themes/
-theme: landscape
+# 扩展
+## 插件: https://hexo.io/plugins/
+## 主题: https://hexo.io/themes/
+theme: butterfly
 
-# Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
+# 部署
+## 文档: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: git
+  repository: git@github.com:icedrm/icedrm.github.io.git
+  branch: main
+
+algolia:
+  appId: "ISDJ00QU43"
+  apiKey: "487b1ffc0003ed6c3522ba6747b1d1e9"
+  adminApiKey: "0440712e501ea61ec6b9f9ea156798d7"
+  chunkSize: 5000
+  indexName: "hexo"
+  fields:
+    - content:strip:truncate,0,500
+    - excerpt:strip
+    - gallery
+    - permalink
+    - photos
+    - slug
+    - tags
+    - title
+
+bangumi: # 追番设置
+  enable: true
+  source: bili
+  bgmInfoSource: 'bgmv0'
+  path:
+  vmid: 62815361
+  title: '追番列表'
+  quote: '生命不息，追番不止！'
+  show: 1
+  lazyload: true
+  srcValue: '__image__'
+  lazyloadAttrName: 'data-src=__image__'
+  loading:
+  showMyComment: false
+  pagination: false
+  metaColor:
+  color:
+  webp:
+  progress:
+  progressBar:
+  extraOrder:
+  order: latest
+  proxy:
+    host: '代理host'
+    port: '代理端口'
+  extra_options:
+    key: value
+  coverMirror:
+cinema: # 追剧设置
+  enable: true
+  path:
+  vmid: 62815361
+  title: '追剧列表'
+  quote: '生命不息，追剧不止！'
+  show: 1
+  lazyload: true
+  srcValue: '__image__'
+  lazyloadAttrName: 'data-src=__image__'
+  loading:
+  metaColor:
+  color:
+  webp:
+  progress:
+  progressBar:
+  extraOrder:
+  order:
+  extra_options:
+    key: value
+  coverMirror:
+game: # 游戏设置，仅支持source: bgmv0
+  enable: false
+  path:
+  source: bgmv0
+  vmid: 942466
+  title: '游戏列表'
+  quote: '生命不息，游戏不止！'
+  show: 1
+  lazyload: true
+  srcValue: '__image__'
+  lazyloadAttrName: 'data-src=__image__'
+  loading:
+  metaColor:
+  color:
+  webp:
+  progress:
+  progressBar:
+  extraOrder:
+  order:
+  extra_options:
+    key: value
+  coverMirror: 
