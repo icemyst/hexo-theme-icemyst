@@ -206,15 +206,15 @@ post_copyright:
 
 # 赞助/奖励
 reward:
-  enable: false
-  text:
+  enable: true
+  text: 打赏
   QR_code:
-    # - img: /img/wechat.jpg
-    #   link:
-    #   text: wechat
-    # - img: /img/alipay.jpg
-    #   link:
-    #   text: alipay
+    - img: /img/wechat.webp
+      link:
+      text: 微信
+    - img: /img/alipay.webp
+      link:
+      text: 支付宝
 
 # 文章编辑
 # 轻松浏览和在线编辑博客源代码。
@@ -381,7 +381,7 @@ darkmode:
   # autoChangeMode: 1  根据系统设置，如果系统不支持暗模式，将在晚上6点到早上6点之间切换暗模式
   # autoChangeMode: 2  在晚上6点到早上6点之间切换暗模式
   # autoChangeMode: false
-  autoChangeMode: false
+  autoChangeMode: 1
   # 设置亮模式时间。值在0到24之间。如果未设置，默认值为6和18
   start:
   end:
@@ -465,7 +465,7 @@ math:
 search:
   # 选择: algolia_search / local_search / docsearch
   # 如果您不需要搜索，请留空
-  use:
+  use: algolia_search
   placeholder:
 
   # Algolia搜索
@@ -958,7 +958,7 @@ note:
 
 # https://github.com/MoOx/pjax
 pjax:
-  enable: false
+  enable: true
   # 从pjax中排除指定页面，例如'/music/'
   exclude:
     # - /xxxxxx/
@@ -985,8 +985,8 @@ instantpage: false
 # 懒加载
 # https://github.com/verlok/vanilla-lazyload
 lazyload:
-  enable: false
-  # 指定使用懒加载的字段（网站或文章）
+  enable: true
+  # 指定使用懒加载的字段（网站（site）或文章（post））
   field: site
   placeholder:
   blur: false
@@ -995,12 +995,12 @@ lazyload:
 # 见 https://github.com/JLHwung/hexo-offline
 # ---------------
 pwa:
-  enable: false
-  manifest:
-  apple_touch_icon:
-  favicon_32_32:
-  favicon_16_16:
-  mask_icon:
+  enable: true
+  manifest: /manifest.json
+  apple_touch_icon: /img/siteicon/apple-touch-icon.png
+  favicon_32_32: /img/siteicon/favicon-32x32.png
+  favicon_16_16: /img/siteicon/favicon-16x16.png
+  mask_icon: /img/siteicon/apple-touch-icon.png
 
 # Open graph元标签
 # https://hexo.io/docs/helpers#open-graph
