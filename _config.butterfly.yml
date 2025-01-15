@@ -14,13 +14,26 @@ nav:
   logo:
   display_title: true
   # 是否固定导航栏
-  fixed: false
+  fixed: true
 
 menu:
-  # 首页: / || fas fa-home
-  # 列表||fas fa-list:
-  #   音乐: /music/ || fas fa-music
-  #   电影: /movies/ || fas fa-video
+  文 章: 
+    归档: /archives/ || fa-fw fas fa-archive
+    分类: /categories/ || fa-fw fas fa-folder-open 
+    标签: /tags/ || fa-fw fas fa-tags
+  社 交:
+    友链: /link/ || fas fa-link
+    朋友圈: /fcircles/ || fa-brands fa-artstation
+    留言板: /comments/ || fa-fw fas fa-comment
+  个 人:
+    音乐: /music/?id=7657374410&server=tencent || fa-fw fas fa-music
+    追番: /bangumis/ || fa-fw fa-brands fa-bilibili
+    相册: /album/ || fa-fw fas fa-images
+    收藏: /collect/ || fa-fw fas fa-star
+  关 于:
+    关于我: /about/ || fa-fw fas fa-user
+    随笔: /essay/ || fas fa-pen
+
 
 # --------------------------------------
 # 代码块设置
@@ -31,7 +44,7 @@ code_blocks:
   theme: light
   macStyle: false
   # 代码块高度限制（单位: px）
-  height_limit: false
+  height_limit: 300
   word_wrap: false
 
   # 工具栏
@@ -52,20 +65,20 @@ social:
 # 图片设置
 # --------------------------------------
 
-favicon: /img/favicon.png
+favicon: /img/favicon.ico
 
 avatar:
-  img: /img/butterfly-icon.png
+  img: https://q1.qlogo.cn/g?b=qq&nk=1580777927&s=5
   effect: false
 
 # 禁用所有横幅图片
 disable_top_img: false
 
 # 如果页面的横幅未设置，将显示默认的横幅
-default_top_img:
+default_top_img: false
 
 # 首页的横幅图片
-index_img:
+index_img: https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
 
 # 归档页面的横幅图片
 archive_img:
@@ -87,11 +100,11 @@ category_img:
 category_per_img:
 
 # 页脚的背景图片
-footer_img: false
+footer_img: transparent
 
 # 网站背景
 # 可以设置为颜色或图片网址
-background:
+background: https://api.boxmoe.com/random.php?size=large
 
 cover:
   # 是否禁用封面
@@ -100,18 +113,28 @@ cover:
   archives_enable: true
   # 当封面未设置时，显示默认封面
   default_cover:
-    # - xxx.jpg
+    # 知乎图片
+    - https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
+    - https://pic4.zhimg.com/80/v2-5db05ca43bdb82d42f357cb581d384df_1440w.webp
+    - https://pic2.zhimg.com/v2-ef87585088748f4e087489aaa8dcecbd_r.jpg
+    # 动漫图片
+    - https://api.yimian.xyz/img?type=moe # 随机二次元图片
+    - https://www.dmoe.cc/random.php # 随机动漫图片
+    - https://api.ixiaowai.cn/api/api.php # 随机二次元图片
+    # 随机图片
+    # - https://source.unsplash.com/random/800x600
+    # - https://picsum.photos/800/600
 
 # 替换损坏的图片
 error_img:
   flink: /img/friend_404.gif
-  post_page: /img/404.jpg
+  post_page: /img/404.png
 
 # 简单的404页面
 error_404:
   enable: false
   subtitle: '页面未找到'
-  background: /img/error-page.png
+  background: https://pic.imgdb.cn/item/64c7bada1ddac507cc135dd8.jpg
 
 post_meta:
   # 首页
@@ -121,11 +144,11 @@ post_meta:
     # 选择: date / relative
     date_format: date
     categories: true
-    tags: false
+    tags: true
     label: true
   post:
     # 选择: left / center
-    position: left
+    position: center
     # 选择: created / updated / both
     date_type: both
     # 选择: date / relative
@@ -147,7 +170,7 @@ index_top_img_height:
 
 # 首页的副标题
 subtitle:
-  enable: false
+  enable: true
   # 打字机效果
   effect: true
   # 自定义typed.js
@@ -160,7 +183,7 @@ subtitle:
   # 1 - hitokoto.cn
   # 2 - yijuzhan.com
   # 3 - jinrishici.com
-  source: false
+  source: 2
   # 如果您关闭打字机效果，副标题将仅显示副标题的第一行
   sub:
 
@@ -248,7 +271,7 @@ noticeOutdate:
   # 位置: top / bottom
   position: top
   message_prev: 已经过去了
-  message_next: 天自上次更新以来，文章内容可能已过时。
+  message_next: 天，自上次更新以来，文章内容可能已过时。若内容或图片失效，请留言反馈（部分素材来自网络）。
 
 # --------------------------------------
 # 页脚设置
@@ -282,12 +305,15 @@ aside:
     description:
     button:
       enable: true
-      icon: fab fa-github
-      text: 关注我
-      link: https://github.com/xxxxxx
+      icon: fas fa-arrow-circle-right
+      text: 了解更多
+      link: /about/
   card_announcement:
     enable: true
-    content: 这是我的博客
+    content:
+      - <div><a style='display:flex;height:100%;width:100%;' href='https://hcer.top'><img style="height:100%;width:100%;" src="https://jsd.onmicrosoft.cn/gh/eudav/bingm-static/img/hcer.webp" alt="https://hcer.top" style="border-radius:0;"></a></div>
+        <b>GitHub站点：</b><a href='https://icemyst.github.io'>https://icemyst.github.io</a>
+        <div>CDN赞助者：@xinpro(鸣谢)</div><div>赞助者博客：<a href="https://xinpro.cn">https://xinpro.cn</a></div>
   card_recent_post:
     enable: true
     # 如果设置为0将显示所有
@@ -387,7 +413,7 @@ darkmode:
   end:
 
 # 在滚动到顶部按钮中显示滚动百分比
-rightside_scroll_percent: false
+rightside_scroll_percent: true
 
 # 不要修改以下设置，除非您知道它们的工作原理
 # 选择: readmode,translate,darkmode,hideAside,toc,chat,comment
@@ -405,9 +431,9 @@ rightside_item_order:
 
 anchor:
   # 当您滚动时，URL将根据标题ID更新。
-  auto_update: false
+  auto_update: true
   # 点击标题以滚动并更新锚点
-  click_to_scroll: false
+  click_to_scroll: true
 
 photofigcaption: false
 
