@@ -35,3 +35,48 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
     include ./rightside.pug
     include ./additional-js.pug
+
+script.
+  if ('serviceWorker' in navigator) {
+    // 使用 sessionStorage 来追踪首次加载和更新状态
+    const firstLoad = !sessionStorage.getItem('sw-loaded');
+    let updateHandled = false;
+
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').then(registration => {
+        // 首次加载时不触发更新
+        if (firstLoad) {
+          sessionStorage.setItem('sw-loaded', 'true');
+          return;
+        }
+
+        // 检查更新
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            // 只在已安装且有控制器的情况下提示更新
+            if (newWorker.state === 'installed' && 
+                navigator.serviceWorker.controller && 
+                !updateHandled) {
+              updateHandled = true;
+              const shouldUpdate = window.confirm('网站有新的内容，是否刷新查看？');
+              if (shouldUpdate) {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+              }
+            }
+          });
+        });
+
+        // 监听控制权变更
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing && !firstLoad) {
+            refreshing = true;
+            window.location.reload();
+          }
+        });
+      }).catch(error => {
+        console.error('Service Worker 注册失败:', error);
+      });
+    });
+  }

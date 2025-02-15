@@ -11,7 +11,7 @@ author: 冰梦
 language: zh-CN
 timezone: 'Asia/Shanghai'
 
-# 网址
+# URL
 ## 在这里设置你的网站 URL。例如，如果你使用 GitHub Pages，将 url 设置为 'https://username.github.io/project'
 url: https://icedrm.github.io/
 permalink: posts/:abbrlink.html
@@ -19,7 +19,6 @@ permalink_defaults:
 pretty_urls:
   trailing_index: true # 设置为 false 可以移除永久链接中的尾部 'index.html'
   trailing_html: true # 设置为 false 可以移除永久链接中的尾部 '.html'
-
 
 # 文章链接转数字或字母：https://github.com/rozbo/hexo-abbrlink
 abbrlink:
@@ -145,10 +144,10 @@ bangumi: # 追番设置
   title: '追番列表'
   quote: '生命不息，追番不止！'
   show: 1
-  lazyload: true
+  lazyload: false
   srcValue: '__image__'
   lazyloadAttrName: 'data-src=__image__'
-  loading:
+  loading: /img/friend_404.gif
   showMyComment: false
   pagination: false
   metaColor:
@@ -163,6 +162,9 @@ bangumi: # 追番设置
     port: '代理端口'
   extra_options:
     key: value
+    top_img: false
+    aside: false
+    comments: false
   coverMirror:
 cinema: # 追剧设置
   enable: true
@@ -171,10 +173,10 @@ cinema: # 追剧设置
   title: '追剧列表'
   quote: '生命不息，追剧不止！'
   show: 1
-  lazyload: true
+  lazyload: false
   srcValue: '__image__'
   lazyloadAttrName: 'data-src=__image__'
-  loading:
+  loading: /img/friend_404.gif
   metaColor:
   color:
   webp:
@@ -184,6 +186,9 @@ cinema: # 追剧设置
   order:
   extra_options:
     key: value
+    top_img: false
+    aside: false
+    comments: false
   coverMirror:
 game: # 游戏设置，仅支持source: bgmv0
   enable: false
@@ -206,4 +211,4 @@ game: # 游戏设置，仅支持source: bgmv0
   order:
   extra_options:
     key: value
-  coverMirror: 
+  coverMirror: # https://images.weserv.nl/?url=

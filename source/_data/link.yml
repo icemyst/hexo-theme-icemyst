@@ -1,0 +1,597 @@
+- class_name: 框架
+  flink_style: flexcard
+  link_list:
+    - name: Hexo
+      hundredSuffix: "!w120"
+      link: https://hexo.io/zh-tw
+      avatar: https://d33wubrfki0l68.cloudfront.net/6657ba50e702d84afb32fe846bed54fba1a77add/827ae/logo.svg
+      descr: 快速、简单且强大的网站框架
+    - name: anzhiyu主题
+      link: https://blog.anheyu.com
+      avatar: https://img02.anheyu.com/adminuploads/1/2022/09/15/63232b7d91d22.jpg
+      descr: 生活明朗，万物可爱
+      siteshot: https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/anzhiy.cn.jpg
+    - name: Hugo
+      hundredSuffix: "!w120"
+      link: https://gohugo.io
+      avatar: https://cdn.guole.fun/logo/hugo.png
+      descr: Go 语言的静态网站生成器
+    - name: Lovelt
+      hundredSuffix: "!w120"
+      link: https://github.com/cityiron/LeaveIt
+      avatar: https://cdn.guole.fun/logo/lovelt.png
+      descr: Hugo主题，曾借鉴过一些样式，感谢。
+    - name: RTheme
+      hundredSuffix: "!w120"
+      link: https://ravelloh.top/
+      avatar: https://ravelloh.top/assets/images/avatar.jpg
+      descr: 现代化极客风多功能横版静态博客主题框架
+
+
+- class_name: 博客推荐
+  flink_style: telescopic
+  link_list:
+    - name: Akilar
+      hundredSuffix: "!w120"
+      link: https://akilar.top
+      avatar: https://npm.elemecdn.com/akilar-candyassets/image/siteicon/favicon.png
+      descr: 欢迎光临糖果屋
+      siteshot: https://cdn.jsdelivr.net/gh/Akilarlxh/ScreenShot@gh-pages/akilar.top.jpg
+    - name: LYXの小破站
+      hundredSuffix: "!w120"
+      link: https://yisous.xyz
+      avatar: https://bu.dusays.com/2022/12/15/639a9ebbbc1ad.jpg
+      descr: 分享设计与生活
+      siteshot: https://vercel.yisous.xyz/img/siteshot.png
+    - name: Leonus
+      hundredSuffix: "!w120"
+      link: https://blog.leonus.cn/
+      avatar: https://q1.qlogo.cn/g?b=qq&nk=990320751&s=5
+      descr:
+    - name: tianli
+      hundredSuffix: "!w120"
+      link: https://tianli-blog.club/
+      avatar: https://img1.tianli0.top/logo.png
+      descr: 自知之明是最可贵的知识！
+      siteshot: https://image.thum.io/get/width/400/crop/800/allowJPG/wait/20/https://tianli-blog.club
+    - name: 浅笑安然
+      hundredSuffix: "!w120"
+      link: https://siax.cn/
+      avatar: https://jsd.onmicrosoft.cn/npm/picture-sianx@1.0.0/Blog/logo.png
+      descr: 总之岁月漫长，然而值得等待。
+    - name: 张洪Heo
+      offline: false
+      link: https://blog.zhheo.com/
+      avatar: https://blog.zhheo.com/img/avatar.png
+      descr: 分享设计与科技生活
+      color: speed
+      tag: 生活
+    - name: しゅふがく  #🧊小冰博客 #152
+      offline: true
+      link: https://zfe.space/
+      avatar: https://zfe.space/images/headimage.png
+      descr: 做个有梦想的人！
+      siteshot: https://npm.elemecdn.com/akilar-friends@latest/siteshot/zfe.space.jpg
+    - name: JayHrn
+      link: https://blog.jayhrn.com
+      avatar: https://npm.elemecdn.com/hrn-blog@1.0.0/avatar.svg
+      descr: 念念不忘，必有回响
+    - name: Ethan.Tzy
+      link: https://fe32.top
+      avatar: https://bu.dusays.com/2022/05/02/626f92e193879.jpg
+      descr: 古今之成大事者，不惟有超世之才，亦必有坚忍不拔之志
+      screenshot: https://bu.dusays.com/2022/06/01/6296ceb2e4935.jpg
+    - name: Fomalhaut🥝
+      link: https://fomalhaut1998.github.io
+      avatar: https://sourcebucket.s3.ladydaily.com/img/avatar.webp
+      descr: Future is now 🍭🍭🍭
+      siteshot: https://source.fomal.cc/siteshot/www.fomal.cn.jpg
+    - name: 张时贰
+      link: https://GC-ZF.github.io
+      avatar: https://GC-ZF.github.io/Hexo_img/avatar.jpg
+      descr: 环转码，热爱敲代码的小张！
+      siteshot:
+    - name: 『轻笑Chuckle』
+      link: https://qxchuckle.github.io
+      avatar: https://qxchuckle.github.io/img/head.webp
+      descr: 环转码，热爱敲代码的小张！
+      color: vip
+      tag: 荐
+    - name: Hacker的小破站
+      link: https://www.xinpro.cn
+      avatar: https://cos.xinpro.cn/LightPicture/2023/06/ce40db9323acc541.png
+      descr: 不同寻常，路在何方？
+      color: vip
+      tag: 赞助
+    - name: guole's Blog
+      hundredSuffix: "!w120"
+      link: https://guole.fun
+      avatar: https://guole.fun/images/icon/avatar.jpg
+      descr: 保持理智，相信明天。
+
+
+- class_name: 图标库
+  class_desc: 那些经常使用的图标库
+  flink_style: flexcard
+  link_list:
+    - name: 阿里图标库
+      link: https://www.iconfont.cn
+      avatar: https://cdn.guole.fun/logo/weizhi.png
+      descr: 多次使用
+    - name: fontawesome
+      link: https://fontawesome.com
+      avatar: http://www.w3.org/2000/svg
+      descr: fontawesome图标,简单便捷
+
+
+- class_name: 壁纸库
+  class_desc: 收藏及分享的壁纸库，有可能你用的上
+  flink_style: flexcard
+  link_list:
+    - name: 极简壁纸
+      hundredSuffix: "!w120"
+      link: https://bz.zzzmh.cn
+      avatar: https://bz.zzzmh.cn/img/icons/favicon-32x32.png
+      descr: 图片来源自 WallHaven，进行了重新分类，国内速度较好。
+    - name: Simple Desktops
+      hundredSuffix: "!w120"
+      link: http://simpledesktops.com
+      avatar: http://static.simpledesktops.com/static/favicon.ico
+      descr: 极简风格插画
+    - name: Wallpaper Abyss
+      link: https://wall.alphacoders.com
+      avatar: https://static.alphacoders.com/icons/wallpaper/favicon-16x16.png
+      descr: 用的一些壁纸都是从这里加载的。
+    - name: Awesome Wallpapers
+      link: https://wallhaven.cc
+      avatar:
+      descr: 这里可以找到一些国漫的图，挺不错的。
+    - name: Desktop wallpapers
+      hundredSuffix: "!w120"
+      link: https://wallpaperscraft.com
+      avatar: https://wallpaperscraft.com/public/img/general/icons/app-logo.svg
+      descr: 类型丰富，支持安卓和 iOS 客户端。
+    - name: GameWallpapers
+      hundredSuffix: "!w120"
+      link: https://www.gamewallpapers.com
+      avatar: https://www.gamewallpapers.com/images/icons/gw.png
+      descr: 游戏专题壁纸，有专门的宽屏、双屏和多屏壁纸。
+    - name:  必应每日高清壁纸
+      hundredSuffix: "!w120"
+      link: https://bing.ioliu.cn
+      avatar:
+      descr: 微软必应壁纸的质量还是很高的，这就是一个专门分享必应每日壁纸的站点。
+    - name:  WallpaperMaiden
+      hundredSuffix: "!w120"
+      link: https://www.wallpapermaiden.com
+      avatar:
+      descr: 各种类型壁纸齐全，可以按类型、分辨率、关键词检索。
+    - name: Wallpaper Cave
+      hundredSuffix: "!w120"
+      link: https://wallpapercave.com
+      avatar: https://wallpapercave.com/favicon.ico
+      descr: 风格偏清新明丽，主页按类型和主题将壁纸分为各个小类。
+    - name: 动漫图片和壁纸
+      link: https://anime-pictures.net
+      avatar: https://anime-pictures.net/favicon.ico
+      descr: 动漫爱好者聚集地
+    - name: CGWallpapers
+      link: https://www.cgwallpapers.com/
+      avatar: https://www.cgwallpapers.com/favicon.ico
+      descr: 有宽屏、双屏和多屏壁纸
+    - name: 3G 壁纸
+      link: https://desk.3gbizhi.com/
+      avatar:
+      descr: 国人维护的壁纸网站，图片清晰度不错，有提供手机、电脑壁纸。
+
+- class_name: 友链聚集地
+  class_desc: 那些人，那些事。
+  flink_style: anzhiyu
+  link_list:
+    - name:  陈YFの博客(￣▽￣)"
+      link: https://blog.cyfan.top/
+      avatar: https://npm.elemecdn.com/chenyfan-cdn@2.0.0/img/avatar.png
+      descr: 一个在互联网角落挣扎的小站点 / CYF / Living In China
+      color: vip
+      tag: 荐
+    - name: 偷掉月亮的阿硕
+      link: https://moonshuo.github.io
+      avatar: https://moonshuo.github.io/img/avatar.gif
+      descr: 这是我的博客网站
+      color: vip
+      tag: 荐
+    - name: 虎了吧唧
+      link: https://hulebaji.me
+      avatar: https://image.xiaoztx.top/i615Ha.png
+      descr: 研墨成浆，提笔思量
+    - name: 優萌初華
+      offline: false
+      link: https://shoka.lostyu.me
+      avatar: https://cdn.jsdelivr.net/gh/amehime/shoka@latest/images/avatar.jpg
+      descr: 琉璃的医学 & 编程笔记
+    - name: 小植の小破站
+      link: https://huangblogs.github.io
+      avatar: https://image.xiaoztx.top/IjPYAQ.jpeg
+      descr: 生生不息，好运不止
+    - name: 阿辰
+      offline: false
+      link: https://cheng4362.github.io
+      avatar: https://s3.bmp.ovh/imgs/2021/09/431adb1f4b613d28.jpg
+      descr: 欢迎光临我的博客
+    - name: Lete乐特
+      offline: false
+      link: https://www.lete114.top
+      avatar: https://www.lete114.top/img/favicon.ico
+      descr: 每天进步一点点
+    - name: Luckey
+      link: http://www.luckyzmj.cn
+      avatar: https://s1.ax1x.com/2020/05/17/YRWsYT.png
+      descr: 越努力，越幸运
+    - name: 夜的第八章
+      link: http://kuole-o.github.io
+      avatar: http://kuole-o.github.io/img/avatar.jpg
+      descr: 折腾，发呆，躺平，无缝切换的 95 后青年。
+    - name: 洪卫の博客
+      offline: false
+      link: http://sunhwee.com
+      avatar: https://sunhwee.com/hwsun.jpg
+      descr: UESTC CVer
+    - name: 王同学&Blog
+      link: http://www.wxz666.icu/
+      avatar: http://www.wxz666.icu/img/favicon.ico.jpg
+      descr: 须知少时凌云志，曾许人间第一流
+    - name: 包子哟
+      link: https://blog.bugjava.cn
+      avatar: https://q2.qlogo.cn/headimg_dl?dst_uin=2377743797&spec=100
+      descr: 一个练习Bug时长两年半的程序员建立的小站
+    - name: AKA-Yi
+      link: https://aka-yi.github.io/
+      avatar: https://i0.wp.com/s2.loli.net/2023/03/23/xbhz1nMvs8I7ydr.png
+      descr: AKA-Yi的作坊
+      siteshot: https://i0.wp.com/s2.loli.net/2023/04/03/qG1wzKoSujbEWxs.png
+    - name: Pupper
+      link: https://pupper.cn
+      avatar: https://img.pupper.cn/img/202302202310447.webp
+      descr: 记录学习、生活中的点点滴滴~
+      siteshot: https://img.pupper.cn/img/202303021330908.png
+    - name: Kyle's Blog
+      link: https://cyborg2077.github.io/
+      avatar: https://i0.wp.com/s2.loli.net/2022/04/18/fj4XvrdM5o62hbA.png
+      descr: 正 在 和 世 界 解 耦 合
+      siteshot: https://s1.ax1x.com/2023/03/21/ppUtBeH.png
+    - name: GanSer
+      link: https://gan1ser.top/
+      avatar: https://pic.imgdb.cn/item/63f16cddf144a010070697c8.jpg
+      descr: 紫箫吟断，素笺恨切，夜寒鸿起
+      siteshot: https://pic.imgdb.cn/item/641f129ea682492fcc4a1628.png
+    - name: wuluo-久洛南伊🥕🍇
+      link: https://www.wuluojiu.xyz/
+      avatar: https://wuluoimg.wuluojiu.xyz/img/head.jpg
+      descr: Future is now 🍭🍭🍭
+      siteshot: https://wuluoimg.wuluojiu.xyz/img/siteshot.png
+    - name:  墨尘的生活小站
+      link: https://mnchen.cn/
+      avatar: https://upload-bbs.miyoushe.com/upload/2023/05/20/202672061/e04b8ca642e6e6028c537040720ffa98_2321845104782619490.jpg
+      descr: 一只没有梦想的咸鱼
+      siteshot: https://i.328888.xyz/2023/03/14/9G8av.png
+    - name: Peace`Home
+      link: https://tiaq.cn/
+      avatar: https://alist-tuku.oss-cn-beijing.aliyuncs.com/tuchuang/blog-p/zaxiang/%E4%B9%BE%E7%BA%B1%E5%AF%BF%E5%8F%B6.jpg
+      descr: 藏匿在大海中的小屋
+    - name: Bgemini
+      link: https://xieyong.cc
+      avatar: https://xuyuya.oss-cn-guangzhou.aliyuncs.com/img_for_typora/head.webp
+      descr: 光荣在于平淡，艰难在于漫长
+      siteshot: https://xuyuya.oss-cn-guangzhou.aliyuncs.com/img_for_typora/zhandian.png
+    - name: 鲸落
+      link: https://www.blogog.top/
+      avatar: https://i0.wp.com/s2.loli.net/2022/12/16/nghU7Q1rKxSkbAB.jpg
+      descr: There is only one heroism in the world:to see the world as it is and to love it.
+    - name: 满心Hrn
+      link: https://blog.lovelu.top
+      avatar: https://cdn.lovelu.top/img/logo.png
+      descr: 追求让人充实，分享让人快乐
+    - name: 白雾茫茫丶
+      link: https://www.xmwpro.com/
+      avatar: https://ali-oss.xmwpro.com/global/avatar.jpg
+      descr: 记录学习、生活和有趣的事
+    - name: 徐乔年
+      link: https://hsuqnian.top/
+      avatar: https://hsuqnian.top/picture.png
+      descr: 不惊、不惑、不扰。
+      siteshot: https://image.thum.io/get/width/400/crop/800/allowJPG/wait/20/noanimate/https://hsuqnian.top/
+    - name: Neil Y
+      hundredSuffix: "!w120"
+      link: https://jx.mpsxx.top
+      avatar: https://cdn.neily.top/images/BlogAvatar.webp
+      descr: もし、よろしければ…
+    - name: 一蓑烟雨
+      hundredSuffix: "!w120"
+      link: https://easyf12.top
+      avatar: https://img.easyf12.top/images/2022/10/15/634a8b4186889.webp
+      descr: 一蓑烟雨任平生。
+    - name: 胡桃木实验室
+      hundredSuffix: "!w120"
+      link: https://www.htmacg.cn
+      avatar: https://cravatar.cn/avatar/68b30e3e30ccfb28c9a07868b19e86b2?s=96&d=mm&r=g
+      descr: 一个热爱二次元文化的技术宅
+    - name: 梦念逍遥
+      hundredSuffix: "!w120"
+      link: https://blog.lwtxiaoyao.top
+      avatar: https://blog.lwtxiaoyao.top/images/icon.png
+      descr: 一个b站up主的个人博客
+    - name: 朝而往
+      link: https://muerg.cn/
+      avatar: https://image.xiaoztx.top/4v7ErJ.jpeg
+      descr: 四时之景不同，而乐亦无穷也。
+      siteshot: https://image.muerg.cn/i/2023/05/01/644f6c9675c86.jpg
+    - name: 御网尚书的日记本
+      link: https://hack-gov.com.cn
+      avatar: https://image.xiaoztx.top/xgELYM.png
+      siteshot: https://websitecssjs.oss-cn-beijing.aliyuncs.com/links/siteshot.jpg
+      descr: 愿以赤子之心，共建网络空间安全
+    - name: 王貔貅
+      link: https://blog.wpixiu.cn/
+      avatar: https://image.xiaoztx.top/XRnuog.jpeg
+      descr: 日就月将,学有缉熙于光明
+      siteshot: https://pic2.imgdb.cn/item/64575baa0d2dde5777309417.jpg
+    - name: 小明
+      hundredSuffix: ""
+      link: https://xiaomingwy.com/
+      avatar: https://image.xiaoztx.top/wRbLP1.jpeg
+      descr: 日有所思夜有所梦。
+      siteshot: https://pan.xiaomingwy.com/o/2023/05/18/6465dc9a8dd03.png
+    - name: 青桔气球
+      link: https://blog.qjqq.cn/
+      avatar: https://image.xiaoztx.top/T7jMyj.webp
+      descr: 分享网络安全与科技生活
+    - name: 铭心石刻
+      link: https://blog.kouseki.cn/
+      avatar: https://image.xiaoztx.top/FsKjpS.webp
+      descr: 愿岁并谢，与友长兮
+      siteshot: https://blog.kouseki.cn/imgs/siteshot.webp
+    - name: 小志IT知识库
+      link: https://www.czfq99.cn
+      avatar: https://image.xiaoztx.top/LbVLVq.jpeg
+      descr: 一个专注于安全领域的全栈博客
+    - name: 摸鱼星球
+      link: https://moyustar.cn/
+      avatar: https://image.xiaoztx.top/WqHCRf.png
+      descr: 斯人若彩虹，遇见方知有
+      siteshot: https://moyustar.cn/fengmian.png
+    - name: 米粒个人博客
+      link: https://luomengguo.top/
+      avatar: https://image.xiaoztx.top/Qb0SoO.webp
+      descr: 追梦少年,敢干敢搏
+    - name: CC康纳百川
+      link: https://blog.ccknbc.cc
+      avatar: https://image.xiaoztx.top/QNgvaY.png
+      descr: CC康纳百川的小窝
+    - name: BZ导航
+      link: http://qbz.wobu.cc/
+      avatar: https://image.xiaoztx.top/fbw9L5.png
+      descr: 为各类合法站点提供用户交流，用户流动，让不知名的优秀网站得以被发现，让大网站的资源得到更多使用
+      siteshot: https://jsd.onmicrosoft.cn/npm/blogimages/pictures/khdslb.webp
+    - name: 好摄之徒
+      link: https://www.mz521.cn
+      avatar: https://image.xiaoztx.top/skPZtu.png
+      descr: 欢迎一起学习摄影
+    - name: g1eny0ung
+      hundredSuffix: "!w120"
+      link: https://g1en.site/
+      avatar: 	https://g1en.site/me/yy.jpg
+      descr: 与其感慨路难行，不如马上出发。
+    - name: iMaeGoo
+      hundredSuffix: "!w120"
+      link: https://www.imaegoo.com
+      avatar: https://www.imaegoo.com/images/avatar.jpg
+      descr: 虹墨空间站
+    - name: 黑石博客
+      hundredSuffix: "!w120"
+      link: https://www.heson10.com
+      avatar:
+      descr: BBtalk 功能作者
+    - name: 木木木木木
+      hundredSuffix: "!w120"
+      link: https://immmmm.com
+      avatar:
+      descr: Bber 功能作者
+    - name: 小康博客
+      hundredSuffix: "!w120"
+      link: https://www.antmoe.com
+      avatar: https://dogefs.s3.ladydaily.com/tzk/storage/avatar.jpg # https://cdn.jsdelivr.net/gh/sviptzk/HexoStaticFile@latest/avatar.jpg
+      descr: 一个收藏回忆与分享技术的地方！
+    - name: Sianx's Blog
+      hundredSuffix: "!w120"
+      link: https://sianx.com
+      avatar: https://jsd.onmicrosoft.cn/npm/picture-sianx@1.0.0/Blog/logo.png
+      descr: 总之岁月漫长，然而值得等待。
+    - name: Aciano
+      hundredSuffix: "!w120"
+      link: https://realyao.github.io
+      avatar: https://npm.onmicrosoft.cn/aciano-cdn@1.0.10/avatar.jpg
+      descr: 零碎的岛屿总会找到海.
+    - name: GuoDong の Blog
+      hundredSuffix: "!w120"
+      link: https://guodongblog.com
+      avatar: https://guodongblog.com/img/avatar.png
+      descr: 保持敬畏，保持谦卑~
+    - name: Guo Le
+      hundredSuffix: "!w120"
+      link: https://guole.fun
+      avatar: https://guole.fun/img/gl.jpg
+      descr:
+    - name: Ordis'Blog
+      hundredSuffix: "!w120"
+      link: https://imbhj.com
+      avatar: https://imbhj.com/img/avatar1.png
+      descr: 三丘丘采药，四丘丘嗷～
+    - name: ITlubber
+      hundredSuffix: "!w120"
+      link: https://itlubber.gitee.io
+      avatar: https://itlubber.gitee.io/img/avatar.jpg
+      descr: 苟且当下，心向远方，守一座城，等一个人
+    - name: 皮皮凛の小窝
+      hundredSuffix: "!w120"
+      link: https://owomoe.net
+      avatar: https://owomoe.net/logo.webp
+      descr: 皮皮凛的个人博客
+    - name: 花桑
+      hundredSuffix: "!w120"
+      link: https://drflower.top
+      avatar: https://blog-1300673521.cos.ap-guangzhou.myqcloud.com/images/avatar.jpg
+      descr: 梦想成为家里蹲的游戏开发萌新
+    - name: 无妄当自持
+      hundredSuffix: "!w120"
+      link: https://www.insidentally.com
+      avatar: https://www.insidentally.com/images/icon/avatar.svg
+      descr: 梧桐树，三更雨，不道离情正苦。
+    - name: yoyo
+      hundredSuffix: "!w120"
+      link: https://www.eula.club
+      avatar: https://www.eula.club/images/avatar.webp
+      descr: 去追寻便好，哪怕是须臾的光亮。
+    - name: 贰猹の小窝
+      hundredSuffix: "!w120"
+      link: https://noionion.top
+      avatar:
+      descr:
+    - name: ChenQi
+      hundredSuffix: "!w120"
+      link: https://www.allbs.cn
+      avatar: https://www.allbs.cn/img/avater.jpg
+      descr: 辄思事理,翼尽刍荛
+    - name: Teacher Du
+      hundredSuffix: "!w120"
+      link: https://dusays.com
+      avatar: https://cdn.dusays.com/avatar.png/2
+      descr: 师者，传道，授业，解惑
+    - name: 唐志远の博客
+      hundredSuffix: "!w120"
+      link: https://tzy1997.com/articles/hexo1602
+      avatar: https://bu.dusays.com/2022/05/02/626f92e193879.jpg
+      descr: 2022年的理想开始实现了吗？
+    - name: CHAO
+      hundredSuffix: "!w120"
+      link: https://xcrayon.github.io
+      avatar: https://xcrayon.github.io/images/avatar.jpeg
+      descr: Create Hustle Ahead Open
+    - name: 梦家博客
+      hundredSuffix: "!w120"
+      link: https://dreamhomes.github.io
+      avatar: https://cdn.jsdelivr.net/gh/dreamhomes/dreamhomes.github.io@master/img/avatar.gif
+      descr: 算法工程师｜机器学习
+    - name: NX の 博客
+      hundredSuffix: "!w120"
+      link: https://www.nickxu.top
+      avatar: https://www.nickxu.top/static/favicon.jpg
+      descr: 折腾就是快乐
+    - name: 🌈MA-WEI-JIAN
+      hundredSuffix: "!w120"
+      link: https://weijian-m.github.io/
+      avatar:
+      descr: 你看到那颗星星了嘛 ⭐
+    - name: 音乃木坂 COFFEE HOUSE
+      hundredSuffix: "!w120"
+      link: https://www.antjun.com
+      avatar:
+      descr:
+    - name: 棃星落月
+      hundredSuffix: "!w120"
+      link: https://btmuli.gitee.io
+      avatar: https://btmuli.gitee.io/img/avatar.jpg
+      descr: 愿愚薄望，如樱盛开，花吹雪散，佳人自来
+    - name: 萌傀儡
+      hundredSuffix: "!w120"
+      link: https://blhorizon.github.io
+      avatar: https://jsd.onmicrosoft.cn/npm/blogimages/link/avatar.webp
+      descr: 珍惜现在，趁早摸鱼
+      siteshot: https://jsd.onmicrosoft.cn/npm/blogimages/pictures/khdslb.webp
+    - name: 永恒
+      hundredSuffix: "!w120"
+      link: https://www.avbk.cn
+      avatar: https://q.qlogo.cn/headimg_dl?dst_uin=1527335101&spec=640&img_type=jpg
+      descr: 冰冻三尺非一日之寒，水滴石穿非一日之功
+    - name: 木木鱼
+      hundredSuffix: "!w120"
+      link: https://mmy66.cc
+      avatar:
+      descr: 冰冻三尺非一日之寒，水滴石穿非一日之功
+    - name: Juns
+      hundredSuffix: "!w120"
+      link: https://juns-g.github.io
+      avatar: https://pic2.imgdb.cn/item/6459f5ec0d2dde5777fcae3d.png
+      descr:
+    - name: 喵帕斯先生
+      hundredSuffix: "!w120"
+      link: https://jx.mpsxx.top
+      avatar: https://cdn.staticaly.com/gh/miaopasixx/picx-images-hosting@master/cq-%E8%AF%A2%E9%97%AE%E5%8F%B0.168sjup9d000.webp
+      descr:
+    - name: Ganzhe
+      hundredSuffix: "!w120"
+      link: https://ganzhe2028.github.io
+      avatar: https://pic.imgdb.cn/item/64895d391ddac507cce97bc3.webpg
+      descr: 顺其自然，持之以恒
+    - name: Zlinni
+      hundredSuffix: "!w120"
+      link: https://zlinni.github.io/
+      avatar: https://zlinni.github.io/img/head/waku3.png
+      descr: 就像新年的清晨换上新内裤一样清爽~~
+    - name: 小昱同学
+      hundredSuffix: "!w120"
+      link: https://xiaoyustudent.github.io/
+      avatar: https://xiaoyustudent.github.io/img/head.png
+      descr: 一个刚刚开始工作的程序员
+    - name: Sweet
+      hundredSuffix: "!w120"
+      link: https://thefine.github.io/
+      avatar: https://thefine.github.io/img/bai-avatar.png
+      descr: A collection and sharing website
+    - name: AwakeSheep
+      hundredSuffix: "!w120"
+      link: https://awakesheep.github.io
+      avatar: https://npm.elemecdn.com/awakesheep-assets/images/web-source/Avatar2.jpg
+      descr: Don't say so much, show you the bug
+    - name: 百里飞洋 Barry-Flynn
+      hundredSuffix: "!w120"
+      link: https://Barry-Flynn.github.io
+      avatar: https://Barry-Flynn.github.io/img/friends/Barry-Flynn.jpg
+      descr: 星河滚烫，无问西东
+    - name: 特资啦！个人资源分享站
+      hundredSuffix: "!w120"
+      link: https://www.tezilaw.com
+      avatar: https://www.tezilaw.com/wp-content/uploads/2022/12/1671086850-0353d00cdf20d2e.ico
+      descr: 专注于分享个人资源和教学教程
+    - name: 𝓨𝓾𝔂𝓪𝓷
+      hundredSuffix: "!w120"
+      link: https://szsyzx.github.io/
+      avatar: https://i0.wp.com/s2.loli.net/2022/09/05/XIJ8QimgfoG6khP.jpg
+      descr: 欢迎光临小窝！
+    - name: 酷酷哒の窝
+      hundredSuffix: "!w120"
+      link: https://kukuda.cn/
+      avatar: https://q1.qlogo.cn/g?b=qq&nk=71108363&s=640
+      descr: 生命不息，折腾不止
+    - name: 神经蛙
+      hundredSuffix: "!w120"
+      link: https://hexo.sjava.cn
+      avatar: https://hexo.sjava.cn/img/pic.png
+      descr: 种一棵树最好的时间是十年前，其次是现在。
+      siteshot: https://hexo.sjava.cn/img/sjw.png
+    - name: Pupper
+      link: https://pupper.cn
+      avatar: https://img.pupper.cn/img/202307151348675.png
+      descr: 记录学习、生活中的点点滴滴~
+      siteshot: https://img.pupper.cn/img/202307181549343.png
+    - name: hackcr
+      link: https://blog.muzilix.cn
+      avatar: https://source.muzilix.cn/img/i.png
+      descr:
+    - name: 卡卡的云笔记
+      link: https://kakablog.top/
+      avatar: https://halo-kakarot.oss-cn-beijing.aliyuncs.com/512.png
+      descr: 人生缓缓,自有答案。
+    - name: Imz
+      link: https://blog.imz.me
+      avatar: https://bu.dusays.com/2024/05/29/665746219e8c5.webp
+      descr: 仰望星空，脚踏实地

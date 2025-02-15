@@ -17,7 +17,7 @@ nav:
   fixed: true
 
 menu:
-  文 章: 
+  文 章:
     归档: /archives/ || fa-fw fas fa-archive
     分类: /categories/ || fa-fw fas fa-folder-open 
     标签: /tags/ || fa-fw fas fa-tags
@@ -33,7 +33,6 @@ menu:
   关 于:
     关于我: /about/ || fa-fw fas fa-user
     随笔: /essay/ || fas fa-pen
-
 
 # --------------------------------------
 # 代码块设置
@@ -65,7 +64,7 @@ social:
 # 图片设置
 # --------------------------------------
 
-favicon: /img/favicon.ico
+favicon: /img/siteicon/favicon.ico
 
 avatar:
   img: https://q1.qlogo.cn/g?b=qq&nk=1580777927&s=5
@@ -75,36 +74,36 @@ avatar:
 disable_top_img: false
 
 # 如果页面的横幅未设置，将显示默认的横幅
-default_top_img: false
+default_top_img:
 
 # 首页的横幅图片
 index_img: https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
 
 # 归档页面的横幅图片
-archive_img:
+archive_img: false
 
 # 注意: 标签页面，而不是标签页面
-tag_img:
+tag_img: false
 
 # 标签页面的横幅图片，您可以为每个标签设置横幅图片
 # 格式:
 #  - 标签名: xxxxx
-tag_per_img:
+tag_per_img: false
 
 # 注意: 分类页面，而不是分类页面
-category_img:
+category_img: false
 
 # 分类页面的横幅图片，您可以为每个分类设置横幅图片
 # 格式:
 #  - 分类名: xxxxx
-category_per_img:
+category_per_img: false
 
 # 页脚的背景图片
 footer_img: transparent
 
 # 网站背景
 # 可以设置为颜色或图片网址
-background: https://api.boxmoe.com/random.php?size=large
+background: # https://api.boxmoe.com/random.php?size=large
 
 cover:
   # 是否禁用封面
@@ -113,6 +112,7 @@ cover:
   archives_enable: true
   # 当封面未设置时，显示默认封面
   default_cover:
+    - https://image.smallbottle2.top/landscape
     # 知乎图片
     - https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
     - https://pic4.zhimg.com/80/v2-5db05ca43bdb82d42f357cb581d384df_1440w.webp
@@ -132,26 +132,26 @@ error_img:
 
 # 简单的404页面
 error_404:
-  enable: false
+  enable: true
   subtitle: '页面未找到'
   background: https://pic.imgdb.cn/item/64c7bada1ddac507cc135dd8.jpg
 
 post_meta:
   # 首页
   page:
-    # 选择: created / updated / both
+    # 日期类型: created / updated / both
     date_type: created
-    # 选择: date / relative
+    # 日期格式: date / relative
     date_format: date
     categories: true
     tags: true
     label: true
   post:
-    # 选择: left / center
+    # 元数据位置: left / center
     position: center
-    # 选择: created / updated / both
+    # 日期类型: created / updated / both
     date_type: both
-    # 选择: date / relative
+    # 日期格式: date / relative
     date_format: date
     categories: true
     tags: true
@@ -170,10 +170,10 @@ index_top_img_height:
 
 # 首页的副标题
 subtitle:
-  enable: true
+  enable: false
   # 打字机效果
   effect: true
-  # 自定义typed.js
+  # 自定义 typed.js
   # https://github.com/mattboldt/typed.js/#customization
   typed_option:
   # 来源 - 调用第三方服务API（仅限中文）
@@ -183,7 +183,7 @@ subtitle:
   # 1 - hitokoto.cn
   # 2 - yijuzhan.com
   # 3 - jinrishici.com
-  source: 2
+  source: false
   # 如果您关闭打字机效果，副标题将仅显示副标题的第一行
   sub:
 
@@ -229,8 +229,8 @@ post_copyright:
 
 # 赞助/奖励
 reward:
-  enable: true
-  text: 打赏
+  enable: false
+  text:
   QR_code:
     - img: /img/wechat.webp
       link:
@@ -252,14 +252,14 @@ related_post:
   enable: true
   # 显示的文章数量
   limit: 6
-  # 选择: created / updated
+  # 日期类型: created / updated
   date_type: created
 
 # 选择: 1 / 2 / false
 # 1: "下一篇文章"将链接到旧文章
 # 2: "下一篇文章"将链接到新文章
 # false: 禁用分页
-post_pagination: 1
+post_pagination: 2
 
 # 显示过期通知的文章
 noticeOutdate:
@@ -267,7 +267,7 @@ noticeOutdate:
   # 样式: simple / flat
   style: flat
   # 何时显示
-  limit_day: 365
+  limit_day: 30
   # 位置: top / bottom
   position: top
   message_prev: 已经过去了
@@ -292,14 +292,14 @@ aside:
   enable: true
   hide: false
   # 在右下角按钮中显示隐藏侧边栏的按钮
-  button: true
-  mobile: true
+  button: true # 是否隐藏侧边栏按钮
+  mobile: true # 是否在移动端显示侧边栏
   # 位置: left / right
   position: right
   display:
-    archive: true
-    tag: true
-    category: true
+    archive: false
+    tag: false
+    category: false
   card_author:
     enable: true
     description:
@@ -339,7 +339,7 @@ aside:
     enable: true
     # 如果设置为0将显示所有
     limit: 40
-    color: false
+    color: true
     # 标签的顺序，random/name/length
     orderby: random
     # 排序顺序。1, asc为升序；-1, desc为降序
@@ -383,7 +383,7 @@ rightside_bottom:
 
 # 繁体中文与简体中文之间的转换
 translate:
-  enable: false
+  enable: true
   # 按钮的文本
   default: 繁
   # 网站的语言（1 - 繁体中文/ 2 - 简体中文）
@@ -433,7 +433,7 @@ anchor:
   # 当您滚动时，URL将根据标题ID更新。
   auto_update: true
   # 点击标题以滚动并更新锚点
-  click_to_scroll: true
+  click_to_scroll: false
 
 photofigcaption: false
 
@@ -446,7 +446,7 @@ copy:
 
 # 需要安装hexo-wordcount插件
 wordcount:
-  enable: false
+  enable: true
   # 在文章元数据中显示文章字数
   post_wordcount: true
   # 在文章元数据中显示阅读文章的时间
@@ -494,7 +494,7 @@ search:
   use: algolia_search
   placeholder:
 
-  # Algolia搜索
+  # Algolia 搜索
   algolia_search:
     # 每页的搜索结果数量
     hitsPerPage: 6
@@ -544,7 +544,7 @@ comments:
   # 最多两个评论系统，第一个将作为默认显示
   # 如果您不需要评论，请留空
   # 选择: Disqus/Disqusjs/Livere/Gitalk/Valine/Waline/Utterances/Facebook Comments/Twikoo/Giscus/Remark42/Artalk
-  use:
+  use: Twikoo
   # 在按钮旁边显示评论名称
   text: true
   # 懒加载: 评论系统将在评论元素进入浏览器视口时加载。
@@ -602,7 +602,7 @@ valine:
 waline:
   serverURL:
   bg:
-  # 使用Waline页面浏览计数作为页面浏览计数
+  # Use Waline pageview count as the page view count
   pageview: false
   option:
 
@@ -610,9 +610,9 @@ waline:
 # https://utteranc.es/
 utterances:
   repo:
-  # 问题映射: pathname/url/title/og:title
+  # Issue Mapping: pathname/url/title/og:title
   issue_term: pathname
-  # 主题: github-light/github-dark/github-dark-orange/icy-dark/dark-blue/photon-dark
+  # Theme: github-light/github-dark/github-dark-orange/icy-dark/dark-blue/photon-dark
   light_theme: github-light
   dark_theme: photon-dark
   js:
@@ -622,7 +622,7 @@ utterances:
 # https://developers.facebook.com/docs/plugins/comments/
 facebook_comments:
   app_id:
-  # 可选
+  # optional
   user_id:
   pageSize: 10
   # 选择: social / time / reverse_time
@@ -632,7 +632,7 @@ facebook_comments:
 # Twikoo
 # https://github.com/imaegoo/twikoo
 twikoo:
-  envId:
+  envId: https://twikoo.abeginner.top/.netlify/functions/twikoo
   region:
   # 使用Twikoo访客计数作为页面浏览计数
   visitor: false
@@ -797,18 +797,18 @@ mask:
 
 # 加载动画
 preloader:
-  enable: false
+  enable: true
   # 来源
   # 1. fullpage-loading
   # 2. pace（进度条）
   source: 1
-  # pace主题（见 https://codebyzach.github.io/pace/）
+  # pace主题 (见 https://codebyzach.github.io/pace/)
   pace_css_url:
 
 # 页面过渡
 enter_transitions: true
 
-# 默认显示模式 - 亮（默认）/ 暗
+# 默认显示模式 - light (默认) / dark
 display_mode: light
 
 # 美化文章内容的配置
@@ -827,12 +827,12 @@ font:
   global_font_size:
   code_font_size:
   font_family:
-  code_font_family:
+  code_font_family: Arial,-apple-system,BlinkMacSystemFont,'Microsoft YaHei','Segoe UI','Helvetica Neue',Lato,Roboto,'PingFang SC',sans-serif
 
 # 网站标题和副标题的字体设置
 blog_title_font:
   font_link:
-  font_family:
+  font_family: Arial,PingFang SC, 'Hiragino Sans GB', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif
 
 # 分隔符图标的设置
 hr_icon:
@@ -853,7 +853,7 @@ activate_power_mode:
 # --------------------------------------
 
 # canvas_ribbon
-# 见: https://github.com/hustcc/ribbon.js
+# See: https://github.com/hustcc/ribbon.js
 canvas_ribbon:
   enable: false
   # 彩带的大小
@@ -913,7 +913,7 @@ clickShowText:
 # https://github.com/francoischalifour/medium-zoom
 # https://fancyapps.com/fancybox/
 # 如果您不需要灯箱，请留空
-lightbox:
+lightbox: fancybox
 
 # --------------------------------------
 # 标签插件设置
@@ -924,7 +924,7 @@ series:
   enable: false
   # 按标题或日期排序
   orderBy: 'title'
-  # 排序顺序
+  # 排序：1，为升序； -1，为降序
   order: 1
   number: true
 
@@ -946,9 +946,9 @@ mermaid:
     dark: dark
 
 # chartjs
-# 见 https://www.chartjs.org/docs/latest/
+# see https://www.chartjs.org/docs/latest/
 chartjs:
-  enable: false
+  enable: true
   # 除非您了解它们的工作原理，否则请勿修改。
   # 默认设置仅在未指定MD语法时使用。
   # 图表的通用字体颜色
@@ -998,8 +998,8 @@ aplayerInject:
 # https://github.com/polonel/SnackBar
 # 位置: top-left / top-center / top-right / bottom-left / bottom-center / bottom-right
 snackbar:
-  enable: false
-  position: bottom-left
+  enable: true
+  position: top-center
   # 轻模式和暗模式下的Toast通知背景颜色
   bg_light: '#49b1f5'
   bg_dark: '#1f1f1f'
@@ -1014,11 +1014,11 @@ lazyload:
   enable: true
   # 指定使用懒加载的字段（网站（site）或文章（post））
   field: site
-  placeholder:
-  blur: false
+  placeholder: /img/loading.webp
+  blur: true
 
 # PWA
-# 见 https://github.com/JLHwung/hexo-offline
+# See https://github.com/JLHwung/hexo-offline
 # ---------------
 pwa:
   enable: true
@@ -1083,7 +1083,7 @@ CDN:
     # artalk_css:
     # artalk_js:
     # blueimp_md5:
-    # busuanzi:
+    # busuanzi: https://cdn1.tianli0.top/npm/busuanzi@2.3.0/bsz.pure.mini.min.js
     # canvas_fluttering_ribbon:
     # canvas_nest:
     # canvas_ribbon:
@@ -1095,10 +1095,10 @@ CDN:
     # docsearch_css:
     # docsearch_js:
     # egjs_infinitegrid:
-    # fancybox:
-    # fancybox_css:
+    # fancybox: https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.js
+    # fancybox_css: https://cdn1.tianli0.top/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css
     # fireworks:
-    # fontawesome:
+    # fontawesome: https://cdn1.tianli0.top/npm/@fortawesome/fontawesome-free@6.7.2/css/fontawesome.min.css
     # gitalk:
     # gitalk_css:
     # giscus:
@@ -1106,7 +1106,7 @@ CDN:
     # instantsearch:
     # katex:
     # katex_copytex:
-    # lazyload:
+    # lazyload: https://cdn1.tianli0.top/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js
     # local_search:
     # main:
     # main_css:
@@ -1117,13 +1117,13 @@ CDN:
     # prismjs_autoloader:
     # prismjs_js:
     # prismjs_lineNumber_js:
-    # pjax:
+    # pjax: https://cdn1.tianli0.top/npm/pjax@0.2.8/pjax.min.js
     # sharejs:
     # sharejs_css:
     # snackbar:
     # snackbar_css:
     # translate:
-    # twikoo:
+    # twikoo: https://cdn1.tianli0.top/npm/twikoo@1.6.41/dist/twikoo.all.min.js # https://cdn1.tianli0.top/npm/js-heo@1.0.3/twikoo/twikoo.all.min.js
     # typed:
     # utils:
     # valine:
