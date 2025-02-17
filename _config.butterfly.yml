@@ -1,8 +1,7 @@
 # --------------------------------------
 # Hexo Butterfly 主题配置
 # 如果您有任何问题，请参考文档
-# 中文: https://butterfly.js.org/
-# 英文: https://butterfly.js.org/en/
+# https://butterfly.js.org/
 # --------------------------------------
 
 # --------------------------------------
@@ -263,7 +262,7 @@ post_pagination: 2
 
 # 显示过期通知的文章
 noticeOutdate:
-  enable: false
+  enable: true
   # 样式: simple / flat
   style: flat
   # 何时显示
@@ -433,7 +432,7 @@ anchor:
   # 当您滚动时，URL将根据标题ID更新。
   auto_update: true
   # 点击标题以滚动并更新锚点
-  click_to_scroll: false
+  click_to_scroll: true
 
 photofigcaption: false
 
@@ -1013,7 +1012,7 @@ instantpage: false
 lazyload:
   enable: true
   # 指定使用懒加载的字段（网站（site）或文章（post））
-  field: site
+  field: post
   placeholder: /img/loading.webp
   blur: true
 
