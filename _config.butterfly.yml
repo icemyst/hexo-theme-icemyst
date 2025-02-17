@@ -826,13 +826,13 @@ beautify:
 font:
   global_font_size:
   code_font_size:
-  font_family:
-  code_font_family: Arial,-apple-system,BlinkMacSystemFont,'Microsoft YaHei','Segoe UI','Helvetica Neue',Lato,Roboto,'PingFang SC',sans-serif
+  font_family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Lato, Roboto, "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif
+  code_font_family: consolas, Menlo, Arial,-apple-system,BlinkMacSystemFont,'Microsoft YaHei','Segoe UI','Helvetica Neue',Lato,Roboto,'PingFang SC',sans-serif
 
 # 网站标题和副标题的字体设置
 blog_title_font:
-  font_link:
-  font_family: Arial,PingFang SC, 'Hiragino Sans GB', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif
+  font_link: https://fonts.googleapis.com/css?family=Titillium+Web&display=swap
+  font_family: Titillium Web,Arial,PingFang SC, 'Hiragino Sans GB', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif
 
 # 分隔符图标的设置
 hr_icon:
@@ -1060,18 +1060,18 @@ inject:
 # 除非您知道它们的工作原理，否则请勿修改以下设置
 CDN:
   # 内部和第三方脚本的CDN提供商
-  # 两者的选项: local/jsdelivr/unpkg/cdnjs/custom
+  # 两者的选项: local/jsdelivr/unpkg/cdnjs/elemecdn/onmicrosoft/cbd/custom
   # 注意: 开发版本只能使用'local'用于内部脚本
   # 注意: 当将第三方脚本设置为'local'时，您需要安装hexo-butterfly-extjs
   internal_provider: local
-  third_party_provider: jsdelivr
+  third_party_provider: onmicrosoft
 
   # 向网址添加版本号，true或false
-  version: false
+  version: true
 
   # 自定义格式
   # 例如: https://cdn.staticfile.org/${cdnjs_name}/${version}/${min_cdnjs_file}
-  custom_format:
+  custom_format: https://npm.elemecdn.com/${name}@latest/${file}
 
   option:
     # abcjs_basic_js:
@@ -1083,7 +1083,7 @@ CDN:
     # artalk_css:
     # artalk_js:
     # blueimp_md5:
-    # busuanzi: https://cdn1.tianli0.top/npm/busuanzi@2.3.0/bsz.pure.mini.min.js
+    busuanzi: //busuanzi.sukap.cn/busuanzi.pure.mini.js #https://cdn1.tianli0.top/npm/busuanzi@2.3.0/bsz.pure.mini.min.js
     # canvas_fluttering_ribbon:
     # canvas_nest:
     # canvas_ribbon:

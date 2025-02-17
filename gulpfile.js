@@ -1,4 +1,3 @@
-//用到的各个插件
 var gulp = require('gulp');
 var cleanCSS = require('gulp-clean-css');
 var htmlMin = require('gulp-html-minifier-terser');
@@ -22,8 +21,6 @@ gulp.task('generate-service-worker', () => {
       "css/index.css",
       "manifest.json",
       "img/siteicon/*.{png,ico,svg}",
-      // 添加其他关键资源
-      "js/utils.js"
     ],
     modifyURLPrefix: {
       "": "./"
@@ -103,5 +100,4 @@ gulp.task('default', gulp.series("generate-service-worker", gulp.parallel(
   'compress',
   'minify-css',
   'minify-html'
-  //   ,'mini-font'
 )));

@@ -38,45 +38,48 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
 script.
   if ('serviceWorker' in navigator) {
-    // 使用 sessionStorage 来追踪首次加载和更新状态
-    const firstLoad = !sessionStorage.getItem('sw-loaded');
-    let updateHandled = false;
+    const SW_STATE = {
+      key: 'sw-loaded',
+      firstLoad: !sessionStorage.getItem('sw-loaded')
+    };
 
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').then(registration => {
-        // 首次加载时不触发更新
-        if (firstLoad) {
-          sessionStorage.setItem('sw-loaded', 'true');
+    const handleServiceWorker = async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        
+        if (SW_STATE.firstLoad) {
+          sessionStorage.setItem(SW_STATE.key, 'true');
           return;
         }
 
-        // 检查更新
+        let updateHandled = false;
+        
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
+          
           newWorker.addEventListener('statechange', () => {
-            // 只在已安装且有控制器的情况下提示更新
             if (newWorker.state === 'installed' && 
                 navigator.serviceWorker.controller && 
                 !updateHandled) {
               updateHandled = true;
-              const shouldUpdate = window.confirm('网站有新的内容，是否刷新查看？');
-              if (shouldUpdate) {
+              if (window.confirm('网站有新的内容，是否刷新查看？')) {
                 newWorker.postMessage({ type: 'SKIP_WAITING' });
               }
             }
           });
         });
 
-        // 监听控制权变更
         let refreshing = false;
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!refreshing && !firstLoad) {
+          if (!refreshing && !SW_STATE.firstLoad) {
             refreshing = true;
             window.location.reload();
           }
         });
-      }).catch(error => {
+      } catch (error) {
         console.error('Service Worker 注册失败:', error);
-      });
-    });
+      }
+    };
+
+    window.addEventListener('load', handleServiceWorker);
   }

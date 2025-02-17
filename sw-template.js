@@ -2,295 +2,302 @@ const workboxVersion = '7.3.0';
 
 importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${workboxVersion}/workbox-sw.js`);
 
+// 性能监控配置
+const PERFORMANCE_CONFIG = {
+    METRICS: {
+        CACHE_HIT: 'cache_hit',
+        CACHE_MISS: 'cache_miss',
+        NETWORK_ERROR: 'network_error'
+    },
+    MAX_LOGS: 1000
+};
+
+// 缓存配置常量
+const CACHE_CONFIG = {
+    NAMES: {
+        MAIN: 'icemystCache',
+        VERSION: 'icemystCacheTime',
+        METRICS: 'icemystMetrics'
+    },
+    MAX_AGE: 60 * 60 * 24 * 10, // 10天
+    TIMEOUT: 3000 // 3秒超时
+};
+
 workbox.core.setCacheNameDetails({
     prefix: "冰梦"
 });
 
 workbox.core.skipWaiting();
-
 workbox.core.clientsClaim();
 
-// 预缓存
-workbox.precaching.precacheAndRoute(self.__WB_MANIFEST,{
+// 注册成功后要立即缓存的资源列表
+workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
     directoryIndex: null
 });
 
+// 清空过期缓存
 workbox.precaching.cleanupOutdatedCaches();
 
-// 运行时缓存策略
-const staticAssets = new workbox.strategies.CacheFirst({
-    cacheName: "static-assets",
-    plugins: [
-        new workbox.expiration.ExpirationPlugin({
-            maxEntries: 1000,
-            maxAgeSeconds: 60 * 60 * 24 * 30 // 30天
-        }),
-        new workbox.cacheableResponse.CacheableResponsePlugin({
-            statuses: [0, 200]
-        })
-    ]
-});
-
-// 静态资源缓存
-workbox.routing.registerRoute(
-    /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico|eot|ttf|woff|woff2)$/,
-    staticAssets
-);
-
-// CDN资源缓存
-workbox.routing.registerRoute(
-    /^https:\/\/(cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com)/,
-    staticAssets
-);
-
-// 页面导航采用 NetworkFirst 策略
-workbox.routing.registerRoute(
-    ({request}) => request.mode === 'navigate',
-    new workbox.strategies.NetworkFirst({
-        cacheName: 'pages',
-        plugins: [
-            new workbox.expiration.ExpirationPlugin({
-                maxEntries: 50
-            })
-        ]
-    })
-);
-
-// 消息处理
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
+// 性能监控类
+class PerformanceMonitor {
+    constructor() {
+        this.metricsCache = new CacheHelper(CACHE_CONFIG.NAMES.METRICS);
     }
-});
 
+    async logMetric(metric, value = 1) {
+        try {
+            const metrics = JSON.parse(await this.metricsCache.read('metrics') || '{}');
+            metrics[metric] = (metrics[metric] || 0) + value;
+            await this.metricsCache.write('metrics', JSON.stringify(metrics));
+
+            // 定期清理旧的指标数据
+            if (Object.keys(metrics).length > PERFORMANCE_CONFIG.MAX_LOGS) {
+                const sortedMetrics = Object.entries(metrics)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, PERFORMANCE_CONFIG.MAX_LOGS);
+                await this.metricsCache.write('metrics', JSON.stringify(Object.fromEntries(sortedMetrics)));
+            }
+        } catch (error) {
+            console.error('性能指标记录失败:', error);
+        }
+    }
+}
+
+// 缓存策略工厂
+class CacheStrategyFactory {
+    static createStrategy(config) {
+        return new workbox.strategies.CacheFirst({
+            cacheName: config.cacheName,
+            plugins: [
+                new workbox.expiration.ExpirationPlugin({
+                    maxEntries: config.maxEntries || 1000,
+                    maxAgeSeconds: config.maxAgeSeconds || 60 * 60 * 24 * 30
+                }),
+                new workbox.cacheableResponse.CacheableResponsePlugin({
+                    statuses: [0, 200]
+                })
+            ]
+        });
+    }
+}
+
+// 注册缓存路由
+const registerCacheRoutes = () => {
+    // 图片资源
+    workbox.routing.registerRoute(
+        /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/,
+        CacheStrategyFactory.createStrategy({ cacheName: 'images' })
+    );
+
+    // 字体文件
+    workbox.routing.registerRoute(
+        /\.(?:eot|ttf|woff|woff2)$/,
+        CacheStrategyFactory.createStrategy({ cacheName: 'fonts' })
+    );
+
+    // 谷歌字体
+    workbox.routing.registerRoute(
+        /^https:\/\/fonts\.googleapis\.com/,
+        new workbox.strategies.StaleWhileRevalidate({
+            cacheName: "google-fonts-stylesheets"
+        })
+    );
+    workbox.routing.registerRoute(
+        /^https:\/\/fonts\.gstatic\.com/,
+        CacheStrategyFactory.createStrategy({ cacheName: 'google-fonts-webfonts' })
+    );
+
+    // jsdelivr的CDN资源
+    workbox.routing.registerRoute(
+        /^https:\/\/cdn\.jsdelivr\.net/,
+        CacheStrategyFactory.createStrategy({ cacheName: 'static-libs' })
+    );
+};
+
+// 初始化路由
+registerCacheRoutes();
 workbox.googleAnalytics.initialize();
 
-/** 缓存库（数据）名称 */
-const CACHE_NAME = 'icemystCache'
-/** 缓存库（时间戳）名称 */
-const VERSION_CACHE_NAME = 'icemystCacheTime'
-/** 缓存离线超时时间 */
-const MAX_ACCESS_CACHE_TIME = 60 * 60 * 24 * 10
-
 function time() {
-    return new Date().getTime()
+    return Date.now();
 }
 
-const dbHelper = {
-    read: (key) => {
-        return new Promise((resolve) => {
-            caches.match(key).then(function (res) {
-                if (!res) resolve(null)
-                res.text().then(text => resolve(text))
-            }).catch(() => {
-                resolve(null)
-            })
-        })
-    },
-    write: (key, value) => {
-        return new Promise((resolve, reject) => {
-            caches.open(VERSION_CACHE_NAME).then(function (cache) {
-                // noinspection JSIgnoredPromiseFromCall
-                cache.put(key, new Response(value));
-                resolve()
-            }).catch(() => {
-                reject()
-            })
-        })
-    },
-    delete: (key) => {
-        caches.match(key).then(response => {
-            if (response) caches.open(VERSION_CACHE_NAME).then(cache => cache.delete(key))
-        })
+class CacheHelper {
+    constructor(cacheName) {
+        this.cacheName = cacheName;
+        this.cache = null;
+    }
+
+    async getCache() {
+        if (!this.cache) {
+            this.cache = await caches.open(this.cacheName);
+        }
+        return this.cache;
+    }
+
+    createKey(key) {
+        return `https://${this.cacheName}/${encodeURIComponent(key)}`;
+    }
+
+    async read(key) {
+        try {
+            const cache = await this.getCache();
+            const response = await cache.match(this.createKey(key));
+            return response ? await response.text() : null;
+        } catch (error) {
+            console.error('缓存读取错误:', error);
+            return null;
+        }
+    }
+
+    async write(key, value) {
+        try {
+            const cache = await this.getCache();
+            const response = new Response(String(value));
+            await cache.put(this.createKey(key), response);
+            return true;
+        } catch (error) {
+            console.error('缓存写入错误:', error);
+            return false;
+        }
+    }
+
+    async delete(key) {
+        try {
+            const cache = await this.getCache();
+            await cache.delete(this.createKey(key));
+            return true;
+        } catch (error) {
+            console.error('缓存删除错误:', error);
+            return false;
+        }
     }
 }
 
-/** 存储缓存入库时间 */
-const dbTime = {
-    read: (key) => dbHelper.read(new Request(`https://LOCALCACHE/${encodeURIComponent(key)}`)),
-    write: (key, value) => dbHelper.write(new Request(`https://LOCALCACHE/${encodeURIComponent(key)}`), value),
-    delete: (key) => dbHelper.delete(new Request(`https://LOCALCACHE/${encodeURIComponent(key)}`))
-}
+// 初始化缓存管理器和性能监控
+const cacheManagers = {
+    time: new CacheHelper(CACHE_CONFIG.NAMES.VERSION),
+    access: new CacheHelper(CACHE_CONFIG.NAMES.MAIN)
+};
+const performanceMonitor = new PerformanceMonitor();
 
-/** 存储缓存最后一次访问的时间 */
-const dbAccess = {
-    update: (key) => dbHelper.write(new Request(`https://ACCESS-CACHE/${encodeURIComponent(key)}`), time()),
-    check: async (key) => {
-        const realKey = new Request(`https://ACCESS-CACHE/${encodeURIComponent(key)}`)
-        const value = await dbHelper.read(realKey)
-        if (value) {
-            dbHelper.delete(realKey)
-            return time() - value < MAX_ACCESS_CACHE_TIME
-        } else return false
+async function handleFetch(request, cachedResponse, cacheConfig) {
+    const currentTime = time();
+    
+    const networkPromise = fetch(request).then(async response => {
+        if (response.ok || response.status === 0) {
+            const cache = await caches.open(CACHE_CONFIG.NAMES.MAIN);
+            const clonedResponse = response.clone();
+            await cache.put(request, clonedResponse);
+            await cacheManagers.time.write(request.url, currentTime);
+            await performanceMonitor.logMetric(PERFORMANCE_CONFIG.METRICS.CACHE_MISS);
+        }
+        return response;
+    }).catch(async error => {
+        await performanceMonitor.logMetric(PERFORMANCE_CONFIG.METRICS.NETWORK_ERROR);
+        throw error;
+    });
+
+    if (!cachedResponse) {
+        return networkPromise;
     }
+
+    const cachedTime = await cacheManagers.time.read(request.url);
+    if (cachedTime && (currentTime - parseInt(cachedTime, 10)) < cacheConfig.time) {
+        await performanceMonitor.logMetric(PERFORMANCE_CONFIG.METRICS.CACHE_HIT);
+        return cachedResponse;
+    }
+
+    const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Network timeout')), CACHE_CONFIG.TIMEOUT)
+    );
+
+    return Promise.race([networkPromise, timeoutPromise])
+        .catch(async () => {
+            await performanceMonitor.logMetric(PERFORMANCE_CONFIG.METRICS.NETWORK_ERROR);
+            return cachedResponse;
+        });
 }
 
-/**
- * 缓存列表
- * @param url 匹配规则
- * @param time 缓存有效时间
- * @param clean 清理缓存时是否无视最终访问时间直接删除
- */
+// 优化的CDN替换配置
+const CDN_CONFIG = {
+    REPLACEMENTS: [
+        {
+            source: '//cdn.jsdelivr.net/npm',
+            target: '//jsd.onmicrosoft.cn/npm'
+        },
+        {
+            source: '//cdn.jsdelivr.net/gh',
+            target: '//jsd.onmicrosoft.cn/gh'
+        }
+    ]
+};
+
+// 缓存配置
 const cacheList = {
-    /* 样例 */
     static: {
-        // 标记在删除所有缓存时是否移除该缓存
         clean: false,
-        /**
-         * 接收一个URL对象，判断是否符合缓存规则
-         * @param url {URL}
-         */
-        match: url => run(url.pathname, it => it.match(/\.(woff2|woff|ttf|cur)$/) ||
-            it.match(/\/(pjax\.min|fancybox\.umd\.min|twikoo\.all\.min)\.js$/) ||
-            it.match(/\/(all\.min|fancybox\.min)\.css/)
-        )
+        time: 60 * 60 * 24 * 30,
+        match: url => {
+            const pathname = url.pathname;
+            return pathname.match(/\.(woff2|woff|ttf|cur)$/) ||
+                   pathname.match(/\/(pjax\.min|fancybox\.umd\.min|twikoo\.all\.min)\.js$/) ||
+                   pathname.match(/\/(all\.min|fancybox\.min)\.css/);
+        }
     }
-}
+};
 
-/**
- * 链接替换列表
- * @param source 源链接
- * @param dist 目标链接
- */
-const replaceList = {
-    simple: {
-        source: ['//cdn.jsdelivr.net/gh'],
-        dist: '//cdn1.tianli0.top/gh'
-    }
-}
-
-/** 判断指定url击中了哪一种缓存，都没有击中则返回null */
 function findCache(url) {
-    for (let key in cacheList) {
-        const value = cacheList[key]
-        if (url.match(value.url)) return value
+    try {
+        const urlObj = new URL(url);
+        return Object.values(cacheList).find(config => config.match(urlObj)) || null;
+    } catch (error) {
+        console.error('URL解析失败:', error);
+        return null;
     }
-    return null
 }
 
-/**
- * 检查连接是否需要重定向至另外的链接，如果需要则返回新的Request，否则返回null<br/>
- * 该函数会顺序匹配{@link replaceList}中的所有项目，即使已经有可用的替换项<br/>
- * 故该函数允许重复替换，例如：<br/>
- * 如果第一个匹配项把链接由"http://abc.com/"改为了"https://abc.com/"<br/>
- * 此时第二个匹配项可以以此为基础继续进行修改，替换为"https://abc.net/"<br/>
- */
 function replaceRequest(request) {
     let url = request.url;
-    let flag = false
-    for (let key in replaceList) {
-        const value = replaceList[key]
-        for (let source of value.source) {
-            if (url.match(source)) {
-                url = url.replace(source, value.dist)
-                flag = true
-            }
-        }
-    }
-    return flag ? new Request(url) : null
-}
-
-/** 判断是否拦截指定的request */
-function blockRequest(request) {
-    return false
-}
-
-async function fetchEvent(request, response, cacheDist) {
-    try {
-        // 只缓存 GET 请求
-        if (request.method !== 'GET') {
-            return fetch(request);
-        }
-
-        const NOW_TIME = time()
-        await dbAccess.update(request.url)
-
-        // 如果有缓存响应，先检查是否过期
-        if (response) {
-            const cachedTime = await dbTime.read(request.url)
-            if (cachedTime && (NOW_TIME - cachedTime < cacheDist.time)) {
-                return response
-            }
-        }
-
-        // 尝试从网络获取
-        try {
-            const networkResponse = await fetch(request)
-            if (networkResponse.ok || networkResponse.status === 0) {
-                // 只缓存 GET 请求的响应
-                if (request.method === 'GET') {
-                    const clone = networkResponse.clone()
-                    caches.open(CACHE_NAME).then(cache => cache.put(request, clone))
-                    await dbTime.write(request.url, NOW_TIME)
-                }
-                return networkResponse
-            }
-        } catch (networkError) {
-            console.log('网络请求失败，使用缓存:', request.url)
-        }
-
-        // 如果网络请求失败且有缓存，返回缓存
-        if (response) {
-            return response
-        }
-
-        // 如果既没有网络也没有缓存，返回错误响应
-        return new Response('Network error happened', {
-            status: 408,
-            headers: new Headers({
-                'Content-Type': 'text/plain'
-            })
-        })
-    } catch (error) {
-        console.error('Fetch event error:', error)
-        return new Response('Service Worker Error', {
-            status: 500,
-            headers: new Headers({
-                'Content-Type': 'text/plain'
-            })
-        })
-    }
-}
-
-self.addEventListener('fetch', event => {
-    const replace = replaceRequest(event.request)
-    const request = replace === null ? event.request : replace
     
-    // 对于非 GET 请求，直接发送到网络
-    if (request.method !== 'GET') {
-        event.respondWith(fetch(request))
-        return
+    for (const { source, target } of CDN_CONFIG.REPLACEMENTS) {
+        if (url.includes(source)) {
+            url = url.replace(source, target);
+            return new Request(url);
+        }
     }
+    
+    return null;
+}
 
-    const cacheDist = findCache(request.url)
+function blockRequest(request) {
+    // 可以在这里添加请求拦截逻辑
+    return false;
+}
+
+// 优化的fetch事件监听器
+self.addEventListener('fetch', event => {
+    const request = event.request;
+    
+    if (request.method !== 'GET') return;
+
+    const replacedRequest = replaceRequest(request);
+    if (replacedRequest) {
+        event.respondWith(fetch(replacedRequest));
+        return;
+    }
 
     if (blockRequest(request)) {
-        event.respondWith(new Response(null, {status: 204}))
-    } else if (cacheDist !== null) {
+        event.respondWith(new Response(null, { status: 204 }));
+        return;
+    }
+
+    const cacheConfig = findCache(request.url);
+    if (cacheConfig) {
         event.respondWith(
             caches.match(request)
-                .then(response => fetchEvent(request, response, cacheDist))
-                .catch(error => {
-                    console.error('Fetch handler error:', error)
-                    return new Response('Service Worker Error', {
-                        status: 500,
-                        headers: new Headers({
-                            'Content-Type': 'text/plain'
-                        })
-                    })
-                })
-        )
-    } else if (replace !== null) {
-        event.respondWith(
-            fetch(request).catch(error => {
-                console.error('Replace request error:', error)
-                return new Response('Network error', {
-                    status: 408,
-                    headers: new Headers({
-                        'Content-Type': 'text/plain'
-                    })
-                })
-            })
-        )
+                .then(cachedResponse => handleFetch(request, cachedResponse, cacheConfig))
+                .catch(() => fetch(request))
+        );
     }
-})
+});
