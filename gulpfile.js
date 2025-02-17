@@ -17,10 +17,10 @@ gulp.task('generate-service-worker', () => {
       // 只缓存关键资源
       "404.html",
       "index.html",
-      "js/main.js",
       "css/index.css",
+      "js/main.js",
       "manifest.json",
-      "img/siteicon/*.{png,ico,svg}",
+      "img/**/*.{png,jpg,jpeg,gif,svg,webp}"
     ],
     modifyURLPrefix: {
       "": "./"
@@ -28,20 +28,24 @@ gulp.task('generate-service-worker', () => {
   });
 });
 
-// 压缩js
+// 优化压缩配置
 gulp.task('compress', async() => {
   gulp.src(['./public/**/*.js', '!./public/**/*.min.js'])
     .pipe(terser({
       compress: {
-        /** @see https://blog.csdn.net/weixin_39842528/article/details/81390588 */
         sequences: 50,
         unsafe: true,
         unsafe_math: true,
         pure_getters: true,
-        ecma: true
+        ecma: 2020,
+        drop_console: true, // 移除console
+        passes: 2 // 多次优化
+      },
+      mangle: {
+        toplevel: true
       }
     }))
-    .pipe(gulp.dest('./public'))
+    .pipe(gulp.dest('./public'));
 });
 //压缩css
 gulp.task('minify-css', () => {
