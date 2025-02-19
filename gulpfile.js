@@ -1,82 +1,86 @@
-var gulp = require('gulp');
-var cleanCSS = require('gulp-clean-css');
-var htmlMin = require('gulp-html-minifier-terser');
-var htmlclean = require('gulp-htmlclean');
-var fontmin = require('gulp-fontmin');
-var workbox = require("workbox-build");
+const gulp = require('gulp');
+const cleanCSS = require('gulp-clean-css');
+const htmlMin = require('gulp-html-minifier-terser');
+const htmlclean = require('gulp-htmlclean');
+const fontmin = require('gulp-fontmin');
+const workbox = require("workbox-build");
+const terser = require('gulp-terser');
 
-// gulp-tester
-var terser = require('gulp-terser');
+// Service Worker 配置
+const swConfig = {
+  swSrc: './sw-template.js',
+  swDest: './public/sw.js',
+  globDirectory: './public',
+  globPatterns: [
+    "404.html",
+    "index.html",
+    "css/index.css",
+    "js/main.js",
+    "img/**/*.{png,jpg,jpeg,gif,svg,webp}",
+    "manifest.json"
+  ],
+  modifyURLPrefix: {
+    "": "./"
+  }
+};
 
+// Terser 配置
+const terserConfig = {
+  compress: {
+    sequences: 50,
+    unsafe: true,
+    unsafe_math: true,
+    pure_getters: true,
+    ecma: 2020,
+    drop_console: true,
+    passes: 3,
+    pure_funcs: ['console.log', 'console.info', 'console.debug']
+  },
+  mangle: {
+    toplevel: true
+  }
+};
+
+// HTML 压缩配置
+const htmlMinConfig = {
+  removeComments: true,
+  collapseWhitespace: true,
+  collapseBooleanAttributes: true,
+  removeAttributeQuotes: true,
+  removeRedundantAttributes: true,
+  removeEmptyAttributes: true,
+  removeScriptTypeAttributes: true,
+  removeStyleLinkTypeAttributes: true,
+  minifyJS: true,
+  minifyCSS: true,
+  minifyURLs: true
+};
+
+// 任务定义
 gulp.task('generate-service-worker', () => {
-  return workbox.injectManifest({
-    swSrc: './sw-template.js',
-    swDest: './public/sw.js',
-    globDirectory: './public',
-    globPatterns: [
-      // 缓存关键资源
-      "404.html",
-      "index.html",
-      "css/index.css",
-      "js/main.js",
-      "img/**/*.{png,jpg,jpeg,gif,svg,webp}",
-      "manifest.json"
-    ],
-    modifyURLPrefix: {
-      "": "./"
-    }
-  });
+  return workbox.injectManifest(swConfig);
 });
 
-// 优化压缩任务
-gulp.task('compress', async() => {
-  gulp.src(['./public/**/*.js', '!./public/**/*.min.js'])
-    .pipe(terser({
-      compress: {
-        sequences: 50,
-        unsafe: true,
-        unsafe_math: true,
-        pure_getters: true,
-        ecma: 2020,
-        drop_console: true,
-        passes: 3,  // 增加优化次数
-        pure_funcs: ['console.log', 'console.info', 'console.debug']  // 移除特定console方法
-      },
-      mangle: {
-        toplevel: true
-      }
-    }))
+gulp.task('compress', () => {
+  return gulp.src(['./public/**/*.js', '!./public/**/*.min.js'])
+    .pipe(terser(terserConfig))
     .pipe(gulp.dest('./public'));
 });
-//压缩css
+
 gulp.task('minify-css', () => {
   return gulp.src(['./public/**/*.css'])
-    .pipe(cleanCSS({
-      compatibility: 'ie11'
-    }))
+    .pipe(cleanCSS({ compatibility: 'ie11' }))
     .pipe(gulp.dest('./public'));
 });
-// 压缩html
-// 参数 doc：https://github.com/terser/html-minifier-terser#readme
-gulp.task('minify-html', () =>
-    gulp.src('./public/**/*.html')
-        .pipe(htmlclean())
-        .pipe(htmlMin({
-            removeComments: true,                   // 清除html注释
-            collapseWhitespace: true,               // 合并空格
-            collapseBooleanAttributes: true,        // 压缩布尔类型的 attributes
-            noNewlinesBeforeTagClose: false,        // 去掉换行符
-            removeAttributeQuotes: true,            // 在可能时删除属性值的引号
-            removeRedundantAttributes: true,        // 属性值与默认值一样时删除属性
-            removeEmptyAttributes: true,            // 删除值为空的属性
-            removeScriptTypeAttributes: true,       // 删除 `type="text/javascript"`
-            removeStyleLinkTypeAttributes: true,    // 删除 `type="text/css"`
-            minifyJS: true,                         //压缩页面 JS
-            minifyCSS: true,                        //压缩页面 CSS
-            minifyURLs: true                        //压缩页面URL
-        }))
-        .pipe(gulp.dest('./public'))
-)
+
+gulp.task('minify-html', () => {
+  return gulp.src('./public/**/*.html')
+    .pipe(htmlclean())
+    .pipe(htmlMin(htmlMinConfig))
+    .pipe(gulp.dest('./public'));
+});
+
+
 //压缩字体
 function minifyFont(text, cb) {
   gulp
@@ -100,9 +104,15 @@ gulp.task('mini-font', (cb) => {
       minifyFont(text, cb);
     });
 });
-// 运行gulp命令时依次执行以下任务
-gulp.task('default', gulp.series("generate-service-worker", gulp.parallel(
-  'compress',
-  'minify-css',
-  'minify-html'
-)));
+
+// 默认任务
+gulp.task('default',
+  gulp.series(
+    'generate-service-worker',
+    gulp.parallel(
+      'compress',
+      'minify-css',
+      'minify-html'
+    )
+  )
+);

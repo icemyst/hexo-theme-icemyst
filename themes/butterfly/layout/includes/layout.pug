@@ -38,48 +38,44 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
 script.
   if ('serviceWorker' in navigator) {
-    const SW_STATE = {
-      key: 'sw-loaded',
-      firstLoad: !sessionStorage.getItem('sw-loaded')
+    const SW_CONFIG = {
+      path: '/sw.js',
+      sessionKey: 'sw-session'
     };
 
-    const handleServiceWorker = async () => {
-      try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
+    const handleNewServiceWorker = (registration) => {
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
         
-        if (SW_STATE.firstLoad) {
-          sessionStorage.setItem(SW_STATE.key, 'true');
+        newWorker?.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            if (window.confirm('发现新内容可用，是否立即更新？')) {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          }
+        });
+      });
+    };
+
+    const registerServiceWorker = async () => {
+      try {
+        const registration = await navigator.serviceWorker.register(SW_CONFIG.path);
+        const isFirstVisit = !sessionStorage.getItem(SW_CONFIG.sessionKey);
+        
+        if (isFirstVisit) {
+          sessionStorage.setItem(SW_CONFIG.sessionKey, 'true');
           return;
         }
 
-        let updateHandled = false;
-        
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && 
-                navigator.serviceWorker.controller && 
-                !updateHandled) {
-              updateHandled = true;
-              if (window.confirm('网站有新的内容，是否刷新查看？')) {
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
-              }
-            }
-          });
-        });
+        handleNewServiceWorker(registration);
 
-        let refreshing = false;
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!refreshing && !SW_STATE.firstLoad) {
-            refreshing = true;
-            window.location.reload();
-          }
+          if (!isFirstVisit) window.location.reload();
         });
       } catch (error) {
         console.error('Service Worker 注册失败:', error);
       }
     };
 
-    window.addEventListener('load', handleServiceWorker);
+    window.addEventListener('load', registerServiceWorker);
   }
