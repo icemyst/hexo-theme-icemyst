@@ -19,8 +19,8 @@ gulp.task('generate-service-worker', () => {
       "index.html",
       "css/index.css",
       "js/main.js",
-      "manifest.json",
-      "img/**/*.{png,jpg,jpeg,gif,svg,webp}"
+      "img/**/*.{png,jpg,jpeg,gif,svg,webp}",
+      "manifest.json"
     ],
     modifyURLPrefix: {
       "": "./"

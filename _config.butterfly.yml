@@ -631,7 +631,7 @@ facebook_comments:
 # Twikoo
 # https://github.com/imaegoo/twikoo
 twikoo:
-  envId: https://twikoo.abeginner.top/.netlify/functions/twikoo
+  envId: https://twikoo.abeginner.top/.netlify/functions/twikoo/ # https://twikoo.abeginner.top/.netlify/functions/twikoo
   region:
   # 使用Twikoo访客计数作为页面浏览计数
   visitor: false
@@ -1063,7 +1063,7 @@ CDN:
   # 注意: 开发版本只能使用'local'用于内部脚本
   # 注意: 当将第三方脚本设置为'local'时，您需要安装hexo-butterfly-extjs
   internal_provider: local
-  third_party_provider: cbd
+  third_party_provider: jsdelivr
 
   # 向网址添加版本号，true或false
   version: true
@@ -1122,7 +1122,7 @@ CDN:
     # snackbar:
     # snackbar_css:
     # translate:
-    # twikoo: https://cdn1.tianli0.top/npm/twikoo@1.6.41/dist/twikoo.all.min.js # https://cdn1.tianli0.top/npm/js-heo@1.0.3/twikoo/twikoo.all.min.js
+    twikoo: https://cdn1.tianli0.top/npm/twikoo@1.6.41/dist/twikoo.all.min.js # https://cdn1.tianli0.top/npm/js-heo@1.0.3/twikoo/twikoo.all.min.js
     # typed:
     # utils:
     # valine:
