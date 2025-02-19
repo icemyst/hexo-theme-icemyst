@@ -1,11 +1,9 @@
 const workboxVersion = '7.3.0';
-const CACHE_NAME = 'icemyst-cache-v1';
 
 importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${workboxVersion}/workbox-sw.js`);
 
 workbox.core.setCacheNameDetails({
-    prefix: "冰梦",
-    suffix: CACHE_NAME
+    prefix: "冰梦"
 });
 
 workbox.core.skipWaiting();
@@ -53,13 +51,13 @@ workbox.routing.registerRoute(
     })
 );
 
-// CDN资源缓存策略
-const cdnStrategy = new workbox.strategies.CacheFirst({
+// 优化CDN资源缓存策略
+const cdnStrategy = new workbox.strategies.StaleWhileRevalidate({  // 改用StaleWhileRevalidate策略
     cacheName: "cdn-resources",
     plugins: [
         new workbox.expiration.ExpirationPlugin({
             maxEntries: 1000,
-            maxAgeSeconds: 60 * 60 * 24 * 30
+            maxAgeSeconds: 60 * 60 * 24 * 7  // 减少缓存时间到7天
         }),
         new workbox.cacheableResponse.CacheableResponsePlugin({
             statuses: [0, 200]
@@ -67,13 +65,17 @@ const cdnStrategy = new workbox.strategies.CacheFirst({
     ]
 });
 
-// 处理CDN资源
+// 优化CDN处理器
 const cdnHandler = async ({url, request, event}) => {
-    // CDN替换规则
     const cdnRules = [
         {
             source: '//cdn.jsdelivr.net/gh',
             target: '//cdn1.tianli0.top/gh'
+        },
+        // 添加更多备用CDN
+        {
+            source: '//cdn.jsdelivr.net/npm',
+            target: '//npm.elemecdn.com'
         }
     ];
 
@@ -114,6 +116,20 @@ workbox.routing.registerRoute(
             }),
             new workbox.cacheableResponse.CacheableResponsePlugin({
                 statuses: [0, 200]
+            })
+        ]
+    })
+);
+
+// 添加API请求缓存策略
+workbox.routing.registerRoute(
+    /\/api\//,
+    new workbox.strategies.NetworkFirst({
+        cacheName: 'api-cache',
+        plugins: [
+            new workbox.expiration.ExpirationPlugin({
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 12  // 12小时
             })
         ]
     })

@@ -28,7 +28,7 @@ gulp.task('generate-service-worker', () => {
   });
 });
 
-// 优化压缩配置
+// 优化压缩任务
 gulp.task('compress', async() => {
   gulp.src(['./public/**/*.js', '!./public/**/*.min.js'])
     .pipe(terser({
@@ -38,8 +38,9 @@ gulp.task('compress', async() => {
         unsafe_math: true,
         pure_getters: true,
         ecma: 2020,
-        drop_console: true, // 移除console
-        passes: 2 // 多次优化
+        drop_console: true,
+        passes: 3,  // 增加优化次数
+        pure_funcs: ['console.log', 'console.info', 'console.debug']  // 移除特定console方法
       },
       mangle: {
         toplevel: true
