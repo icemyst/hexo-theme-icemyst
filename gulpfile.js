@@ -14,7 +14,7 @@ gulp.task('generate-service-worker', () => {
     swDest: './public/sw.js',
     globDirectory: './public',
     globPatterns: [
-      // 只缓存关键资源
+      // 缓存关键资源
       "404.html",
       "index.html",
       "css/index.css",

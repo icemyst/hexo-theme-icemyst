@@ -550,9 +550,9 @@ comments:
   # 如果您将其设置为true，则评论计数将无效
   lazyload: false
   # 在文章的top_img中显示评论计数
-  count: false
+  count: true
   # 在首页显示评论计数
-  card_post_count: false
+  card_post_count: true
 
 # Disqus
 # https://disqus.com/
@@ -634,7 +634,7 @@ twikoo:
   envId: https://twikoo.abeginner.top/.netlify/functions/twikoo/ # https://twikoo.abeginner.top/.netlify/functions/twikoo
   region:
   # 使用Twikoo访客计数作为页面浏览计数
-  visitor: false
+  visitor: true
   option:
 
 # Giscus
