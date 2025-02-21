@@ -1,167 +1,188 @@
 const workboxVersion = '7.3.0';
-const CACHE_NAME = 'icemystCache';
-const VERSION_CACHE_NAME = 'icemystCacheTime';
-const MAX_ACCESS_CACHE_TIME = 60 * 60 * 24 * 10;
 
-// 导入 workbox
 importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${workboxVersion}/workbox-sw.js`);
 
-// 基础配置
-workbox.core.setCacheNameDetails({ prefix: "冰梦" });
+workbox.core.setCacheNameDetails({
+    prefix: "冰梦"
+});
+
 workbox.core.skipWaiting();
+
 workbox.core.clientsClaim();
 
-// 预缓存
+// 注册成功后要立即缓存的资源列表
+// 具体缓存列表在gulpfile.js中配置，见下文
 workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
     directoryIndex: null
 });
+
+// 清空过期缓存
 workbox.precaching.cleanupOutdatedCaches();
 
-// 通用缓存策略配置
-const commonCacheConfig = {
-    plugins: [
-        new workbox.expiration.ExpirationPlugin({
-            maxEntries: 1000,
-            maxAgeSeconds: 60 * 60 * 24 * 30
-        }),
-        new workbox.cacheableResponse.CacheableResponsePlugin({
-            statuses: [0, 200]
-        })
-    ]
-};
+// 创建通用的缓存配置生成器
+function createCacheStrategy(cacheName, maxEntries = 1000, maxAgeSeconds = 60 * 60 * 24 * 30) {
+    return new workbox.strategies.CacheFirst({
+        cacheName: cacheName,
+        plugins: [
+            new workbox.expiration.ExpirationPlugin({
+                maxEntries,
+                maxAgeSeconds
+            }),
+            new workbox.cacheableResponse.CacheableResponsePlugin({
+                statuses: [0, 200]
+            })
+        ]
+    });
+}
 
-// 资源缓存策略
-const cacheStrategies = {
-    images: {
-        regex: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/,
-        strategy: 'CacheFirst'
+// 资源缓存配置
+const resourceRoutes = [
+    {
+        pattern: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/,
+        cacheName: "images"
     },
-    fonts: {
-        regex: /\.(?:eot|ttf|woff|woff2)$/,
-        strategy: 'CacheFirst'
+    {
+        pattern: /\.(?:eot|ttf|woff|woff2)$/,
+        cacheName: "fonts"
     },
-    googleFontsCSS: {
-        regex: /^https:\/\/fonts\.googleapis\.com/,
-        strategy: 'StaleWhileRevalidate'
-    },
-    googleFontsFiles: {
-        regex: /^https:\/\/fonts\.gstatic\.com/,
-        strategy: 'CacheFirst'
-    },
-    staticLibs: {
-        regex: /^https:\/\/cdn\.jsdelivr\.net/,
-        strategy: 'CacheFirst'
+    {
+        pattern: /^https:\/\/cdn\.jsdelivr\.net/,
+        cacheName: "static-libs"
     }
-};
+];
 
-// 注册缓存路由
-Object.entries(cacheStrategies).forEach(([key, {regex, strategy}]) => {
+// 注册资源路由
+resourceRoutes.forEach(({ pattern, cacheName }) => {
     workbox.routing.registerRoute(
-        regex,
-        new workbox.strategies[strategy]({
-            cacheName: key,
-            ...(strategy === 'CacheFirst' ? { plugins: commonCacheConfig.plugins } : {})
-        })
+        pattern,
+        createCacheStrategy(cacheName)
     );
 });
 
-// 数据库操作助手
-const dbHelper = {
-    read: async (key) => {
-        try {
-            const res = await caches.match(key);
-            return res ? await res.text() : null;
-        } catch {
-            return null;
-        }
-    },
-    write: async (key, value) => {
-        try {
-            const cache = await caches.open(VERSION_CACHE_NAME);
-            await cache.put(key, new Response(value));
-        } catch (err) {
-            console.error('Cache write failed:', err);
-        }
-    },
-    delete: async (key) => {
-        const response = await caches.match(key);
-        if (response) {
-            const cache = await caches.open(VERSION_CACHE_NAME);
-            await cache.delete(key);
-        }
-    }
-};
+// 谷歌字体（可选，不需要就注释掉）
+workbox.routing.registerRoute(
+    /^https:\/\/fonts\.googleapis\.com/,
+    new workbox.strategies.StaleWhileRevalidate({
+        cacheName: "google-fonts-stylesheets"
+    })
+);
+workbox.routing.registerRoute(
+    /^https:\/\/fonts\.gstatic\.com/,
+    new workbox.strategies.CacheFirst({
+        cacheName: 'google-fonts-webfonts',
+        plugins: [
+            new workbox.expiration.ExpirationPlugin({
+                maxEntries: 1000,
+                maxAgeSeconds: 60 * 60 * 24 * 30
+            }),
+            new workbox.cacheableResponse.CacheableResponsePlugin({
+                statuses: [0, 200]
+            })
+        ]
+    })
+);
 
 workbox.googleAnalytics.initialize();
+
+/** 缓存库（数据）名称 */
+const CACHE_NAME = 'icemystCache'
+/** 缓存库（时间戳）名称 */
+const VERSION_CACHE_NAME = 'icemystCacheTime'
+/** 缓存离线超时时间 */
+const MAX_ACCESS_CACHE_TIME = 60 * 60 * 24 * 10
 
 function time() {
     return new Date().getTime()
 }
 
-/** 存储缓存入库时间 */
-const dbTime = {
-    read: (key) => dbHelper.read(new Request(`https://LOCALCACHE/${encodeURIComponent(key)}`)),
-    write: (key, value) => dbHelper.write(new Request(`https://LOCALCACHE/${encodeURIComponent(key)}`), value),
-    delete: (key) => dbHelper.delete(new Request(`https://LOCALCACHE/${encodeURIComponent(key)}`))
-}
+// 统一的缓存操作辅助类
+class CacheHelper {
+    constructor(prefix) {
+        this.prefix = prefix;
+    }
 
-/** 存储缓存最后一次访问的时间 */
-const dbAccess = {
-    update: (key) => dbHelper.write(new Request(`https://ACCESS-CACHE/${encodeURIComponent(key)}`), time()),
-    check: async (key) => {
-        const realKey = new Request(`https://ACCESS-CACHE/${encodeURIComponent(key)}`)
-        const value = await dbHelper.read(realKey)
-        if (value) {
-            dbHelper.delete(realKey)
-            return time() - value < MAX_ACCESS_CACHE_TIME
-        } else return false
+    getKey(key) {
+        return new Request(`https://${this.prefix}/${encodeURIComponent(key)}`);
+    }
+
+    async read(key) {
+        try {
+            const res = await caches.match(this.getKey(key));
+            return res ? await res.text() : null;
+        } catch {
+            return null;
+        }
+    }
+
+    async write(key, value) {
+        try {
+            const cache = await caches.open(VERSION_CACHE_NAME);
+            await cache.put(this.getKey(key), new Response(value));
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    async delete(key) {
+        const response = await caches.match(this.getKey(key));
+        if (response) {
+            const cache = await caches.open(VERSION_CACHE_NAME);
+            await cache.delete(this.getKey(key));
+        }
     }
 }
+
+const dbTime = new CacheHelper('LOCALCACHE');
+const dbAccess = new CacheHelper('ACCESS-CACHE');
+
+// 扩展访问时间相关方法
+Object.assign(dbAccess, {
+    update: (key) => dbAccess.write(key, time()),
+    async check(key) {
+        const value = await this.read(key);
+        if (value) {
+            await this.delete(key);
+            return time() - value < MAX_ACCESS_CACHE_TIME;
+        }
+        return false;
+    }
+});
 
 self.addEventListener('install', () => self.skipWaiting())
 
-/**
- * 缓存列表
- * @param url 匹配规则
- * @param time 缓存有效时间
- * @param clean 清理缓存时是否无视最终访问时间直接删除
- */
+// 优化 cacheList 的结构和使用方式
 const cacheList = {
-    /* 样例 */
     static: {
-        // 标记在删除所有缓存时是否移除该缓存
         clean: false,
-        /**
-         * 接收一个URL对象，判断是否符合缓存规则
-         * @param url {URL}
-         */
-        match: url => run(url.pathname, it => it.match(/\.(woff2|woff|ttf|cur)$/) ||
-            it.match(/\/(pjax\.min|fancybox\.umd\.min|twikoo\.all\.min)\.js$/) ||
-            it.match(/\/(all\.min|fancybox\.min)\.css/)
-        )
+        match: url => {
+            const patterns = [
+                /\.(woff2|woff|ttf|cur)$/,
+                /\/(pjax\.min|fancybox\.umd\.min|twikoo\.all\.min)\.js$/,
+                /\/(all\.min|fancybox\.min)\.css/
+            ];
+            return patterns.some(pattern => pattern.test(url.pathname));
+        }
     }
-}
+};
 
-/**
- * 链接替换列表
- * @param source 源链接
- * @param dist 目标链接
- */
-const replaceList = {
-    simple: {
+// 优化 replaceList 的结构
+const replaceList = [
+    {
         source: ['//cdn.jsdelivr.net/gh'],
         dist: '//cdn1.tianli0.top/gh'
     }
-}
+];
 
-
-/** 判断指定url击中了哪一种缓存，都没有击中则返回null */
+// 优化 findCache 函数
 function findCache(url) {
-    for (let key in cacheList) {
-        const value = cacheList[key]
-        if (url.match(value.url)) return value
+    try {
+        const urlObj = new URL(url);
+        return Object.entries(cacheList)
+            .find(([_, value]) => value.match(urlObj))?.[1] ?? null;
+    } catch {
+        return null;
     }
-    return null
 }
 
 /**
@@ -172,18 +193,12 @@ function findCache(url) {
  * 此时第二个匹配项可以以此为基础继续进行修改，替换为"https://abc.net/"<br/>
  */
 function replaceRequest(request) {
-    let url = request.url;
-    let flag = false
-    for (let key in replaceList) {
-        const value = replaceList[key]
-        for (let source of value.source) {
-            if (url.match(source)) {
-                url = url.replace(source, value.dist)
-                flag = true
-            }
-        }
-    }
-    return flag ? new Request(url) : null
+    return replaceList.reduce((url, { source, dist }) => {
+        source.forEach(pattern => {
+            url = url.replace(pattern, dist);
+        });
+        return url;
+    }, request.url) !== request.url ? new Request(url) : null;
 }
 
 /** 判断是否拦截指定的request */
@@ -191,130 +206,63 @@ function blockRequest(request) {
     return false
 }
 
+// 优化 fetchEvent 函数
 async function fetchEvent(request, response, cacheDist) {
-    // 只缓存 GET 请求
-    if (request.method !== 'GET') {
-        try {
-            return await fetch(request);
-        } catch (error) {
-            console.error('非 GET 请求失败:', error);
-            return new Response('请求失败', { status: 503 });
-        }
-    }
-
     const NOW_TIME = time();
-    try {
-        await dbAccess.update(request.url);
-    } catch (error) {
-        console.warn('更新访问时间失败:', error);
-    }
-
-    // 检查缓存是否有效
+    await dbAccess.update(request.url);
+    
     if (response) {
-        try {
-            const cachedTime = await dbTime.read(request.url);
-            if (cachedTime && (NOW_TIME - cachedTime < cacheDist.time)) {
-                return response;
-            }
-        } catch (error) {
-            console.warn('读取缓存时间失败:', error);
+        const cachedTime = await dbTime.read(request.url);
+        if (cachedTime && (NOW_TIME - cachedTime < cacheDist.time)) {
+            return response;
         }
     }
 
-    // 网络请求函数
-    const fetchWithTimeout = async () => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超时
-
+    const fetchWithCache = async () => {
         try {
-            const fetchResponse = await fetch(request, {
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            if (fetchResponse.ok || fetchResponse.status === 0) {
-                try {
-                    const clone = fetchResponse.clone();
-                    const cache = await caches.open(CACHE_NAME);
-                    await cache.put(request, clone);
-                    await dbTime.write(request.url, NOW_TIME);
-                } catch (cacheError) {
-                    console.warn('缓存写入失败:', cacheError);
-                }
+            const response = await fetch(request);
+            if (response.ok || response.status === 0) {
+                const cache = await caches.open(CACHE_NAME);
+                await cache.put(request, response.clone());
+                await dbTime.write(request.url, NOW_TIME);
             }
-
-            return fetchResponse;
-        } catch (error) {
-            clearTimeout(timeoutId);
-            throw error;
+            return response;
+        } catch (err) {
+            console.error('不可达的链接：', request.url, '\n错误信息：', err);
+            throw err;
         }
     };
 
-    try {
-        return await fetchWithTimeout();
-    } catch (error) {
-        console.error('网络请求失败:', error);
-        // 如果有缓存响应，则返回缓存
-        if (response) {
-            console.log('返回缓存响应');
-            return response;
-        }
-        // 返回错误响应
-        return new Response('网络请求失败', {
-            status: 503,
-            statusText: 'Service Unavailable',
-            headers: {
-                'Content-Type': 'text/plain;charset=UTF-8'
-            }
-        });
+    if (response) {
+        return Promise.race([
+            new Promise(resolve => setTimeout(() => resolve(response), 400)),
+            fetchWithCache()
+        ]);
     }
+
+    return fetchWithCache();
 }
 
-self.addEventListener('fetch', event => {
-    const replace = replaceRequest(event.request);
-    const request = replace === null ? event.request : replace;
-    
-    // 跳过非 GET 请求的缓存处理
-    if (request.method !== 'GET') {
-        event.respondWith(
-            fetch(request).catch(error => {
-                console.error('非 GET 请求失败:', error);
-                return new Response('请求失败', { status: 503 });
-            })
-        );
-        return;
-    }
-
-    const cacheDist = findCache(request.url);
+// 优化 fetch 事件监听器
+self.addEventListener('fetch', async event => {
+    const request = replaceRequest(event.request) ?? event.request;
     
     if (blockRequest(request)) {
         event.respondWith(new Response(null, { status: 204 }));
         return;
     }
 
-    if (cacheDist !== null) {
+    const cacheDist = findCache(request.url);
+    if (cacheDist) {
         event.respondWith(
             caches.match(request)
                 .then(response => fetchEvent(request, response, cacheDist))
-                .catch(error => {
-                    console.error('缓存匹配失败:', error);
-                    return fetch(request).catch(() => 
-                        new Response('请求失败', { status: 503 })
-                    );
-                })
+                .catch(() => fetch(request))
         );
         return;
     }
 
-    if (replace !== null) {
-        event.respondWith(
-            fetch(request).catch(error => {
-                console.error('替换请求失败:', error);
-                return fetch(event.request).catch(() => 
-                    new Response('请求失败', { status: 503 })
-                );
-            })
-        );
+    if (request !== event.request) {
+        event.respondWith(fetch(request));
     }
 });
