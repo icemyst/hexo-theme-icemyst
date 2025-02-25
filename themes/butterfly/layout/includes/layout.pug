@@ -54,20 +54,20 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
             text: message,
             pos: 'top-center',
             duration: status === 'offline' ? null : config.duration,
-            backgroundColor: config.color,
+            backgroundColor: config.backgroundColor,
             showAction: false,
-            customClass: `network-status-${status}`
+            customClass: `network-status-${status}`,
+            onClose: function() {
+              if (status === 'offline' && !navigator.onLine) {
+                setTimeout(() => showNotification('offline'), 1000);
+              }
+            }
           });
         }
 
         // 监听网络状态变化
-        window.addEventListener('online', () => {
-          showNotification('online');
-        });
-
-        window.addEventListener('offline', () => {
-          showNotification('offline');
-        });
+        window.addEventListener('online', () => showNotification('online'));
+        window.addEventListener('offline', () => showNotification('offline'));
 
         // 监听 Service Worker 消息
         navigator.serviceWorker.addEventListener('message', (event) => {

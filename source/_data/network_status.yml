@@ -8,8 +8,8 @@ online:
     - '<i class="fas fa-signal"></i> 信号满格，准备出发！(๑•̀ㅂ•́)و'
     - '<i class="fas fa-signal"></i> 网络连接成功，能量充能完毕！(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧'
     - '<i class="fas fa-signal"></i> 网络恢复，继续探索二次元世界吧 ٩(◕‿◕｡)۶'
-  color: 'linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%)'
   duration: 3000
+  backgroundColor: 'linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%)'
 
 # 离线状态提示配置
 offline:
@@ -21,5 +21,5 @@ offline:
     - '<i class="fas fa-wifi-slash"></i> 网络连接中断，正在尝试重新连接 (╥﹏╥)'
     - '<i class="fas fa-wifi-slash"></i> 信号丢失，进入节能模式 (´-ω-`)'
     - '<i class="fas fa-wifi-slash"></i> 网络断开，等待重新连接中 (´；ω；｀)'
-  color: 'linear-gradient(120deg, #f093fb 0%, #f5576c 100%)'
   duration: -1  # 永久显示直到恢复 
+  backgroundColor: 'linear-gradient(120deg, #f093fb 0%, #f5576c 100%)'
