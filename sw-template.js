@@ -10,10 +10,13 @@ workbox.core.setCacheNameDetails({
 workbox.core.skipWaiting();
 workbox.core.clientsClaim();
 
-// 定义全局变量
+// 优化缓存配置
 const CACHE_CONFIG = {
     defaultMaxAge: 60 * 60 * 24 * 30, // 30天
-    defaultMaxEntries: 1000
+    defaultMaxEntries: 1000,
+    imageMaxAge: 60 * 60 * 24 * 7,    // 图片缓存7天
+    fontMaxAge: 60 * 60 * 24 * 180,   // 字体缓存180天
+    staticMaxAge: 60 * 60 * 24 * 7    // 静态资源缓存7天
 };
 
 // 注册成功后要立即缓存的资源列表
@@ -49,14 +52,15 @@ function createCacheStrategy(cacheName, options = {}) {
     });
 }
 
-// 资源缓存配置
+// 资源缓存配置优化
 const resourceRoutes = [
     {
         pattern: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/,
         cacheName: "images",
         options: {
             maxEntries: 2000,
-            maxAgeSeconds: 60 * 60 * 24 * 7 // 7天
+            maxAgeSeconds: CACHE_CONFIG.imageMaxAge,
+            strategy: 'CacheFirst'  // 图片优先使用缓存
         }
     },
     {
@@ -64,7 +68,8 @@ const resourceRoutes = [
         cacheName: "fonts",
         options: {
             maxEntries: 100,
-            maxAgeSeconds: 60 * 60 * 24 * 30 * 6 // 6个月
+            maxAgeSeconds: CACHE_CONFIG.fontMaxAge,
+            strategy: 'CacheFirst'  // 字体优先使用缓存
         }
     },
     {
@@ -72,7 +77,7 @@ const resourceRoutes = [
         cacheName: "static-libs",
         options: {
             strategy: 'StaleWhileRevalidate',
-            maxAgeSeconds: 60 * 60 * 24 * 7 // 7天
+            maxAgeSeconds: CACHE_CONFIG.staticMaxAge
         }
     }
 ];
@@ -235,42 +240,64 @@ function blockRequest(request) {
 // 优化 fetchEvent 函数
 async function fetchEvent(request, response, cacheDist) {
     const NOW_TIME = time();
-    await dbAccess.update(request.url);
     
-    if (response) {
-        const cachedTime = await dbTime.read(request.url);
-        if (cachedTime && (NOW_TIME - cachedTime < cacheDist.time)) {
-            return response;
-        }
-    }
-
-    const fetchWithCache = async () => {
+    // 添加请求超时控制
+    const fetchWithTimeout = async (req, timeout = 3000) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        
         try {
-            const response = await fetch(request);
-            if (response.ok || response.status === 0) {
-                const cache = await caches.open(CACHE_NAME);
-                await cache.put(request, response.clone());
-                await dbTime.write(request.url, NOW_TIME);
-            }
-            return response;
+            const res = await fetch(req, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            return res;
         } catch (err) {
-            console.error('不可达的链接：', request.url, '\n错误信息：', err);
+            clearTimeout(timeoutId);
             throw err;
         }
     };
 
+    // 优化缓存策略
+    const fetchAndCache = async () => {
+        try {
+            const networkResponse = await fetchWithTimeout(request);
+            
+            if (networkResponse.ok || networkResponse.status === 0) {
+                const cache = await caches.open(CACHE_NAME);
+                const clonedResponse = networkResponse.clone();
+                
+                // 并行处理缓存写入
+                await Promise.all([
+                    cache.put(request, clonedResponse),
+                    dbTime.write(request.url, NOW_TIME),
+                    dbAccess.update(request.url)
+                ]);
+                
+                return networkResponse;
+            }
+            throw new Error('Network response was not ok');
+        } catch (err) {
+            if (response) return response;
+            throw err;
+        }
+    };
+
+    // 如果有缓存响应且未过期，直接返回
     if (response) {
-        return Promise.race([
-            new Promise(resolve => setTimeout(() => resolve(response), 400)),
-            fetchWithCache()
+        const [cachedTime, isAccessValid] = await Promise.all([
+            dbTime.read(request.url),
+            dbAccess.check(request.url)
         ]);
+        
+        if (cachedTime && isAccessValid && (NOW_TIME - cachedTime < cacheDist.time)) {
+            return response;
+        }
     }
 
-    return fetchWithCache();
+    return fetchAndCache();
 }
 
 // 优化 fetch 事件监听器
-self.addEventListener('fetch', async event => {
+self.addEventListener('fetch', event => {
     const request = replaceRequest(event.request) ?? event.request;
     
     if (blockRequest(request)) {
@@ -279,38 +306,25 @@ self.addEventListener('fetch', async event => {
     }
 
     const cacheDist = findCache(request.url);
-    if (cacheDist) {
-        event.respondWith(
-            caches.match(request)
-                .then(response => fetchEvent(request, response, cacheDist))
-                .catch(async () => {
-                    // 发送离线消息到客户端
-                    const clients = await self.clients.matchAll();
-                    clients.forEach(client => {
-                        client.postMessage({
-                            type: 'network-status',
-                            status: 'offline'
-                        });
-                    });
-                    return fetch(request);
-                })
-        );
-        return;
-    }
+    if (!cacheDist && request === event.request) return;
 
-    if (request !== event.request) {
-        event.respondWith(
-            fetch(request).catch(async () => {
-                // 发送离线消息到客户端
-                const clients = await self.clients.matchAll();
-                clients.forEach(client => {
-                    client.postMessage({
-                        type: 'network-status',
-                        status: 'offline'
-                    });
+    event.respondWith((async () => {
+        try {
+            if (cacheDist) {
+                const cachedResponse = await caches.match(request);
+                return fetchEvent(request, cachedResponse, cacheDist);
+            }
+            return fetch(request);
+        } catch (err) {
+            // 发送离线消息到客户端
+            const clients = await self.clients.matchAll();
+            clients.forEach(client => {
+                client.postMessage({
+                    type: 'network-status',
+                    status: 'offline'
                 });
-                throw new Error('Network error');
-            })
-        );
-    }
+            });
+            throw err;
+        }
+    })());
 });

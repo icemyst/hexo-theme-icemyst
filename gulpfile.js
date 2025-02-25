@@ -40,9 +40,20 @@ const config = {
       ecma: 2020,
       drop_console: true,
       passes: 3,
-      pure_funcs: ['console.log', 'console.info', 'console.debug']
+      pure_funcs: ['console.log', 'console.info', 'console.debug'],
+      module: true,
+      toplevel: true
     },
-    mangle: { toplevel: true }
+    mangle: { 
+      toplevel: true,
+      properties: {
+        regex: /^_/ // 只混淆以下划线开头的属性
+      }
+    },
+    format: {
+      comments: false,
+      ascii_only: true
+    }
   },
   html: {
     removeComments: true,
@@ -59,8 +70,14 @@ const config = {
   }
 };
 
-// Service Worker
-gulp.task('generate-service-worker', () => workbox.injectManifest(config.sw));
+// Service Worker 注入配置
+gulp.task('generate-service-worker', () => {
+  return workbox.injectManifest(config.sw).then(({count, size}) => {
+    log.success(`生成 Service Worker 成功，预缓存 ${count} 个文件，总计 ${size} 字节`);
+  }).catch(err => {
+    log.error('生成 Service Worker 失败：' + err);
+  });
+});
 
 // JS压缩
 gulp.task('compress', () => 

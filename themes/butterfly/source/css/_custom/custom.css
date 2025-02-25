@@ -10,3 +10,55 @@
         padding: 0 !important;
     }
 }
+
+/* 网络状态图标样式 */
+.fas.fa-signal,
+.fas.fa-wifi,
+.fas.fa-cloud-arrow-up,
+.fas.fa-rocket,
+.fas.fa-bolt,
+.fas.fa-satellite,
+.fas.fa-paper-plane,
+.fas.fa-snowflake,
+.fas.fa-plug-circle-xmark,
+.fas.fa-triangle-exclamation,
+.fas.fa-cloud-bolt,
+.fas.fa-cloud-showers-heavy,
+.fas.fa-power-off,
+.fas.fa-satellite-dish {
+    animation: fadeIn 0.3s;
+}
+
+/* 离线图标特殊样式 */
+.fas.fa-snowflake,
+.fas.fa-plug-circle-xmark,
+.fas.fa-triangle-exclamation,
+.fas.fa-cloud-bolt,
+.fas.fa-cloud-showers-heavy,
+.fas.fa-power-off,
+.fas.fa-satellite-dish {
+    color: #ff6b6b;
+}
+
+/* 在线图标特殊样式 */
+.fas.fa-signal,
+.fas.fa-wifi,
+.fas.fa-cloud-arrow-up,
+.fas.fa-rocket,
+.fas.fa-bolt,
+.fas.fa-satellite,
+.fas.fa-paper-plane {
+    color: #51cf66;
+}
+
+/* 添加图标动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

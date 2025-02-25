@@ -38,54 +38,67 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
     script.
       if ('serviceWorker' in navigator) {
-        // 网络状态配置
-        const networkConfig = {
-          online: !{JSON.stringify(site.data.network_status.online)},
-          offline: !{JSON.stringify(site.data.network_status.offline)}
-        };
+        // 网络状态管理类
+        class NetworkStatusManager {
+          constructor(config) {
+            this.config = config;
+            this.offlineTimer = null;
+          }
 
-        // 显示提示
-        function showNotification(status) {
-          const config = networkConfig[status];
-          const message = config.messages[Math.floor(Math.random() * config.messages.length)];
-          
-          // 使用Snackbar显示通知
-          Snackbar.show({
-            text: message,
-            pos: 'top-center',
-            duration: status === 'offline' ? null : config.duration,
-            backgroundColor: config.backgroundColor,
-            showAction: false,
-            customClass: `network-status-${status}`,
-            onClose: function() {
-              if (status === 'offline' && !navigator.onLine) {
-                setTimeout(() => showNotification('offline'), 1000);
-              }
+          showNotification(status) {
+            const config = this.config[status];
+            if (!config) return;
+
+            const message = config.messages[Math.floor(Math.random() * config.messages.length)];
+            
+            // 清除之前的离线定时器
+            if (this.offlineTimer) {
+              clearTimeout(this.offlineTimer);
+              this.offlineTimer = null;
             }
-          });
+
+            Snackbar.show({
+              text: message,
+              pos: 'top-center',
+              duration: status === 'offline' ? null : config.duration,
+              backgroundColor: config.backgroundColor,
+              showAction: false,
+              customClass: `network-status-${status}`,
+              onClose: () => {
+                if (status === 'offline' && !navigator.onLine) {
+                  this.offlineTimer = setTimeout(() => this.showNotification('offline'), 1000);
+                }
+              }
+            });
+          }
+
+          init() {
+            window.addEventListener('online', () => this.showNotification('online'));
+            window.addEventListener('offline', () => this.showNotification('offline'));
+
+            navigator.serviceWorker.addEventListener('message', (event) => {
+              if (event.data.type === 'network-status') {
+                this.showNotification(event.data.status);
+              }
+            });
+          }
         }
 
-        // 监听网络状态变化
-        window.addEventListener('online', () => showNotification('online'));
-        window.addEventListener('offline', () => showNotification('offline'));
-
-        // 监听 Service Worker 消息
-        navigator.serviceWorker.addEventListener('message', (event) => {
-          if (event.data.type === 'network-status') {
-            showNotification(event.data.status);
-          }
-        });
+        // 初始化网络状态管理
+        const networkManager = new NetworkStatusManager(!{JSON.stringify(site.data.network_status)});
+        networkManager.init();
 
         // 注册 Service Worker
-        navigator.serviceWorker.register('/sw.js').then(() => {
-          if (localStorage.getItem('install') !== 'true') {
+        navigator.serviceWorker.register('/sw.js', {
+          scope: '/'
+        }).then(() => {
+          if (!localStorage.getItem('install')) {
             localStorage.setItem('install', 'true');
-            location.reload();
+            if (!navigator.onLine) {
+              networkManager.showNotification('offline');
+            }
           }
+        }).catch(error => {
+          console.error('Service Worker 注册失败:', error);
         });
-
-        // 初始检查网络状态
-        if (!navigator.onLine) {
-          showNotification('offline');
-        }
       }
