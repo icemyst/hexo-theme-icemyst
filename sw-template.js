@@ -3,12 +3,18 @@ const workboxVersion = '7.3.0';
 importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${workboxVersion}/workbox-sw.js`);
 
 workbox.core.setCacheNameDetails({
-    prefix: "冰梦"
+    prefix: "冰梦",
+    suffix: workboxVersion
 });
 
 workbox.core.skipWaiting();
-
 workbox.core.clientsClaim();
+
+// 定义全局变量
+const CACHE_CONFIG = {
+    defaultMaxAge: 60 * 60 * 24 * 30, // 30天
+    defaultMaxEntries: 1000
+};
 
 // 注册成功后要立即缓存的资源列表
 // 具体缓存列表在gulpfile.js中配置，见下文
@@ -20,18 +26,26 @@ workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
 workbox.precaching.cleanupOutdatedCaches();
 
 // 创建通用的缓存配置生成器
-function createCacheStrategy(cacheName, maxEntries = 1000, maxAgeSeconds = 60 * 60 * 24 * 30) {
-    return new workbox.strategies.CacheFirst({
-        cacheName: cacheName,
-        plugins: [
-            new workbox.expiration.ExpirationPlugin({
-                maxEntries,
-                maxAgeSeconds
-            }),
-            new workbox.cacheableResponse.CacheableResponsePlugin({
-                statuses: [0, 200]
-            })
-        ]
+function createCacheStrategy(cacheName, options = {}) {
+    const { maxEntries = CACHE_CONFIG.defaultMaxEntries, maxAgeSeconds = CACHE_CONFIG.defaultMaxAge, strategy = 'CacheFirst' } = options;
+    
+    const plugins = [
+        new workbox.expiration.ExpirationPlugin({
+            maxEntries,
+            maxAgeSeconds,
+            purgeOnQuotaError: true
+        }),
+        new workbox.cacheableResponse.CacheableResponsePlugin({
+            statuses: [0, 200]
+        })
+    ];
+
+    return new workbox.strategies[strategy]({
+        cacheName,
+        plugins,
+        matchOptions: {
+            ignoreSearch: true
+        }
     });
 }
 
@@ -39,15 +53,27 @@ function createCacheStrategy(cacheName, maxEntries = 1000, maxAgeSeconds = 60 * 
 const resourceRoutes = [
     {
         pattern: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/,
-        cacheName: "images"
+        cacheName: "images",
+        options: {
+            maxEntries: 2000,
+            maxAgeSeconds: 60 * 60 * 24 * 7 // 7天
+        }
     },
     {
         pattern: /\.(?:eot|ttf|woff|woff2)$/,
-        cacheName: "fonts"
+        cacheName: "fonts",
+        options: {
+            maxEntries: 100,
+            maxAgeSeconds: 60 * 60 * 24 * 30 * 6 // 6个月
+        }
     },
     {
         pattern: /^https:\/\/cdn\.jsdelivr\.net/,
-        cacheName: "static-libs"
+        cacheName: "static-libs",
+        options: {
+            strategy: 'StaleWhileRevalidate',
+            maxAgeSeconds: 60 * 60 * 24 * 7 // 7天
+        }
     }
 ];
 
@@ -257,12 +283,34 @@ self.addEventListener('fetch', async event => {
         event.respondWith(
             caches.match(request)
                 .then(response => fetchEvent(request, response, cacheDist))
-                .catch(() => fetch(request))
+                .catch(async () => {
+                    // 发送离线消息到客户端
+                    const clients = await self.clients.matchAll();
+                    clients.forEach(client => {
+                        client.postMessage({
+                            type: 'network-status',
+                            status: 'offline'
+                        });
+                    });
+                    return fetch(request);
+                })
         );
         return;
     }
 
     if (request !== event.request) {
-        event.respondWith(fetch(request));
+        event.respondWith(
+            fetch(request).catch(async () => {
+                // 发送离线消息到客户端
+                const clients = await self.clients.matchAll();
+                clients.forEach(client => {
+                    client.postMessage({
+                        type: 'network-status',
+                        status: 'offline'
+                    });
+                });
+                throw new Error('Network error');
+            })
+        );
     }
 });

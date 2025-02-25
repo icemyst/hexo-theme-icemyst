@@ -1063,7 +1063,7 @@ CDN:
   # 注意: 开发版本只能使用'local'用于内部脚本
   # 注意: 当将第三方脚本设置为'local'时，您需要安装hexo-butterfly-extjs
   internal_provider: local
-  third_party_provider: cbd
+  third_party_provider: jsdelivr
 
   # 向网址添加版本号，true或false
   version: true

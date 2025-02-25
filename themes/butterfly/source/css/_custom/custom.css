@@ -1,0 +1,21 @@
+/* --------------------
+ * 网络状态提示框样式
+ * ------------------- */
+
+#network-status.offline {
+    animation: toast-shake 0.8s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+#network-status.online {
+    animation: toast-pulse 1.5s ease-in-out;
+}
+
+
+/* 确保在移动设备上文字居中 */
+@media screen and (max-width: 768px) {
+    .snackbar-container p {
+        text-align: center !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+}

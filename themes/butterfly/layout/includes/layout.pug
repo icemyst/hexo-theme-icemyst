@@ -36,12 +36,56 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     include ./rightside.pug
     include ./additional-js.pug
 
-script.
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(() => {
-      if (localStorage.getItem('install') !== 'true') {
-        localStorage.setItem('install', 'true')
-        location.reload()
+    script.
+      if ('serviceWorker' in navigator) {
+        // 网络状态配置
+        const networkConfig = {
+          online: !{JSON.stringify(site.data.network_status.online)},
+          offline: !{JSON.stringify(site.data.network_status.offline)}
+        };
+
+        // 显示提示
+        function showNotification(status) {
+          const config = networkConfig[status];
+          const message = config.messages[Math.floor(Math.random() * config.messages.length)];
+          
+          // 使用Snackbar显示通知
+          Snackbar.show({
+            text: message,
+            pos: 'top-center',
+            duration: status === 'offline' ? null : config.duration,
+            backgroundColor: config.color,
+            showAction: false,
+            customClass: `network-status-${status}`
+          });
+        }
+
+        // 监听网络状态变化
+        window.addEventListener('online', () => {
+          showNotification('online');
+        });
+
+        window.addEventListener('offline', () => {
+          showNotification('offline');
+        });
+
+        // 监听 Service Worker 消息
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data.type === 'network-status') {
+            showNotification(event.data.status);
+          }
+        });
+
+        // 注册 Service Worker
+        navigator.serviceWorker.register('/sw.js').then(() => {
+          if (localStorage.getItem('install') !== 'true') {
+            localStorage.setItem('install', 'true');
+            location.reload();
+          }
+        });
+
+        // 初始检查网络状态
+        if (!navigator.onLine) {
+          showNotification('offline');
+        }
       }
-    })
-  }
