@@ -102,7 +102,7 @@ footer_img: transparent
 
 # 网站背景
 # 可以设置为颜色或图片网址
-background: # https://api.boxmoe.com/random.php?size=large
+background: https://image.smallbottle2.top/landscape # https://api.boxmoe.com/random.php?size=large
 
 cover:
   # 是否禁用封面
@@ -1063,7 +1063,7 @@ CDN:
   # 注意: 开发版本只能使用'local'用于内部脚本
   # 注意: 当将第三方脚本设置为'local'时，您需要安装hexo-butterfly-extjs
   internal_provider: local
-  third_party_provider: jsdelivr
+  third_party_provider: cbd
 
   # 向网址添加版本号，true或false
   version: true

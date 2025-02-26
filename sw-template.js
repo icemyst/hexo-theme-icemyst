@@ -316,14 +316,9 @@ self.addEventListener('fetch', event => {
             }
             return fetch(request);
         } catch (err) {
-            // 发送离线消息到客户端
-            const clients = await self.clients.matchAll();
-            clients.forEach(client => {
-                client.postMessage({
-                    type: 'network-status',
-                    status: 'offline'
-                });
-            });
+            // 如果有缓存就使用缓存
+            const cachedResponse = await caches.match(request);
+            if (cachedResponse) return cachedResponse;
             throw err;
         }
     })());
