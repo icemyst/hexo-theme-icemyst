@@ -6,6 +6,8 @@ const fontmin = require('gulp-fontmin');
 const workbox = require("workbox-build");
 const terser = require('gulp-terser');
 const chalk = require('chalk');
+const path = require('path');
+const fs = require('fs');
 
 // 统一的日志输出函数
 const log = {
@@ -67,52 +69,80 @@ const config = {
     minifyJS: true,
     minifyCSS: true,
     minifyURLs: true
+  },
+  font: {
+    fontsDir: './public/fonts',
+    fontsDest: './public/fontsdest',
+    fontOptions: {
+      quiet: false,
+      optimize: true,
+      fontPath: '../fonts/',
+      subset: ['latin', 'chinese-simplified']
+    }
   }
 };
 
+/**
+ * 创建通用的压缩任务函数
+ * @param {string} taskName - 任务名称
+ * @param {string|string[]} src - 源文件路径
+ * @param {Object} processor - 处理器
+ * @param {string} dest - 目标路径
+ * @param {string} successMessage - 成功消息
+ */
+const createMinifyTask = (taskName, src, processor, dest, successMessage) => {
+  gulp.task(taskName, () => 
+    gulp.src(src)
+      .on('error', (error) => log.error(`${taskName}错误: ${error.message}`))
+      .pipe(processor)
+      .pipe(gulp.dest(dest || './public'))
+      .on('end', () => log.success(successMessage || `${taskName}完成`))
+  );
+};
+
 // Service Worker 注入配置
-gulp.task('generate-service-worker', () => {
-  return workbox.injectManifest(config.sw).then(({count, size}) => {
-    log.success(`生成 Service Worker 成功，预缓存 ${count} 个文件，总计 ${size} 字节`);
-  }).catch(err => {
-    log.error('生成 Service Worker 失败：' + err);
-  });
-});
-
-// JS压缩
-gulp.task('compress', () => 
-  gulp.src(['./public/**/*.js', '!./public/**/*.min.js'])
-    .on('error', (error) => log.error(`JS压缩错误: ${error.message}`))
-    .pipe(terser(config.terser))
-    .pipe(gulp.dest('./public'))
-    .on('end', () => log.success('JS压缩完成'))
+gulp.task('generate-service-worker', () => 
+  workbox.injectManifest(config.sw)
+    .then(({count, size}) => {
+      log.success(`生成 Service Worker 成功，预缓存 ${count} 个文件，总计 ${size} 字节`);
+    })
+    .catch(err => {
+      log.error('生成 Service Worker 失败：' + err);
+    })
 );
 
-// CSS压缩
-gulp.task('minify-css', () => 
-  gulp.src(['./public/**/*.css'])
-    .on('error', (error) => log.error(`CSS压缩错误: ${error.message}`))
-    .pipe(cleanCSS({ compatibility: 'ie11', level: 2 }))
-    .pipe(gulp.dest('./public'))
-    .on('end', () => log.success('CSS压缩完成'))
+// 使用通用函数创建压缩任务
+createMinifyTask(
+  'compress', 
+  ['./public/**/*.js', '!./public/**/*.min.js'], 
+  terser(config.terser), 
+  './public', 
+  'JS压缩完成'
 );
 
-// HTML压缩
-gulp.task('minify-html', () => 
-  gulp.src('./public/**/*.html')
-    .on('error', (error) => log.error(`HTML压缩错误: ${error.message}`))
-    .pipe(htmlclean())
-    .pipe(htmlMin(config.html))
-    .pipe(gulp.dest('./public'))
-    .on('end', () => log.success('HTML压缩完成'))
+createMinifyTask(
+  'minify-css', 
+  ['./public/**/*.css'], 
+  cleanCSS({ compatibility: 'ie11', level: 2 }), 
+  './public', 
+  'CSS压缩完成'
 );
 
-// 字体压缩
+createMinifyTask(
+  'minify-html', 
+  './public/**/*.html', 
+  htmlclean().pipe(htmlMin(config.html)), 
+  './public', 
+  'HTML压缩完成'
+);
+
+/**
+ * 字体压缩函数
+ * @param {string} text - 要包含的文本
+ * @param {Function} cb - 回调函数
+ */
 const minifyFont = (text, cb) => {
-  const fs = require('fs');
-  const path = require('path');
-  const fontsDir = './public/fonts';
-  const fontsDest = './public/fontsdest';
+  const { fontsDir, fontsDest, fontOptions } = config.font;
   
   try {
     // 检查字体目录是否存在
@@ -138,56 +168,65 @@ const minifyFont = (text, cb) => {
     let completedFonts = 0;
     let hasErrors = false;
     
-    // 处理每个字体文件
-    ttfFiles.forEach(fontFile => {
+    /**
+     * 处理字体文件的错误处理函数
+     * @param {string} fontFile - 字体文件名
+     * @param {string} errorMsg - 错误消息
+     */
+    const handleError = (fontFile, errorMsg) => {
+      log.error(`字体文件 ${fontFile} ${errorMsg}`);
+      hasErrors = true;
+      checkCompletion();
+    };
+    
+    /**
+     * 处理每个字体文件的通用函数
+     * @param {string} fontFile - 字体文件名
+     */
+    const processFontFile = (fontFile) => {
       const fontPath = path.join(fontsDir, fontFile);
       
       gulp.src(fontPath)
-        .on('error', (error) => {
-          log.error(`字体文件 ${fontFile} 压缩错误: ${error.message}`);
-          hasErrors = true;
-          if (++completedFonts === ttfFiles.length) {
-            cb(); // 所有字体都处理完成后调用回调
-          }
-        })
+        .on('error', (error) => handleError(fontFile, `压缩错误: ${error.message}`))
         .pipe(fontmin({ 
           text,
-          quiet: false
+          ...fontOptions
         }))
-        .on('error', (error) => {
-          log.error(`字体文件 ${fontFile} 处理失败: ${error.message}`);
-          hasErrors = true;
-          if (++completedFonts === ttfFiles.length) {
-            cb(); // 所有字体都处理完成后调用回调
-          }
-        })
+        .on('error', (error) => handleError(fontFile, `处理失败: ${error.message}`))
         .pipe(gulp.dest(fontsDest))
         .on('end', () => {
           log.success(`字体文件 ${fontFile} 压缩完成`);
-          if (++completedFonts === ttfFiles.length) {
-            if (!hasErrors) {
-              log.success('所有字体压缩任务完成');
-            } else {
-              log.warning('字体压缩任务完成，但部分文件出现错误');
-            }
-            cb();
-          }
+          checkCompletion();
         });
-    });
+    };
+    
+    /**
+     * 检查是否所有字体都处理完成
+     */
+    const checkCompletion = () => {
+      if (++completedFonts === ttfFiles.length) {
+        log.success(hasErrors ? '字体压缩任务完成，但部分文件出现错误' : '所有字体压缩任务完成');
+        cb();
+      }
+    };
+    
+    // 处理每个字体文件
+    ttfFiles.forEach(processFontFile);
 
   } catch (error) {
     log.error(`字体压缩过程出错: ${error.message}`);
-    cb(error); // 传递错误给回调函数
+    cb(error);
   }
 };
 
+// 字体压缩任务
 gulp.task('mini-font', (cb) => {
   const buffers = [];
   
   gulp.src(['./public/**/*.html'])
     .on('error', (error) => {
       log.error(`读取HTML文件错误: ${error.message}`);
-      cb(error); // 传递错误给回调函数
+      cb(error);
     })
     .on('data', file => {
       try {
@@ -203,9 +242,9 @@ gulp.task('mini-font', (cb) => {
         minifyFont(text, (error) => {
           if (error) {
             log.error(`字体压缩任务失败: ${error.message}`);
-            cb(error); // 传递错误给回调函数
+            cb(error);
           } else {
-            cb(); // 成功完成
+            cb();
           }
         });
       } catch (error) {

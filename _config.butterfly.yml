@@ -18,7 +18,7 @@ nav:
 menu:
   文 章:
     归档: /archives/ || fa-fw fas fa-archive
-    分类: /categories/ || fa-fw fas fa-folder-open 
+    分类: /categories/ || fa-fw fas fa-folder-open
     标签: /tags/ || fa-fw fas fa-tags
   社 交:
     友链: /link/ || fas fa-link
@@ -792,12 +792,12 @@ text_align_justify: false
 # 为头部和底部添加遮罩
 mask:
   header: true
-  footer: true
+  footer: false
 
 # 加载动画
 preloader:
   enable: true
-  # 来源
+  # 源
   # 1. fullpage-loading
   # 2. pace（进度条）
   source: 1
@@ -1005,7 +1005,7 @@ snackbar:
 
 # Instant.page
 # https://instant.page/
-instantpage: false
+instantpage: true
 
 # 懒加载
 # https://github.com/verlok/vanilla-lazyload

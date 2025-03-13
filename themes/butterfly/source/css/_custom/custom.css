@@ -11,7 +11,7 @@
     }
 }
 
-/* 网络状态图标样式 */
+/* 网络状态图标通用样式 */
 .fas.fa-signal,
 .fas.fa-wifi,
 .fas.fa-cloud-arrow-up,
@@ -39,7 +39,6 @@
 .fas.fa-satellite-dish {
     color: #ff6b6b;
 }
-
 /* 在线图标特殊样式 */
 .fas.fa-signal,
 .fas.fa-wifi,
