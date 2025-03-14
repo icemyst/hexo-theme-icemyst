@@ -102,7 +102,7 @@ footer_img: transparent
 
 # 网站背景
 # 可以设置为颜色或图片网址
-background: https://image.smallbottle2.top/landscape # https://api.boxmoe.com/random.php?size=large
+background: https://www.dmoe.cc/random.php # https://t.alcy.cc/ycy # https://www.loliapi.com/acg/ # https://image.smallbottle2.top/landscape # https://api.boxmoe.com/random.php?size=large
 
 cover:
   # 是否禁用封面
@@ -180,7 +180,7 @@ subtitle:
   # 选择: false/1/2/3
   # false - 禁用该功能
   # 1 - hitokoto.cn
-  # 2 - yijuzhan.com
+  # 2 - https://api.aa1.cn/doc/yiyan.html
   # 3 - jinrishici.com
   source: false
   # 如果您关闭打字机效果，副标题将仅显示副标题的第一行
