@@ -76,7 +76,7 @@ disable_top_img: false
 default_top_img:
 
 # 首页的横幅图片
-index_img: https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
+index_img: https://t.alcy.cc/ycy # https://api.acgurl.link/img?type=xqh # https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
 
 # 归档页面的横幅图片
 archive_img: false
@@ -281,7 +281,9 @@ footer:
     since: 2019
   custom_text:
   # 主题和框架的版权
-  copyright: true
+  copyright:
+    enable: true
+    version: true
 
 # --------------------------------------
 # 侧边栏设置
@@ -1063,7 +1065,7 @@ CDN:
   # 注意: 开发版本只能使用'local'用于内部脚本
   # 注意: 当将第三方脚本设置为'local'时，您需要安装hexo-butterfly-extjs
   internal_provider: local
-  third_party_provider: custom
+  third_party_provider: cdnjs
 
   # 向网址添加版本号，true或false
   version: true
@@ -1082,7 +1084,7 @@ CDN:
     # artalk_css:
     # artalk_js:
     # blueimp_md5:
-    busuanzi: //busuanzi.sukap.cn/busuanzi.pure.mini.js #https://cdn1.tianli0.top/npm/busuanzi@2.3.0/bsz.pure.mini.min.js
+    # busuanzi: //busuanzi.sukap.cn/busuanzi.pure.mini.js # //busuanzi.9420.ltd/js
     # canvas_fluttering_ribbon:
     # canvas_nest:
     # canvas_ribbon:

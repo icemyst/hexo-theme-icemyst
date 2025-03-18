@@ -7,13 +7,13 @@
         != `&copy;${sinceYear} - ${currentYear} By ${config.author}`
       else
         != `&copy;${currentYear} By ${config.author}`
-  if theme.footer.copyright
-    - const v = getVersion()
+  if theme.footer.copyright.enable
+    - const v = theme.footer.copyright.version ? getVersion() : null
     .framework-info
       span= _p('footer.framework') + ' '
-      a(href='https://hexo.io')= `Hexo ${v.hexo}`
-      span.footer-separator |
+      a(href='https://hexo.io')= v ? `Hexo ${v.hexo}` : 'Hexo'
+      span.footer-separator
       span= _p('footer.theme') + ' '
-      a(href='https://github.com/jerryc127/hexo-theme-butterfly')= `Butterfly ${v.theme}`
+      a(href='https://github.com/jerryc127/hexo-theme-butterfly')= v ? `Butterfly ${v.theme}` : 'Butterfly'
   if theme.footer.custom_text
     .footer_custom_text!= theme.footer.custom_text
