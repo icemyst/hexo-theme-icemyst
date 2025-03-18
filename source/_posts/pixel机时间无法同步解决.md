@@ -11,7 +11,7 @@ abbrlink: 69cf
 date: 2024-10-27 21:36:47
 ---
 
-> 前段部分文章：{% post_link '解决Google-pixel机“网络连接受限”问题' %}
+> 前段部分文章：[解决Google-pixel机“网络连接受限”问题](/posts/87c.html)
 
 ## 介绍
 
