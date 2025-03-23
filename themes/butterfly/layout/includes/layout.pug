@@ -38,67 +38,62 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
     script.
       if ('serviceWorker' in navigator) {
-        // 网络状态管理类
+        // 注册 Service Worker
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', {
+            scope: '/'
+          }).then(() => {
+            if (!localStorage.getItem('install')) {
+              localStorage.setItem('install', 'true');
+              if (!navigator.onLine) {
+                networkManager.showNotification('offline');
+              }
+            }
+          }).catch(error => {
+            console.error('Service Worker 注册失败:', error);
+          });
+        });
+
+        // 网络状态管理优化
         class NetworkStatusManager {
           constructor(config) {
             this.config = config;
             this.offlineTimer = null;
+            this.debounceTimeout = null;
+          }
+
+          // 添加防抖处理
+          debounce(func, wait) {
+            clearTimeout(this.debounceTimeout);
+            this.debounceTimeout = setTimeout(func, wait);
           }
 
           showNotification(status) {
-            const config = this.config[status];
-            if (!config) return;
+            this.debounce(() => {
+              const config = this.config[status];
+              if (!config) return;
 
-            const message = config.messages[Math.floor(Math.random() * config.messages.length)];
-            
-            // 清除之前的离线定时器
-            if (this.offlineTimer) {
-              clearTimeout(this.offlineTimer);
-              this.offlineTimer = null;
-            }
+              const message = config.messages[Math.floor(Math.random() * config.messages.length)];
+              
+              if (this.offlineTimer) {
+                clearTimeout(this.offlineTimer);
+                this.offlineTimer = null;
+              }
 
-            Snackbar.show({
-              text: message,
-              pos: 'top-center',
-              duration: status === 'offline' ? null : config.duration,
-              backgroundColor: config.backgroundColor,
-              showAction: false,
-              customClass: `network-status-${status}`,
-              onClose: () => {
-                if (status === 'offline' && !navigator.onLine) {
-                  this.offlineTimer = setTimeout(() => this.showNotification('offline'), 1000);
+              Snackbar.show({
+                text: message,
+                pos: 'top-center',
+                duration: status === 'offline' ? null : config.duration,
+                backgroundColor: config.backgroundColor,
+                showAction: false,
+                customClass: `network-status-${status}`,
+                onClose: () => {
+                  if (status === 'offline' && !navigator.onLine) {
+                    this.offlineTimer = setTimeout(() => this.showNotification('offline'), 2000);
+                  }
                 }
-              }
-            });
-          }
-
-          init() {
-            window.addEventListener('online', () => this.showNotification('online'));
-            window.addEventListener('offline', () => this.showNotification('offline'));
-
-            navigator.serviceWorker.addEventListener('message', (event) => {
-              if (event.data.type === 'network-status') {
-                this.showNotification(event.data.status);
-              }
-            });
+              });
+            }, 300);
           }
         }
-
-        // 初始化网络状态管理
-        const networkManager = new NetworkStatusManager(!{JSON.stringify(site.data.network_status)});
-        networkManager.init();
-
-        // 注册 Service Worker
-        navigator.serviceWorker.register('/sw.js', {
-          scope: '/'
-        }).then(() => {
-          if (!localStorage.getItem('install')) {
-            localStorage.setItem('install', 'true');
-            if (!navigator.onLine) {
-              networkManager.showNotification('offline');
-            }
-          }
-        }).catch(error => {
-          console.error('Service Worker 注册失败:', error);
-        });
       }

@@ -276,14 +276,15 @@ noticeOutdate:
 # 页脚设置
 # --------------------------------------
 footer:
+  nav:
   owner:
     enable: true
-    since: 2019
-  custom_text:
+    since: 2021
   # 主题和框架的版权
   copyright:
     enable: true
-    version: true
+    version: false
+  custom_text:
 
 # --------------------------------------
 # 侧边栏设置
@@ -311,8 +312,8 @@ aside:
       link: /about/
   card_announcement:
     enable: true
-    content:
-      - <div><a style='display:flex;height:100%;width:100%;' href='https://hcer.top'><img style="height:100%;width:100%;" src="https://s2.loli.net/2025/03/15/8k1YPzW4msxlFtq.webp" alt="https://hcer.top" style="border-radius:0;"></a></div>
+    content: # https://images.weserv.nl/?url=https://s2.loli.net/2025/03/15/8k1YPzW4msxlFtq.webp https://ps.ssl.qhimg.com/t02dce7be76c34edd5e.jpg
+      - <div><a style='display:flex;height:100%;width:100%;' href='https://hcer.top'><img style="height:100%;width:100%;" src="https://cdn.jsdmirror.com/gh/eudav/bingm-static/img/hcer.webp" alt="https://hcer.top" style="border-radius:0;"></a></div>
         <b>GitHub站点：</b><a href='https://icemyst.github.io'>https://icemyst.github.io</a>
         <div>CDN赞助者：@xinpro(鸣谢)</div><div>赞助者博客：<a href="https://xinpro.cn">https://xinpro.cn</a></div>
   card_recent_post:
@@ -425,6 +426,9 @@ rightside_item_order:
   hide:
   # 默认: toc,chat,comment
   show:
+
+# 右下角配置按钮的动画
+rightside_config_animation: true
 
 # --------------------------------------
 # 全局设置

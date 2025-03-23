@@ -2,19 +2,29 @@ const workboxVersion = '7.3.0';
 
 importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${workboxVersion}/workbox-sw.js`);
 
-// Core configuration
-const CORE_CONFIG = {
-    prefix: "冰梦",
-    suffix: workboxVersion,
-    CACHE_NAME: 'icemystCache',
-    VERSION_CACHE_NAME: 'icemystCacheTime',
-    MAX_ACCESS_CACHE_TIME: 60 * 60 * 24 * 10,
-    TIMEOUT_DURATION: 400
+// 将配置对象合并和规范化
+const CONFIG = {
+    core: {
+        prefix: "冰梦",
+        suffix: workboxVersion,
+        cacheNames: {
+            main: 'icemystCache',
+            version: 'icemystCacheTime'
+        }
+    },
+    cache: {
+        maxAccessTime: 60 * 60 * 24 * 10,
+        timeouts: {
+            DEFAULT: 3000,
+            IMAGE: 3000,
+            FONT: 5000
+        }
+    }
 };
 
 workbox.core.setCacheNameDetails({
-    prefix: CORE_CONFIG.prefix,
-    suffix: CORE_CONFIG.suffix
+    prefix: CONFIG.core.prefix,
+    suffix: CONFIG.core.suffix
 });
 
 workbox.core.skipWaiting();
@@ -42,43 +52,48 @@ const createCacheConfig = (cacheName, maxEntries = 500, maxAgeSeconds = 60 * 60 
     ]
 });
 
-// 资源路由配置
-const resourceRoutes = [
-    {
+// 资源路由配置优化
+const RESOURCE_ROUTES = {
+    images: {
         pattern: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/,
-        config: createCacheConfig("images")
+        strategy: 'CacheFirst',
+        config: {
+            maxEntries: 200,
+            maxAge: 60 * 60 * 24 * 30
+        }
     },
-    {
+    fonts: {
         pattern: /\.(?:eot|ttf|woff|woff2)$/,
-        config: createCacheConfig("fonts", 50, 60 * 60 * 24 * 30)
+        strategy: 'CacheFirst',
+        config: {
+            maxEntries: 20,
+            maxAge: 60 * 60 * 24 * 30
+        }
     },
-    {
-        pattern: /^https:\/\/fonts\.googleapis\.com/,
+    staticResources: {
+        pattern: /^https:\/\/fonts\.(?:googleapis\.com|gstatic\.com)|cdn\.jsdelivr\.net/,
         strategy: 'StaleWhileRevalidate',
-        config: { cacheName: "google-fonts-stylesheets" }
-    },
-    {
-        pattern: /^https:\/\/fonts\.gstatic\.com/,
-        config: createCacheConfig('google-fonts-webfonts')
-    },
-    {
-        pattern: /^https:\/\/cdn\.jsdelivr\.net/,
-        config: createCacheConfig("static-libs")
+        config: {
+            maxEntries: 50,
+            maxAge: 60 * 60 * 24 * 30
+        }
     }
-];
+};
 
-// Register routes
-resourceRoutes.forEach(({ pattern, strategy = 'CacheFirst', config }) => {
+// 注册路由的优化方法
+Object.entries(RESOURCE_ROUTES).forEach(([key, { pattern, strategy, config }]) => {
     workbox.routing.registerRoute(
         pattern,
-        new workbox.strategies[strategy](config)
+        new workbox.strategies[strategy](
+            createCacheConfig(key, config.maxEntries, config.maxAge)
+        )
     );
 });
 
 // API 缓存配置
 workbox.routing.registerRoute(
     /\/api\//,
-    new workbox.strategies.NetworkFirst({
+    new workbox.strategies.StaleWhileRevalidate({
         cacheName: 'api-cache',
         plugins: [
             new workbox.expiration.ExpirationPlugin({
@@ -114,7 +129,7 @@ const dbHelper = {
     },
     write: async (key, value) => {
         try {
-            const cache = await caches.open(CORE_CONFIG.VERSION_CACHE_NAME);
+            const cache = await caches.open(CONFIG.core.cacheNames.version);
             await cache.put(key, new Response(value));
         } catch (error) {
             dbHelper.handleError('write', error);
@@ -124,7 +139,7 @@ const dbHelper = {
         try {
             const response = await caches.match(key);
             if (response) {
-                const cache = await caches.open(CORE_CONFIG.VERSION_CACHE_NAME);
+                const cache = await caches.open(CONFIG.core.cacheNames.version);
                 await cache.delete(key);
             }
         } catch (error) {
@@ -147,7 +162,7 @@ const dbAccess = {
         const value = await dbHelper.read(realKey);
         if (value) {
             await dbHelper.delete(realKey);
-            return time() - value < CORE_CONFIG.MAX_ACCESS_CACHE_TIME * 1000;
+            return time() - value < CONFIG.cache.maxAccessTime * 1000;
         }
         return false;
     }
@@ -190,62 +205,82 @@ const replaceList = {
     }
 };
 
-// 缓存配置
-const cacheList = {
-    static: {
-        clean: false,
-        time: 60 * 60 * 24 * 7,
-        match: url => {
-            const pathname = url.pathname;
-            return pathname.match(/\.(woff2|woff|ttf|cur)$/) ||
-                   pathname.match(/\/(pjax\.min|fancybox\.umd\.min|twikoo\.all\.min)\.js$/) ||
-                   pathname.match(/\/(all\.min|fancybox\.min)\.css/);
+const replaceRequest = (request) => {
+    const url = request.url;
+    
+    // 使用Map优化查找效率
+    const replacements = new Map(
+        Object.entries(replaceList).map(([key, value]) => [
+            value.source,
+            value.dist
+        ])
+    );
+
+    for (const [sources, dist] of replacements) {
+        if (sources.some(source => url.includes(source))) {
+            const newUrl = url.replace(
+                new RegExp(sources.join('|')),
+                dist
+            );
+            
+            return new Request(newUrl, {
+                method: request.method,
+                headers: request.headers,
+                mode: request.mode,
+                credentials: request.credentials,
+                redirect: request.redirect
+            });
         }
     }
+    
+    return null;
 };
 
-// URL 处理函数
-const findCache = (url) => {
-    try {
-        const urlObj = new URL(url);
-        return Object.values(cacheList).find(value => value.match?.(urlObj)) || null;
-    } catch (error) {
-        console.error('URL 解析错误:', error);
-        return null;
+// 统一的错误处理工具
+const ErrorHandler = {
+    createErrorResponse: (type, message) => {
+        const options = {
+            status: 408,
+            headers: type === 'FONT' ? {
+                'Content-Type': 'text/plain',
+                'Cache-Control': 'no-store'
+            } : {}
+        };
+        return new Response(message, options);
+    },
+    
+    logError: (context, error) => {
+        console.error(`[${context}] Error:`, error);
     }
 };
-
-const replaceRequest = (request) => {
-    let url = request.url;
-    let isModified = false;
-
-    Object.values(replaceList).forEach(({ source, dist }) => {
-        source.forEach(src => {
-            if (url.includes(src)) {
-                url = url.replace(src, dist);
-                isModified = true;
-            }
-        });
-    });
-
-    return isModified ? new Request(url, {
-        method: request.method,
-        headers: request.headers,
-        mode: request.mode,
-        credentials: request.credentials,
-        redirect: request.redirect
-    }) : null;
-};
-
-const blockRequest = () => false;
 
 // 获取事件处理
 const handleFetchResponse = async (request, response, cacheDist) => {
     const NOW_TIME = time();
     await dbAccess.update(request.url);
 
+    const getResourceType = (url) => {
+        if (url.match(/\.(png|jpg|jpeg|gif|bmp|webp|svg|ico)$/i)) return 'IMAGE';
+        if (url.match(/\.(eot|ttf|woff|woff2)$/i)) return 'FONT';
+        return 'DEFAULT';
+    };
+
+    const resourceType = getResourceType(request.url);
+    const timeoutDuration = CONFIG.cache.timeouts[resourceType];
     const maxTime = cacheDist.time * 1000;
-    
+
+    const fetchAndCache = async () => {
+        const newResponse = await fetch(request);
+        if (newResponse.ok && request.method === 'GET') {
+            await Promise.all([
+                dbTime.write(request.url, NOW_TIME.toString()),
+                caches.open(CONFIG.core.cacheNames.main)
+                    .then(cache => cache.put(request, newResponse.clone()))
+            ]);
+        }
+        return newResponse;
+    };
+
     if (response) {
         const cacheTime = await dbTime.read(request.url);
         if (cacheTime && (NOW_TIME - cacheTime < maxTime)) {
@@ -253,23 +288,22 @@ const handleFetchResponse = async (request, response, cacheDist) => {
         }
     }
 
-    const fetchAndCache = async () => {
-        const newResponse = await fetch(request);
-        if ((newResponse.ok || newResponse.status === 0) && request.method === 'GET') {
-            await dbTime.write(request.url, NOW_TIME.toString());
-            const clone = newResponse.clone();
-            const cache = await caches.open(CORE_CONFIG.CACHE_NAME);
-            await cache.put(request, clone);
-        }
-        return newResponse;
-    };
-
-    return response ? 
-        Promise.race([
-            new Promise(resolve => setTimeout(() => resolve(response), CORE_CONFIG.TIMEOUT_DURATION)),
-            fetchAndCache()
-        ]).catch(() => response) :
-        fetchAndCache().catch(() => new Response('网络请求失败', { status: 408 }));
+    try {
+        return await Promise.race([
+            fetchAndCache(),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('请求超时')), timeoutDuration)
+            )
+        ]);
+    } catch (error) {
+        ErrorHandler.logError('handleFetchResponse', error);
+        if (response) return response;
+        
+        return ErrorHandler.createErrorResponse(
+            resourceType,
+            resourceType === 'FONT' ? '字体加载失败' : '资源加载失败'
+        );
+    }
 };
 
 self.addEventListener('install', () => self.skipWaiting());
@@ -282,13 +316,14 @@ self.addEventListener('fetch', async event => {
         const request = replace || event.request;
         const cacheDist = findCache(request.url);
 
-        if (blockRequest(request)) {
-            event.respondWith(new Response(null, { status: 204 }));
-        } else if (cacheDist) {
+        if (cacheDist) {
             event.respondWith(
                 caches.match(request)
                     .then(response => handleFetchResponse(request, response, cacheDist))
-                    .catch(() => fetch(request))
+                    .catch(error => {
+                        console.error('Cache match failed:', error);
+                        return fetch(request);
+                    })
             );
         } else if (replace) {
             event.respondWith(fetch(request));
