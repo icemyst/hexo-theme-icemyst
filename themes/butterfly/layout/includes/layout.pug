@@ -35,65 +35,13 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
 
     include ./rightside.pug
     include ./additional-js.pug
-
+    
     script.
       if ('serviceWorker' in navigator) {
-        // 注册 Service Worker
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js', {
-            scope: '/'
-          }).then(() => {
-            if (!localStorage.getItem('install')) {
-              localStorage.setItem('install', 'true');
-              if (!navigator.onLine) {
-                networkManager.showNotification('offline');
-              }
-            }
-          }).catch(error => {
-            console.error('Service Worker 注册失败:', error);
-          });
-        });
-
-        // 网络状态管理优化
-        class NetworkStatusManager {
-          constructor(config) {
-            this.config = config;
-            this.offlineTimer = null;
-            this.debounceTimeout = null;
-          }
-
-          // 添加防抖处理
-          debounce(func, wait) {
-            clearTimeout(this.debounceTimeout);
-            this.debounceTimeout = setTimeout(func, wait);
-          }
-
-          showNotification(status) {
-            this.debounce(() => {
-              const config = this.config[status];
-              if (!config) return;
-
-              const message = config.messages[Math.floor(Math.random() * config.messages.length)];
-              
-              if (this.offlineTimer) {
-                clearTimeout(this.offlineTimer);
-                this.offlineTimer = null;
-              }
-
-              Snackbar.show({
-                text: message,
-                pos: 'top-center',
-                duration: status === 'offline' ? null : config.duration,
-                backgroundColor: config.backgroundColor,
-                showAction: false,
-                customClass: `network-status-${status}`,
-                onClose: () => {
-                  if (status === 'offline' && !navigator.onLine) {
-                    this.offlineTimer = setTimeout(() => this.showNotification('offline'), 2000);
-                  }
-                }
-              });
-            }, 300);
-          }
-        }
+        // Service Worker注册
+        navigator.serviceWorker.register('/sw.js', {scope: '/'})
+          .then(reg => {
+            console.log('Service Worker注册成功');
+          })
+          .catch(e => console.error('SW注册失败:', e));
       }

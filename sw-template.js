@@ -1,334 +1,232 @@
-const workboxVersion = '7.3.0';
-
-importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${workboxVersion}/workbox-sw.js`);
-
-// 将配置对象合并和规范化
-const CONFIG = {
-    core: {
-        prefix: "冰梦",
-        suffix: workboxVersion,
-        cacheNames: {
-            main: 'icemystCache',
-            version: 'icemystCacheTime'
-        }
-    },
-    cache: {
-        maxAccessTime: 60 * 60 * 24 * 10,
-        timeouts: {
-            DEFAULT: 3000,
-            IMAGE: 3000,
-            FONT: 5000
-        }
-    }
+const CACHE_CONFIG = {
+  MAIN: 'icemyst-main',
+  STATIC: 'icemyst-static',
+  MEDIA: 'icemyst-media',
+  MAX_AGE: {
+    STATIC: 7 * 24 * 60 * 60,
+    MEDIA: 30 * 24 * 60 * 60
+  }
 };
 
-workbox.core.setCacheNameDetails({
-    prefix: CONFIG.core.prefix,
-    suffix: CONFIG.core.suffix
-});
+const getTime = () => new Date().getTime();
 
-workbox.core.skipWaiting();
-workbox.core.clientsClaim();
-
-// 预缓存配置
-workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
-    directoryIndex: null
-});
-workbox.precaching.cleanupOutdatedCaches();
-
-// Common cache configuration factory
-const createCacheConfig = (cacheName, maxEntries = 500, maxAgeSeconds = 60 * 60 * 24 * 7) => ({
-    cacheName,
-    plugins: [
-        new workbox.expiration.ExpirationPlugin({
-            maxEntries,
-            maxAgeSeconds,
-            purgeOnQuotaError: true
-        }),
-        new workbox.cacheableResponse.CacheableResponsePlugin({
-            statuses: [0, 200]
-        }),
-        new workbox.rangeRequests.RangeRequestsPlugin()
-    ]
-});
-
-// 资源路由配置优化
-const RESOURCE_ROUTES = {
-    images: {
-        pattern: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/,
-        strategy: 'CacheFirst',
-        config: {
-            maxEntries: 200,
-            maxAge: 60 * 60 * 24 * 30
-        }
-    },
-    fonts: {
-        pattern: /\.(?:eot|ttf|woff|woff2)$/,
-        strategy: 'CacheFirst',
-        config: {
-            maxEntries: 20,
-            maxAge: 60 * 60 * 24 * 30
-        }
-    },
-    staticResources: {
-        pattern: /^https:\/\/fonts\.(?:googleapis\.com|gstatic\.com)|cdn\.jsdelivr\.net/,
-        strategy: 'StaleWhileRevalidate',
-        config: {
-            maxEntries: 50,
-            maxAge: 60 * 60 * 24 * 30
-        }
+const cacheDB = {
+  read: key => caches.match(key).then(res => res ? res.text() : null).catch(() => null),
+  write: (key, value) => caches.open(CACHE_CONFIG.VERSION).then(cache => cache.put(key, new Response(value))),
+  delete: key => caches.match(key).then(res => res && caches.open(CACHE_CONFIG.VERSION).then(cache => cache.delete(key))),
+  meta: {
+    get: (prefix, key) => cacheDB.read(new Request(`https://${prefix}/${encodeURIComponent(key)}`)),
+    set: (prefix, key, value) => cacheDB.write(new Request(`https://${prefix}/${encodeURIComponent(key)}`), value),
+    remove: (prefix, key) => cacheDB.delete(new Request(`https://${prefix}/${encodeURIComponent(key)}`)),
+    updateAccess: key => cacheDB.meta.set('ACCESS-CACHE', key, getTime()),
+    checkExpiry: async (key, maxAge) => {
+      const time = await cacheDB.meta.get('LOCALCACHE', key);
+      return time && (getTime() - time < maxAge);
     }
+  }
 };
 
-// 注册路由的优化方法
-Object.entries(RESOURCE_ROUTES).forEach(([key, { pattern, strategy, config }]) => {
-    workbox.routing.registerRoute(
-        pattern,
-        new workbox.strategies[strategy](
-            createCacheConfig(key, config.maxEntries, config.maxAge)
-        )
-    );
-});
+const cacheRules = [
+  { type: CACHE_CONFIG.STATIC, match: /\.(?:js|css|html|json|xml)$/i, maxAge: CACHE_CONFIG.MAX_AGE.STATIC },
+  { type: CACHE_CONFIG.MEDIA, match: /\.(?:png|jpg|jpeg|gif|webp|svg|ico|bmp)$/i, maxAge: CACHE_CONFIG.MAX_AGE.MEDIA, isImage: true },
+  { type: CACHE_CONFIG.MEDIA, match: /\.(?:eot|ttf|woff|woff2)$/i, maxAge: CACHE_CONFIG.MAX_AGE.MEDIA },
+  { type: CACHE_CONFIG.STATIC, match: /\.(?:mp3|mp4|webm|ogg|flac|wav|aac)$/i, maxAge: CACHE_CONFIG.MAX_AGE.STATIC }
+];
 
-// API 缓存配置
-workbox.routing.registerRoute(
-    /\/api\//,
-    new workbox.strategies.StaleWhileRevalidate({
-        cacheName: 'api-cache',
-        plugins: [
-            new workbox.expiration.ExpirationPlugin({
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60
-            }),
-            new workbox.cacheableResponse.CacheableResponsePlugin({
-                statuses: [0, 200]
-            })
-        ]
+const replaceRules = [
+  { pattern: /^(https?:)?\/\/cdn\.jsdelivr\.net\/gh/i, replacement: '//cdn1.tianli0.top/gh' },
+  { pattern: /^(https?:)?\/\/cdn\.jsdelivr\.net\/npm/i, replacement: '//npm.elemecdn.com' },
+  { pattern: /^(https?:)?\/\/fonts\.googleapis\.com/i, replacement: '//fonts.loli.net' },
+  { pattern: /^(https?:)?\/\/fonts\.gstatic\.com/i, replacement: '//gstatic.loli.net' },
+  { pattern: /^(https?:)?\/\/www\.gravatar\.com\/avatar/i, replacement: '//gravatar.loli.net/avatar' },
+  { pattern: /^(https?:)?\/\/s2\.loli\.net/i, replacements: ['//images.weserv.nl/?url=s2.loli.net', '//image.baidu.com/search/down?url=https://s2.loli.net'] },
+  { pattern: /^(https?:)?\/\/raw\.githubusercontent\.com/i, replacement: '//raw.gitmirror.com' }
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_CONFIG.MAIN).then(cache => {
+      return cache.addAll([
+        '/',
+        '/index.html',
+        '/css/index.css',
+        '/js/main.js'
+      ]);
     })
-);
-
-workbox.googleAnalytics.initialize();
-
-// Helper functions
-const time = () => new Date().getTime();
-const createCacheKey = (prefix, key) => new Request(`https://${prefix}/${encodeURIComponent(key)}`);
-
-// Database helper with unified error handling
-const dbHelper = {
-    handleError: (operation, error) => {
-        console.error(`Database ${operation} failed:`, error);
-        return null;
-    },
-    read: async (key) => {
-        try {
-            const res = await caches.match(key);
-            return res ? await res.text() : null;
-        } catch (error) {
-            return dbHelper.handleError('read', error);
-        }
-    },
-    write: async (key, value) => {
-        try {
-            const cache = await caches.open(CONFIG.core.cacheNames.version);
-            await cache.put(key, new Response(value));
-        } catch (error) {
-            dbHelper.handleError('write', error);
-        }
-    },
-    delete: async (key) => {
-        try {
-            const response = await caches.match(key);
-            if (response) {
-                const cache = await caches.open(CONFIG.core.cacheNames.version);
-                await cache.delete(key);
-            }
-        } catch (error) {
-            dbHelper.handleError('delete', error);
-        }
-    }
-};
-
-// 数据库接口
-const dbTime = {
-    read: (key) => dbHelper.read(createCacheKey('LOCALCACHE', key)),
-    write: (key, value) => dbHelper.write(createCacheKey('LOCALCACHE', key), value),
-    delete: (key) => dbHelper.delete(createCacheKey('LOCALCACHE', key))
-};
-
-const dbAccess = {
-    update: (key) => dbHelper.write(createCacheKey('ACCESS-CACHE', key), time()),
-    check: async (key) => {
-        const realKey = createCacheKey('ACCESS-CACHE', key);
-        const value = await dbHelper.read(realKey);
-        if (value) {
-            await dbHelper.delete(realKey);
-            return time() - value < CONFIG.cache.maxAccessTime * 1000;
-        }
-        return false;
-    }
-};
-
-// URL 替换配置
-const replaceList = {
-    jsdelivr: {
-        source: ['//cdn.jsdelivr.net/gh'],
-        dist: '//cdn1.tianli0.top/gh'
-    },
-    npm: {
-        source: ['//cdn.jsdelivr.net/npm'],
-        dist: '//npm.elemecdn.com'
-    },
-    googlefonts: {
-        source: ['//fonts.googleapis.com'],
-        dist: '//fonts.loli.net'
-    },
-    googlestatic: {
-        source: ['//fonts.gstatic.com'],
-        dist: '//gstatic.loli.net'
-    },
-    gravatar: {
-        source: ['//www.gravatar.com/avatar'],
-        dist: '//gravatar.loli.net/avatar'
-    },
-    // zhihu: {
-    //     source: ['//pic1.zhimg.com', '//pic2.zhimg.com', '//pic3.zhimg.com', '//pic4.zhimg.com'],
-    //     dist: '//images.weserv.nl/?url=pic1.zhimg.com'
-    // },
-    smms: {
-        source: ['//s2.loli.net'],
-        dist: '//image.baidu.com/search/down?url=https://s2.loli.net'
-    },
-    Github: {
-        source: ['//raw.githubusercontent.com'],
-        dist: '//raw.gitmirror.com'
-
-    }
-};
-
-const replaceRequest = (request) => {
-    const url = request.url;
-    
-    // 使用Map优化查找效率
-    const replacements = new Map(
-        Object.entries(replaceList).map(([key, value]) => [
-            value.source,
-            value.dist
-        ])
-    );
-
-    for (const [sources, dist] of replacements) {
-        if (sources.some(source => url.includes(source))) {
-            const newUrl = url.replace(
-                new RegExp(sources.join('|')),
-                dist
-            );
-            
-            return new Request(newUrl, {
-                method: request.method,
-                headers: request.headers,
-                mode: request.mode,
-                credentials: request.credentials,
-                redirect: request.redirect
-            });
-        }
-    }
-    
-    return null;
-};
-
-// 统一的错误处理工具
-const ErrorHandler = {
-    createErrorResponse: (type, message) => {
-        const options = {
-            status: 408,
-            headers: type === 'FONT' ? {
-                'Content-Type': 'text/plain',
-                'Cache-Control': 'no-store'
-            } : {}
-        };
-        return new Response(message, options);
-    },
-    
-    logError: (context, error) => {
-        console.error(`[${context}] Error:`, error);
-    }
-};
-
-// 获取事件处理
-const handleFetchResponse = async (request, response, cacheDist) => {
-    const NOW_TIME = time();
-    await dbAccess.update(request.url);
-
-    const getResourceType = (url) => {
-        if (url.match(/\.(png|jpg|jpeg|gif|bmp|webp|svg|ico)$/i)) return 'IMAGE';
-        if (url.match(/\.(eot|ttf|woff|woff2)$/i)) return 'FONT';
-        return 'DEFAULT';
-    };
-
-    const resourceType = getResourceType(request.url);
-    const timeoutDuration = CONFIG.cache.timeouts[resourceType];
-    const maxTime = cacheDist.time * 1000;
-
-    const fetchAndCache = async () => {
-        const newResponse = await fetch(request);
-        if (newResponse.ok && request.method === 'GET') {
-            await Promise.all([
-                dbTime.write(request.url, NOW_TIME.toString()),
-                caches.open(CONFIG.core.cacheNames.main)
-                    .then(cache => cache.put(request, newResponse.clone()))
-            ]);
-        }
-        return newResponse;
-    };
-
-    if (response) {
-        const cacheTime = await dbTime.read(request.url);
-        if (cacheTime && (NOW_TIME - cacheTime < maxTime)) {
-            return response;
-        }
-    }
-
-    try {
-        return await Promise.race([
-            fetchAndCache(),
-            new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('请求超时')), timeoutDuration)
-            )
-        ]);
-    } catch (error) {
-        ErrorHandler.logError('handleFetchResponse', error);
-        if (response) return response;
-        
-        return ErrorHandler.createErrorResponse(
-            resourceType,
-            resourceType === 'FONT' ? '字体加载失败' : '资源加载失败'
-        );
-    }
-};
-
-self.addEventListener('install', () => self.skipWaiting());
-
-self.addEventListener('fetch', async event => {
-    if (event.request.method !== 'GET') return;
-
-    try {
-        const replace = replaceRequest(event.request);
-        const request = replace || event.request;
-        const cacheDist = findCache(request.url);
-
-        if (cacheDist) {
-            event.respondWith(
-                caches.match(request)
-                    .then(response => handleFetchResponse(request, response, cacheDist))
-                    .catch(error => {
-                        console.error('Cache match failed:', error);
-                        return fetch(request);
-                    })
-            );
-        } else if (replace) {
-            event.respondWith(fetch(request));
-        }
-    } catch (error) {
-        console.error('获取事件处理错误:', error);
-    }
+  );
+  self.skipWaiting();
 });
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.filter(cacheName => 
+          ![CACHE_CONFIG.MAIN, CACHE_CONFIG.STATIC, CACHE_CONFIG.MEDIA].includes(cacheName)
+        ).map(cacheName => caches.delete(cacheName))
+      );
+    })
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  } else if (event.data?.type === 'ACTIVATED_NO_REFRESH') {
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({type: 'SW_READY'});
+      });
+    });
+  } else if (event.data?.type === 'CACHE_UPDATED') {
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({type: 'CACHE_UPDATED'});
+      });
+    });
+  }
+});
+
+const utils = {
+  findCacheRule: url => cacheRules.find(rule => url.match(rule.match)),
+  
+  fixUrl: url => url?.startsWith('//') ? 'https:' + url : url,
+  
+  getReplacedUrl: url => {
+    if (!url) return null;
+    
+    for (const rule of replaceRules) {
+      if (rule.pattern.test(url)) {
+        if (rule.replacements) {
+          const isImage = url.match(/\.(jpe?g|png|gif|webp|svg)$/i);
+          const index = isImage ? 0 : Math.floor(Math.random() * rule.replacements.length);
+          return url.replace(rule.pattern, rule.replacements[index]);
+        } else if (rule.replacement) {
+          return url.replace(rule.pattern, rule.replacement);
+        }
+      }
+    }
+    return null;
+  },
+  
+  createRequest: (url, isImage = false) => new Request(url, {
+    method: 'GET',
+    headers: { 'Accept': isImage ? 'image/*' : '*/*' },
+    mode: 'no-cors',
+    credentials: 'omit'
+  }),
+  
+  cacheResponse: (cache, request, response) => {
+    if (response?.ok || response?.type === 'opaque') {
+      try {
+        cache.put(request, response.clone());
+      } catch (e) {}
+    }
+  }
+};
+
+async function fetchResource(request, url) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  
+  const cacheRule = utils.findCacheRule(url);
+  const isImage = cacheRule?.isImage || false;
+  const replacedUrl = utils.getReplacedUrl(url);
+  const fixedReplaceUrl = replacedUrl ? utils.fixUrl(replacedUrl) : null;
+  
+  const cache = await caches.open(CACHE_CONFIG.MAIN);
+  
+  if (!fixedReplaceUrl) {
+    try {
+      const response = await fetch(request);
+      utils.cacheResponse(cache, request, response);
+      return response;
+    } catch (e) {
+      return new Response('', { status: 503 });
+    }
+  }
+  
+  const fallbackReq = utils.createRequest(fixedReplaceUrl, isImage);
+  
+  try {
+    const originalPromise = fetch(request.clone());
+    const fallbackPromise = fetch(fallbackReq.clone());
+    
+    const response = await Promise.race([originalPromise, fallbackPromise]);
+    
+    if (response) {
+      utils.cacheResponse(cache, request, response);
+      return response;
+    }
+    
+    return await Promise.any([originalPromise, fallbackPromise]);
+  } catch (e) {
+    if (isImage) {
+      return new Response('', {
+        status: 200,
+        headers: { 'Content-Type': 'image/svg+xml' }
+      });
+    }
+    return new Response('', { status: 503 });
+  }
+}
+
+self.addEventListener('fetch', event => {
+  const url = event.request.url;
+  
+  if (event.request.method !== 'GET') return;
+  
+  const needsIntercept = utils.findCacheRule(url) || 
+                         replaceRules.some(rule => rule.pattern.test(url));
+  
+  if (needsIntercept) {
+    event.respondWith(fetchResource(event.request, url));
+  }
+});
+
+try {
+  importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js');
+  
+  const wb = workbox;
+  wb.core.setCacheNameDetails({ prefix: "icemyst" });
+  wb.core.skipWaiting();
+  wb.core.clientsClaim();
+  wb.precaching.cleanupOutdatedCaches();
+  wb.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
+  
+  cacheRules.forEach(rule => {
+    wb.routing.registerRoute(
+      rule.match,
+      new wb.strategies.StaleWhileRevalidate({
+        cacheName: rule.type,
+        plugins: [
+          new wb.expiration.ExpirationPlugin({
+            maxEntries: rule.isImage ? 500 : 1000, 
+            maxAgeSeconds: rule.maxAge
+          }),
+          new wb.cacheableResponse.CacheableResponsePlugin({ statuses: [0, 200] })
+        ]
+      })
+    );
+  });
+  
+  wb.routing.registerRoute(
+    /^https?:\/\/(images\.weserv\.nl|image\.baidu\.com|loli\.net|cdn1\.tianli0\.top)/,
+    new wb.strategies.CacheFirst({
+      cacheName: "cross-origin",
+      plugins: [
+        new wb.expiration.ExpirationPlugin({
+          maxEntries: 500,
+          maxAgeSeconds: 30 * 24 * 60 * 60
+        }),
+        new wb.cacheableResponse.CacheableResponsePlugin({ statuses: [0, 200] })
+      ],
+      fetchOptions: { mode: 'no-cors', credentials: 'omit' }
+    })
+  );
+  
+  wb.googleAnalytics.initialize();
+} catch (error) {
+  console.error('Workbox初始化失败:', error);
+}

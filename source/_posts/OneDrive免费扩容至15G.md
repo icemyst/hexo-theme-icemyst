@@ -4,7 +4,7 @@ tags:
   - OneDrive
 categories: 技术教程
 cover: >-
-  https://jsd.onmicrosoft.cn/gh/eudav/bingm-static/img/computer/018.webp
+  https://cdn.jsdmirror.com/gh/eudav/bingm-static/img/computer/018.webp
 abbrlink: 38ed
 date: 2024-11-17 23:12:27
 ---

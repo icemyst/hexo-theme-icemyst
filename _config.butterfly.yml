@@ -76,7 +76,7 @@ disable_top_img: false
 default_top_img:
 
 # 首页的横幅图片
-index_img: https://t.alcy.cc/ycy # https://api.acgurl.link/img?type=xqh # https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
+index_img: https://img.xjh.me/random_img.php?type=bg&ctype=nature&return=302 # https://t.alcy.cc/ycy # https://api.acgurl.link/img?type=xqh # https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
 
 # 归档页面的横幅图片
 archive_img: false
@@ -102,7 +102,8 @@ footer_img: transparent
 
 # 网站背景
 # 可以设置为颜色或图片网址
-background: https://www.dmoe.cc/random.php # https://t.alcy.cc/ycy # https://www.loliapi.com/acg/ # https://image.smallbottle2.top/landscape # https://api.boxmoe.com/random.php?size=large
+background: https://t.alcy.cc/ycy # https://cdn.seovx.com/d/?mom=302
+ # https://www.dmoe.cc/random.php # https://t.alcy.cc/ycy # https://www.loliapi.com/acg/ # https://image.smallbottle2.top/landscape # https://api.boxmoe.com/random.php?size=large
 
 cover:
   # 是否禁用封面
@@ -133,7 +134,7 @@ error_img:
 error_404:
   enable: true
   subtitle: '页面未找到'
-  background: https://pic.imgdb.cn/item/64c7bada1ddac507cc135dd8.jpg
+  background: https://free4.yunpng.top/2025/03/29/67e7a11956505.jpg
 
 post_meta:
   # 首页
@@ -836,8 +837,8 @@ font:
 
 # 网站标题和副标题的字体设置
 blog_title_font:
-  font_link: https://fonts.googleapis.com/css?family=Titillium+Web&display=swap
-  font_family: Titillium Web,Arial,PingFang SC, 'Hiragino Sans GB', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif
+  font_link: # https://fonts.googleapis.com/css?family=Titillium+Web&display=swap Titillium Web
+  font_family: Arial,PingFang SC, 'Hiragino Sans GB', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif
 
 # 分隔符图标的设置
 hr_icon:
@@ -1018,7 +1019,7 @@ instantpage: true
 lazyload:
   enable: true
   # 指定使用懒加载的字段（网站（site）或文章（post））
-  field: post
+  field: site
   placeholder: /img/loading.webp
   blur: true
 
@@ -1059,7 +1060,8 @@ inject:
   head:
     # - <link rel="stylesheet" href="/xxx.css">
   bottom:
-    # - <script src="xxxx"></script>
+    # 网络状态显示
+    - <script src="/js/custom/network-status.js"></script>
 
 # CDN设置
 # 除非您知道它们的工作原理，否则请勿修改以下设置
@@ -1082,7 +1084,7 @@ CDN:
     # abcjs_basic_js:
     # activate_power_mode:
     # algolia_js:
-    algolia_search: https://cdn.cbd.int/algoliasearch@5.20.3/dist/lite/builds/browser.umd.js
+    algolia_search: https://cdnjs.webstatic.cn/ajax/libs/algoliasearch/5.20.2/lite/builds/browser.umd.js  # https://cdn.jsdelivr.net/npm/algoliasearch@5.20.3/dist/lite/builds/browser.umd.js
     # aplayer_css:
     # aplayer_js:
     # artalk_css:
@@ -1103,12 +1105,12 @@ CDN:
     # fancybox: https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.js
     # fancybox_css: https://cdn1.tianli0.top/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css
     # fireworks:
-    # fontawesome: https://cdn1.tianli0.top/npm/@fortawesome/fontawesome-free@6.7.2/css/fontawesome.min.css
+    fontawesome: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css
     # gitalk:
     # gitalk_css:
     # giscus:
     # instantpage:
-    instantsearch: https://cdn.cbd.int/instantsearch.js@4.77.3/dist/instantsearch.production.min.js  # https://s4.zstatic.net/ajax/libs/instantsearch.js/4.75.7/instantsearch.production.min.js
+    instantsearch: https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.77.0/instantsearch.production.min.js # https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instantsearch.js/4.39.0/instantsearch.production.min.js # https://cdn.cbd.int/instantsearch.js@4.77.3/dist/instantsearch.production.min.js  # https://s4.zstatic.net/ajax/libs/instantsearch.js/4.75.7/instantsearch.production.min.js
     # katex:
     # katex_copytex:
     # lazyload: https://cdn1.tianli0.top/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js
@@ -1128,7 +1130,7 @@ CDN:
     # snackbar:
     # snackbar_css:
     # translate:
-    twikoo: https://cdn.cbd.int/twikoo@1.6.41/dist/twikoo.all.min.js # https://cdn1.tianli0.top/npm/js-heo@1.0.3/twikoo/twikoo.all.min.js
+    twikoo: https://cdnjs.webstatic.cn/ajax/libs/twikoo/1.6.41/twikoo.all.min.js # https://cdn1.tianli0.top/npm/js-heo@1.0.3/twikoo/twikoo.all.min.js
     # typed:
     # utils:
     # valine:
