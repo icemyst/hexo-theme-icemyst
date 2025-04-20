@@ -38,10 +38,18 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     
     script.
       if ('serviceWorker' in navigator) {
-        // Service Worker注册
-        navigator.serviceWorker.register('/sw.js', {scope: '/'})
-          .then(reg => {
-            console.log('Service Worker注册成功');
-          })
+        navigator.serviceWorker.register('/sw.js')
+          .then(() => console.log('SW注册成功'))
           .catch(e => console.error('SW注册失败:', e));
       }
+      
+      // Add image lazy loading
+      document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('img:not([loading])');
+        images.forEach(img => {
+          img.setAttribute('loading', 'lazy');
+          if (!img.hasAttribute('decoding')) {
+            img.setAttribute('decoding', 'async');
+          }
+        });
+      }); 

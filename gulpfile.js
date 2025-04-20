@@ -6,105 +6,130 @@ const workbox = require("workbox-build");
 const terser = require('gulp-terser');
 const chalk = require('chalk');
 
-// 日志系统
+// 日志输出函数
 const log = {
-  info: msg => console.log(chalk.cyan('→ ') + msg),
-  success: msg => console.log(chalk.green('✓ ') + msg),
-  error: msg => console.error(chalk.red('✗ ') + msg),
-  stats: (orig, comp) => console.log(
-    chalk.blue('  ') + 
-    `${formatSize(orig)} → ${formatSize(comp)} (${((1 - comp / orig) * 100).toFixed(1)}%)`
-  )
+  info: msg => console.log(chalk.cyan('│'), chalk.cyan(msg)),
+  success: msg => console.log(chalk.green('│'), chalk.green(msg)),
+  error: msg => console.error(chalk.red('│'), chalk.red(msg)),
+  taskStart: name => console.log(chalk.blue('┌'), chalk.blue(name)),
+  taskEnd: () => console.log(chalk.blue('└')),
+  stats: (label, value) => console.log(chalk.cyan('│'), chalk.gray(label + ':'), chalk.white(value))
 };
 
-// 格式化文件大小
-const formatSize = bytes => {
-  if (bytes < 1) return '0 B';
-  const units = ['B', 'KB', 'MB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
-};
-
-// 构建配置
+// 配置对象
 const config = {
   sw: {
     swSrc: './sw-template.js',
     swDest: './public/sw.js',
     globDirectory: './public',
-    globPatterns: [
-      "index.html",
-      "css/index.css",
-      "js/main.js",
-      "404.html"
-    ],
+    globPatterns: ["404.html", "index.html", "css/index.css", "js/main.js", "manifest.json"],
     modifyURLPrefix: { "": "./" }
   },
   terser: {
     compress: {
-      sequences: 50,
-      unsafe: true,
-      drop_console: true
+      sequences: 50, unsafe: true, unsafe_math: true, pure_getters: true,
+      ecma: true, drop_console: true, module: true, toplevel: true,
+      pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
     },
-    mangle: true
+    mangle: { toplevel: true, properties: { regex: /^_/ } },
+    format: { comments: false }
   },
   html: {
-    removeComments: true,                   // 清除html注释
-    collapseWhitespace: true,               // 合并空格
-    collapseBooleanAttributes: true,        // 压缩布尔类型的 attributes
-    noNewlinesBeforeTagClose: false,        // 去掉换行符
-    removeAttributeQuotes: true,            // 在可能时删除属性值的引号
-    removeRedundantAttributes: true,        // 属性值与默认值一样时删除属性
-    removeEmptyAttributes: true,            // 删除值为空的属性
-    removeScriptTypeAttributes: true,       // 删除 `type="text/javascript"`
-    removeStyleLinkTypeAttributes: true,    // 删除 `type="text/css"`
-    minifyJS: true,                         //压缩页面 JS
-    minifyCSS: true,                        //压缩页面 CSS
-    minifyURLs: true                        //压缩页面URL
+    removeComments: true, collapseWhitespace: true, collapseBooleanAttributes: true,
+    noNewlinesBeforeTagClose: false, removeAttributeQuotes: true, removeRedundantAttributes: true, 
+    removeEmptyAttributes: true,removeScriptTypeAttributes: true, removeStyleLinkTypeAttributes: true,
+    minifyJS: true, minifyCSS: true, minifyURLs: true
   },
-  cleanCSS: { level: 2 }
+  cleanCSS: {
+    level: 2, mergeIdents: false, reduceIdents: false, discardUnused: false
+  }
 };
 
-// 通用压缩任务创建器
-const createMinifyTask = (name, src, processor) => {
-  gulp.task(name, () => {
-    let size = { before: 0, after: 0 };
-    const startTime = Date.now();
+// 文件大小格式化
+const formatFileSize = bytes => {
+  if (bytes === 0) return '0 B';
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
+};
 
-    log.info(`开始 ${name} 任务...`);
-    return gulp.src(src, { base: './public' })
-      .on('data', file => file.contents && (size.before += file.contents.length))
+// 通用压缩任务工厂
+const createMinifyTask = (taskName, src, processor, dest) => {
+  gulp.task(taskName, () => {
+    const stats = { originalSize: 0, minifiedSize: 0, fileCount: 0 };
+    log.taskStart(taskName);
+    
+    return gulp.src(src)
+      .on('data', file => {
+        if (!file.isNull()) {
+          stats.originalSize += file.contents.length;
+          stats.fileCount++;
+        }
+      })
+      .on('error', error => {
+        log.error(`错误: ${error.message}`);
+        this.emit('end');
+      })
       .pipe(processor)
-      .on('data', file => file.contents && (size.after += file.contents.length))
-      .pipe(gulp.dest('./public'))
+      .pipe(gulp.dest(dest || './public'))
+      .on('data', file => {
+        if (!file.isNull()) {
+          stats.minifiedSize += file.contents.length;
+        }
+      })
       .on('end', () => {
-        const time = Date.now() - startTime;
-        log.success(`${name} 完成 (${time}ms)`);
-        log.stats(size.before, size.after);
+        const ratio = ((stats.minifiedSize - stats.originalSize) / stats.originalSize * 100).toFixed(2);
+        const sizeChangeMsg = stats.minifiedSize === stats.originalSize ? '未变化' :
+          stats.minifiedSize > stats.originalSize ? `增大 ${Math.abs(ratio)}%` :
+          `减小 ${Math.abs(ratio)}%`;
+        
+        log.success(`${taskName}完成`);
+        log.stats('文件数', stats.fileCount);
+        log.stats('大小', `${formatFileSize(stats.originalSize)} → ${formatFileSize(stats.minifiedSize)} (${sizeChangeMsg})`);
+        log.taskEnd();
       });
   });
 };
 
-// 生成Service Worker
-gulp.task('service-worker', () => {
-  log.info('正在生成 Service Worker...');
+// Service Worker生成任务
+gulp.task('generate-service-worker', () => {
+  log.taskStart('generate-service-worker');
   return workbox.injectManifest(config.sw)
-    .then(({count, size, warnings}) => {
-      if (warnings.length) {
-        warnings.forEach(warning => console.warn(warning));
-      }
-      log.success('Service Worker 生成成功');
-      log.stats(0, size);
+    .then(({count, size}) => {
+      log.success('Service Worker生成成功');
+      log.stats('预缓存', `${count}个文件, ${formatFileSize(size)}`);
+      log.taskEnd();
     })
-    .catch(err => log.error(`Service Worker 生成失败: ${err}`));
+    .catch(err => {
+      log.error(`生成失败: ${err}`);
+      log.taskEnd();
+    });
 });
 
-// 注册压缩任务
-createMinifyTask('minify-js', ['./public/**/*.js', '!./public/**/*.min.js'], terser(config.terser));
-createMinifyTask('minify-css', ['./public/**/*.css'], cleanCSS(config.cleanCSS));
-createMinifyTask('minify-html', ['./public/**/*.html'], htmlclean().pipe(htmlMin(config.html)));
+// 创建各类资源压缩任务
+createMinifyTask(
+  'compress', 
+  ['./public/**/*.js', '!./public/**/*.min.js'], 
+  terser(config.terser), 
+  './public'
+);
+
+createMinifyTask(
+  'minify-css', 
+  ['./public/**/*.css'], 
+  cleanCSS(config.cleanCSS), 
+  './public'
+);
+
+createMinifyTask(
+  'minify-html', 
+  './public/**/*.html', 
+  htmlclean().pipe(htmlMin(config.html)), 
+  './public'
+);
 
 // 默认任务
 gulp.task('default', gulp.series(
-  'service-worker', 
-  gulp.parallel('minify-js', 'minify-css', 'minify-html')
+  'generate-service-worker',
+  gulp.parallel('compress', 'minify-css', 'minify-html')
 ));
