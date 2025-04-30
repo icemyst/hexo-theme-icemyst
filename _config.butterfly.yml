@@ -76,7 +76,7 @@ disable_top_img: false
 default_top_img:
 
 # 首页的横幅图片
-index_img: https://img.xjh.me/random_img.php?type=bg&ctype=nature&return=302 # https://t.alcy.cc/ycy # https://api.acgurl.link/img?type=xqh # https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
+index_img: false # https://img.xjh.me/random_img.php?type=bg&ctype=nature&return=302 # https://t.alcy.cc/ycy # https://api.acgurl.link/img?type=xqh # https://pic3.zhimg.com/80/v2-2d27325d3ef53714bd457bc2c40e8852_1440w.webp
 
 # 归档页面的横幅图片
 archive_img: false

@@ -24,10 +24,22 @@ script.
     }
 
     preloader.initLoading()
-    window.addEventListener('load', preloader.endLoading)
+    
+    // 添加一个最大加载时间限制，3秒后强制结束加载动画
+    const maxLoadingTime = setTimeout(() => {
+      preloader.endLoading()
+    }, 3000)
+    
+    window.addEventListener('load', () => {
+      preloader.endLoading()
+      clearTimeout(maxLoadingTime)
+    })
 
     if (!{theme.pjax && theme.pjax.enable}) {
       btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
-      btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+      btf.addGlobalFn('pjaxComplete', () => {
+        preloader.endLoading()
+        clearTimeout(maxLoadingTime)
+      }, 'preloader_end')
     }
   })()
