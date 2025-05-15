@@ -37,19 +37,12 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     include ./additional-js.pug
     
     script.
-      // Service Worker注册
+      // Service Worker Registration
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          if (!navigator.serviceWorker.controller) {
-            navigator.serviceWorker.register('/sw.js', {
-              scope: '/',
-              updateViaCache: 'none'
-            }).then(reg => {
-              reg.onupdatefound = () => {
-                const worker = reg.installing;
-                worker.onstatechange = () => {};
-              };
-            }).catch(() => {});
-          }
+          navigator.serviceWorker.register('/sw.js', {
+            scope: '/',
+            updateViaCache: 'none'
+          }).catch(() => {});
         });
       } 

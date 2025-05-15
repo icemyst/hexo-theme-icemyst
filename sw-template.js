@@ -16,7 +16,7 @@ const CDN_MAP = {
   jsdelivr_gh: {
     pattern: /^https?:\/\/cdn\.jsdelivr\.net\/gh/,
     replacement: '//gcore.jsdelivr.net/gh',
-    fallbacks: ['//cdn1.tianli0.top/gh', '//cdn.jsdmirror.com/gh', '//jsd.cdn.zzko.cn/gh', '//cdn.staticaly.com/gh']
+    fallbacks: ['//cdn1.tianli0.top/gh', '//cdn.jsdmirror.com/gh', '//cdn.jsdmirror.cn/gh', '//jsd.cdn.zzko.cn/gh', '//cdn.staticaly.com/gh']
   },
   jsdelivr_npm: {
     pattern: /^https?:\/\/cdn\.jsdelivr\.net\/npm/,
@@ -65,16 +65,14 @@ const CDN_MAP = {
   }
 };
 
-const CDNManager = {
-  status: new Map(),
-  pending: new Map(),
-  cache: new Map(),
-  TTL: 3600000,
-
-  init() {
-    setInterval(() => this.clean(), 60000);
-    return this;
-  },
+class CDNManager {
+  constructor() {
+    this.status = new Map();
+    this.pending = new Map();
+    this.cache = new Map();
+    this.TTL = 3600000;
+    this.cleanupInterval = setInterval(() => this.clean(), 60000);
+  }
 
   getCDN(url) {
     if (!url) return null;
@@ -85,25 +83,28 @@ const CDNManager = {
     for (const rule of Object.values(CDN_MAP)) {
       if (!rule.pattern.test(url)) continue;
       
-      let newUrl;
-      if (rule.replacements) {
-        const replacements = rule.replacements;
-        newUrl = url.replace(rule.pattern, replacements[Math.floor(Math.random() * replacements.length)]);
-      } else {
-        const domain = rule.replacement;
-        const state = this.status.get(domain);
-        const useFallback = state?.failCount > 2 && rule.fallbacks?.length;
-        const cdn = useFallback
-          ? rule.fallbacks[Math.floor(Math.random() * rule.fallbacks.length)]
-          : rule.replacement;
-        newUrl = url.replace(rule.pattern, cdn);
+      const newUrl = this.generateNewUrl(url, rule);
+      if (newUrl) {
+        this.cache.set(url, { value: newUrl, time: Date.now() });
+        return newUrl;
       }
-      
-      this.cache.set(url, { value: newUrl, time: Date.now() });
-      return newUrl;
     }
     return null;
-  },
+  }
+
+  generateNewUrl(url, rule) {
+    if (rule.replacements) {
+      return url.replace(rule.pattern, rule.replacements[Math.floor(Math.random() * rule.replacements.length)]);
+    }
+    
+    const state = this.status.get(rule.replacement);
+    const useFallback = state?.failCount > 2 && rule.fallbacks?.length;
+    const cdn = useFallback
+      ? rule.fallbacks[Math.floor(Math.random() * rule.fallbacks.length)]
+      : rule.replacement;
+    
+    return url.replace(rule.pattern, cdn);
+  }
 
   updateStatus(url, success) {
     try {
@@ -119,11 +120,11 @@ const CDNManager = {
     } catch (error) {
       console.error('Failed to update CDN status:', error);
     }
-  },
+  }
 
-  isPending(url) { return this.pending.has(url); },
-  markPending(url) { this.pending.set(url, Date.now()); },
-  clearPending(url) { this.pending.delete(url); },
+  isPending(url) { return this.pending.has(url); }
+  markPending(url) { this.pending.set(url, Date.now()); }
+  clearPending(url) { this.pending.delete(url); }
 
   clean() {
     const now = Date.now();
@@ -131,22 +132,21 @@ const CDNManager = {
     this.cache.forEach((v, k) => { if (now - v.time > this.TTL) this.cache.delete(k); });
     this.status.forEach((v, k) => { if (now - v.timestamp > 86400000) this.status.delete(k); });
   }
-};
+}
 
-const cdnManager = CDNManager.init();
+const cdnManager = new CDNManager();
 
+// Service Worker Event Listeners
 self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
+
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => {
-        const validCacheNames = [CACHE_CONFIG.MAIN, CACHE_CONFIG.STATIC, CACHE_CONFIG.MEDIA];
-        return Promise.all(
-          keys
-            .filter(k => !validCacheNames.includes(k) && !k.startsWith('workbox-'))
-            .map(k => caches.delete(k))
-        );
-      })
+      .then(keys => Promise.all(
+        keys
+          .filter(k => ![CACHE_CONFIG.MAIN, CACHE_CONFIG.STATIC, CACHE_CONFIG.MEDIA].includes(k) && !k.startsWith('workbox-'))
+          .map(k => caches.delete(k))
+      ))
       .then(() => self.clients.claim())
   );
 });
@@ -157,48 +157,45 @@ self.addEventListener('message', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  
   const url = e.request.url;
+  const cdnRule = Object.values(CDN_MAP).find(rule => rule.pattern.test(url));
+  
+  if (!cdnRule || cdnManager.isPending(url)) return;
+  
+  const newUrl = cdnManager.getCDN(url);
+  if (!newUrl) return;
 
-  for (const rule of Object.values(CDN_MAP)) {
-    if (!rule.pattern.test(url)) continue;
-    if (cdnManager.isPending(url)) return;
-    
-    const newUrl = cdnManager.getCDN(url);
-    if (!newUrl) break;
-
-    cdnManager.markPending(url);
-    e.respondWith(
-      caches.match(e.request).then(cached => {
-        if (cached) {
-          cdnManager.clearPending(url);
-          return cached;
-        }
-        
-        return fetch(newUrl, { mode: 'no-cors', credentials: 'omit' })
-          .then(resp => {
-            cdnManager.updateStatus(newUrl, true);
-            
-            if (resp.ok || resp.type === 'opaque') {
-              const respToCache = resp.clone();
-              caches.open(CACHE_CONFIG.MAIN)
-                .then(cache => cache.put(e.request, respToCache))
-                .catch(err => console.error('Cache put error:', err));
-            }
-            
-            cdnManager.clearPending(url);
-            return resp;
-          })
-          .catch(() => {
-            cdnManager.updateStatus(newUrl, false);
-            cdnManager.clearPending(url);
-            return fetch(e.request);
-          });
-      })
-    );
-    return;
-  }
+  cdnManager.markPending(url);
+  e.respondWith(handleFetch(e.request, newUrl));
 });
 
+async function handleFetch(request, newUrl) {
+  const cached = await caches.match(request);
+  if (cached) {
+    cdnManager.clearPending(request.url);
+    return cached;
+  }
+
+  try {
+    const resp = await fetch(newUrl, { mode: 'no-cors', credentials: 'omit' });
+    cdnManager.updateStatus(newUrl, true);
+    
+    if (resp.ok || resp.type === 'opaque') {
+      const cache = await caches.open(CACHE_CONFIG.MAIN);
+      await cache.put(request, resp.clone());
+    }
+    
+    cdnManager.clearPending(request.url);
+    return resp;
+  } catch (error) {
+    cdnManager.updateStatus(newUrl, false);
+    cdnManager.clearPending(request.url);
+    return fetch(request);
+  }
+}
+
+// Workbox Configuration
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js');
 const { core, precaching, routing, strategies, expiration, cacheableResponse } = workbox;
 
