@@ -1,0 +1,238 @@
+/* 网站标题 */
+
+
+#blog-info .nav-site-title .site-name {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0.1em 0.5em;
+    margin: 0;
+    transition: all 0.3s;
+    border-radius: 25px;
+    max-width: 200px; /* 限制最大宽度 */
+    white-space: nowrap; /* 防止换行 */
+    overflow: hidden; /* 隐藏溢出部分 */
+    text-overflow: ellipsis; /* 显示省略号 */
+}
+
+#blog-info .nav-site-title .site-name::before {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+    width: 100%;
+    height: 100%;
+    background: var(--default-bg-color) !important;
+    border-radius: 25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    content: "\f015";
+    font-family: "Font Awesome 6 Free";
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 1;
+}
+
+#nav .site-name:hover::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* 导航菜单垂直居中 */
+#menus {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all .3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    will-change: transform, opacity;
+}
+
+/* 菜单项居中 - 初始状态显示 */
+#menus .menus_items {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    transition: transform 0.25s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.25s ease;
+    opacity: 1;
+    will-change: transform, opacity;
+}
+
+/* 顶部按钮 */
+.mask-name-container {
+    font-weight: bold;
+    max-width: 1200px;
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    overflow: hidden;
+    transition: all .3s ease;
+    z-index: 1;
+    color: var(--btn-color);
+    pointer-events: none; /* 默认不接收点击事件 */
+}
+
+/* 初始状态下name-container隐藏 */
+#name-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, 30px); /* 初始状态向下偏移，减小距离使动画更自然 */
+    transition: transform 0.25s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.25s ease;
+    opacity: 0;
+    pointer-events: none;
+    border-radius: 25px;
+    will-change: transform, opacity;
+    padding: 0.3em 0.8em;
+    max-width: 80%; /* 限制最大宽度 */
+    text-align: center;
+}
+
+#name-container a {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .3s ease;
+    max-width: 100%;
+}
+
+#name-container a .site-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+#name-container a::before {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    content: '回到顶部';
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 25px;
+    background-color: var(--default-bg-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transition: all .3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    padding: 0.1em 0.9em;
+    color: var(--white);
+    white-space: nowrap; /* 防止文本换行 */
+    min-width: max-content; /* 确保内容不会被压缩 */
+}
+
+#name-container a:hover::before {
+    opacity: 1;
+}
+
+/* 菜单项美化 */
+#menus .menus_items .menus_item {
+    padding: 0 8px;
+    transition: all .3s ease;
+}
+
+#menus .menus_items .menus_item:hover {
+    transform: translateY(-2px);
+}
+
+
+/* 搜索按钮和菜单切换按钮靠右且不随滚动切换 */
+#search-button,
+#toggle-menu {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    opacity: 1 !important;
+    transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+#search-button:hover,
+#toggle-menu:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* 确保搜索按钮在菜单切换按钮左侧 */
+#search-button {
+    right: 3.5rem;
+}
+
+/* 修改：确保页面加载时默认显示菜单项，而不是站点名称 */
+.nav-fixed.nav-visible #name-container,
+#page-header:not(.nav-fixed) #name-container {
+    transform: translate(-50%, 30px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.25s ease;
+}
+
+.nav-fixed.nav-visible #menus .menus_items,
+#page-header:not(.nav-fixed) #menus .menus_items {
+    transform: translateX(-50%);
+    opacity: 1;
+    pointer-events: auto;
+    transition: transform 0.25s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.25s ease;
+}
+
+.nav-fixed.nav-visible .mask-name-container,
+#page-header:not(.nav-fixed) .mask-name-container {
+    pointer-events: none;
+}
+
+/* 滚动状态切换效果 - 向下滚动时显示name-container */
+.nav-fixed:not(.nav-visible) #name-container {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    pointer-events: auto;
+    transition: transform 0.25s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.25s ease;
+}
+
+.nav-fixed:not(.nav-visible) #menus .menus_items {
+    transform: translateX(-50%) translateY(-30px); /* 向上移动，减小距离使动画更自然 */
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.25s ease;
+}
+
+.nav-fixed:not(.nav-visible) .mask-name-container {
+    pointer-events: auto;
+}
+
+/* 子菜单项水平居中 */
+#nav .menus_items .menus_item .menus_item_child:not(#sidebar-menus ul) {
+    left: 50%;
+    translate: -50%;
+}
+
+#nav .menus_items .menus_item .menus_item_child li:not(#sidebar-menus li):not(#sidebar-menus li) {
+    float: left;
+    border-radius: 50px !important;
+}

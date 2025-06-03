@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const initAdjust = () => {
     adjustMenu(true)
     $nav.classList.add('show')
+    // 确保页面加载时导航栏显示菜单项
+    document.getElementById('page-header').classList.add('nav-visible')
   }
 
   // sidebar menus
@@ -427,6 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentTop > 56) {
         if (flag === '') {
           $header.classList.add('nav-fixed')
+          // 确保初始状态下导航栏显示菜单项
+          $header.classList.add('nav-visible')
           $rightside.classList.add('rightside-show')
         }
 
@@ -446,7 +450,9 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         flag = ''
         if (currentTop === 0) {
-          $header.classList.remove('nav-fixed', 'nav-visible')
+          $header.classList.remove('nav-fixed')
+          // 确保初始状态下导航栏显示菜单项
+          $header.classList.add('nav-visible')
         }
         $rightside.classList.remove('rightside-show')
       }
@@ -456,6 +462,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300)
 
     btf.addEventListenerPjax(window, 'scroll', scrollTask, { passive: true })
+    
+    // 确保页面加载时导航栏显示菜单项
+    $header.classList.add('nav-visible')
   }
 
   /**

@@ -12,6 +12,7 @@ nav:
   # 导航栏logo图片
   logo:
   display_title: true
+  display_page_title: false
   # 是否固定导航栏
   fixed: true
 
@@ -726,6 +727,12 @@ umami_analytics:
     page_pv: false
     # Umami Cloud（API密钥）/自托管Umami（令牌）
     token:
+
+# https://www.googletagmanager.com/
+google_tag_manager:
+  tag_id: 
+  # optional
+  domain: 
 
 # --------------------------------------
 # 广告
