@@ -50,6 +50,7 @@ jobs:
     - name: 拉取私有仓库文章内容
       run: |
         git clone https://icemyst:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/icemyst/page.git private_page
+        mkdir -p source/_posts
         cp -r private_page/_posts/* source/_posts/
 
     - name: 生成静态文件
