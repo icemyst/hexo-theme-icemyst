@@ -185,9 +185,23 @@
     right: 3.5rem;
 }
 
+/* 强制可见状态 - 用于解决刷新时的状态问题 */
+#page-header.force-visible #menus .menus_items {
+    transform: translateX(-50%) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+#page-header.force-visible #name-container {
+    transform: translate(-50%, 30px) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
 /* 修改：确保页面加载时默认显示菜单项，而不是站点名称 */
 .nav-fixed.nav-visible #name-container,
-#page-header:not(.nav-fixed) #name-container {
+#page-header:not(.nav-fixed) #name-container,
+#page-header.nav-visible #name-container {
     transform: translate(-50%, 30px);
     opacity: 0;
     pointer-events: none;
@@ -195,7 +209,8 @@
 }
 
 .nav-fixed.nav-visible #menus .menus_items,
-#page-header:not(.nav-fixed) #menus .menus_items {
+#page-header:not(.nav-fixed) #menus .menus_items,
+#page-header.nav-visible #menus .menus_items {
     transform: translateX(-50%);
     opacity: 1;
     pointer-events: auto;
@@ -203,7 +218,8 @@
 }
 
 .nav-fixed.nav-visible .mask-name-container,
-#page-header:not(.nav-fixed) .mask-name-container {
+#page-header:not(.nav-fixed) .mask-name-container,
+#page-header.nav-visible .mask-name-container {
     pointer-events: none;
 }
 
@@ -235,4 +251,34 @@
 #nav .menus_items .menus_item .menus_item_child li:not(#sidebar-menus li):not(#sidebar-menus li) {
     float: left;
     border-radius: 50px !important;
+}
+
+/* 确保页面刷新时导航栏总是显示菜单项 */
+body.page-refresh #page-header #name-container {
+    transform: translate(-50%, 30px) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: none !important;
+}
+
+body.page-refresh #page-header #menus .menus_items {
+    transform: translateX(-50%) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transition: none !important;
+}
+
+/* 处理小幅度滚动的情况 */
+#page-header.force-visible #name-container {
+    transform: translate(-50%, 30px) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: none !important;
+}
+
+#page-header.force-visible #menus .menus_items {
+    transform: translateX(-50%) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transition: none !important;
 }

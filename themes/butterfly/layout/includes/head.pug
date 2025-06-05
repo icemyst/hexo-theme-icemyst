@@ -75,3 +75,40 @@ if theme.blog_title_font && theme.blog_title_font.font_link
 include ./head/config_site.pug
 
 !=fragment_cache('injectHead', function(){return injectHtml(theme.inject.head)})
+
+script.
+  // 优化导航栏状态切换
+  (function() {
+    // 添加page-refresh类，确保刷新时总是显示菜单项
+    document.body.classList.add('page-refresh');
+    
+    // 添加no-transition类，避免页面加载时的过渡动画
+    var header = document.getElementById('page-header');
+    if (header) {
+      header.classList.add('no-transition');
+      
+      // 在DOMContentLoaded后移除no-transition类
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          header.classList.remove('no-transition');
+        }, 100);
+      });
+    }
+    
+    // 页面加载完成后处理导航栏状态
+    document.addEventListener('DOMContentLoaded', function() {
+      var header = document.getElementById('page-header');
+      if (!header) return;
+      
+      // 获取滚动位置
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      
+      // 确保导航栏显示菜单项
+      header.classList.add('nav-visible');
+      
+      // 在页面完全加载后，移除page-refresh类，恢复正常的滚动行为
+      setTimeout(function() {
+        document.body.classList.remove('page-refresh');
+      }, 500);
+    });
+  })();

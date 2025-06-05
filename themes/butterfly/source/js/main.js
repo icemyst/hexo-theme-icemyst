@@ -21,7 +21,47 @@ document.addEventListener('DOMContentLoaded', () => {
     adjustMenu(true)
     $nav.classList.add('show')
     // 确保页面加载时导航栏显示菜单项
-    document.getElementById('page-header').classList.add('nav-visible')
+    const $header = document.getElementById('page-header')
+    if ($header) {
+      $header.classList.add('nav-visible')
+      
+      // 强制重新计算样式，确保状态正确
+      setTimeout(() => {
+        // 添加强制可见类
+        $header.classList.add('force-visible')
+        
+        // 短暂延迟后移除强制可见类
+        setTimeout(() => {
+          $header.classList.remove('force-visible')
+        }, 50)
+        
+        // 确保菜单项可见
+        const nameContainer = document.getElementById('name-container')
+        const menus = document.querySelector('#menus .menus_items')
+        
+        if (nameContainer && menus) {
+          // 强制设置样式，确保菜单项可见
+          nameContainer.style.opacity = '0'
+          nameContainer.style.transform = 'translate(-50%, 30px)'
+          nameContainer.style.pointerEvents = 'none'
+          
+          menus.style.opacity = '1'
+          menus.style.transform = 'translateX(-50%)'
+          menus.style.pointerEvents = 'auto'
+          
+          // 短暂延迟后恢复正常样式
+          setTimeout(() => {
+            nameContainer.style.opacity = ''
+            nameContainer.style.transform = ''
+            nameContainer.style.pointerEvents = ''
+            
+            menus.style.opacity = ''
+            menus.style.transform = ''
+            menus.style.pointerEvents = ''
+          }, 100)
+        }
+      }, 0)
+    }
   }
 
   // sidebar menus
@@ -422,15 +462,50 @@ document.addEventListener('DOMContentLoaded', () => {
       return result
     }
 
+    // 检查当前导航栏状态
+    const checkNavState = () => {
+      if (!$header) return false
+      
+      const nameContainer = document.getElementById('name-container')
+      const menus = document.querySelector('#menus .menus_items')
+      
+      if (!nameContainer || !menus) return false
+      
+      // 检查当前是显示站点项还是菜单项
+      const nameVisible = window.getComputedStyle(nameContainer).opacity > 0.5
+      const menusVisible = window.getComputedStyle(menus).opacity > 0.5
+      
+      return { nameVisible, menusVisible }
+    }
+
+    // 确保页面加载时导航栏显示菜单项
+    const ensureMenuVisible = () => {
+      if (!$header) return
+      
+      // 检查当前状态
+      const state = checkNavState()
+      
+      // 如果站点项可见或菜单项不可见，强制显示菜单项
+      if (state && (state.nameVisible || !state.menusVisible)) {
+        $header.classList.add('nav-visible')
+      }
+    }
+
     let flag = ''
     const scrollTask = btf.throttle(() => {
       const currentTop = window.scrollY || document.documentElement.scrollTop
       const isDown = scrollDirection(currentTop)
+      
       if (currentTop > 56) {
         if (flag === '') {
           $header.classList.add('nav-fixed')
-          // 确保初始状态下导航栏显示菜单项
-          $header.classList.add('nav-visible')
+          
+          // 检查当前状态，只在必要时切换
+          const state = checkNavState()
+          if (state && state.nameVisible && !state.menusVisible) {
+            $header.classList.add('nav-visible')
+          }
+          
           $rightside.classList.add('rightside-show')
         }
 
@@ -451,7 +526,6 @@ document.addEventListener('DOMContentLoaded', () => {
         flag = ''
         if (currentTop === 0) {
           $header.classList.remove('nav-fixed')
-          // 确保初始状态下导航栏显示菜单项
           $header.classList.add('nav-visible')
         }
         $rightside.classList.remove('rightside-show')
@@ -463,8 +537,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btf.addEventListenerPjax(window, 'scroll', scrollTask, { passive: true })
     
-    // 确保页面加载时导航栏显示菜单项
-    $header.classList.add('nav-visible')
+    // 页面加载后执行一次滚动任务
+    setTimeout(() => {
+      // 确保页面加载时导航栏显示菜单项
+      ensureMenuVisible()
+      
+      // 执行滚动任务
+      scrollTask()
+    }, 100)
+    
+    // 为了处理小幅度滚动的情况，再次检查状态
+    setTimeout(() => {
+      ensureMenuVisible()
+    }, 500)
+    
+    // 在页面完全加载后再次检查状态
+    window.addEventListener('load', () => {
+      // 确保页面加载完成后导航栏显示菜单项
+      ensureMenuVisible()
+      
+      // 延迟移除page-refresh类
+      setTimeout(() => {
+        document.body.classList.remove('page-refresh')
+      }, 1000)
+    })
   }
 
   /**
