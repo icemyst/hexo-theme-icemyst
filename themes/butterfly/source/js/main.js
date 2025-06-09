@@ -2,6 +2,39 @@ document.addEventListener('DOMContentLoaded', () => {
   let headerContentWidth, $nav
   let mobileSidebarOpen = false
 
+  // 添加页面加载类，确保刷新时菜单项可见
+  document.body.classList.add('page-loading')
+  
+  // 设置正确的导航状态（全局可用函数）
+  const setCorrectNavState = () => {
+    const $header = document.getElementById('page-header')
+    const $rightside = document.getElementById('rightside')
+    
+    if (window.scrollY > 56) {
+      $header.classList.add('nav-fixed', 'nav-visible')
+      $rightside && $rightside.classList.add('rightside-show')
+    } else {
+      if (window.scrollY === 0) {
+        $header.classList.remove('nav-fixed', 'nav-visible')
+      } else {
+        $header.classList.remove('nav-fixed')
+        $header.classList.add('nav-visible')
+      }
+      $rightside && $rightside.classList.remove('rightside-show')
+    }
+  }
+  
+  // 立即执行一次，确保DOM加载后导航状态正确
+  setCorrectNavState()
+  
+  // 页面完全加载后移除加载类
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.body.classList.remove('page-loading')
+      setCorrectNavState()
+    }, 300)
+  })
+
   const adjustMenu = init => {
     const getAllWidth = ele => Array.from(ele).reduce((width, i) => width + i.offsetWidth, 0)
 
@@ -20,20 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const initAdjust = () => {
     adjustMenu(true)
     $nav.classList.add('show')
-    
-    // 确保页面加载时导航栏显示菜单项
-    const $header = document.getElementById('page-header')
-    if ($header) {
-      $header.classList.add('nav-visible')
-      
-      // 短暂添加force-visible类，确保菜单项可见
-      setTimeout(() => {
-        $header.classList.add('force-visible')
-        setTimeout(() => {
-          $header.classList.remove('force-visible')
-        }, 50)
-      }, 0)
-    }
   }
 
   // sidebar menus
@@ -434,15 +453,17 @@ document.addEventListener('DOMContentLoaded', () => {
       return result
     }
 
-    // 确保页面加载时导航栏显示菜单项
-    const ensureMenuVisible = () => {
-      if ($header) $header.classList.add('nav-visible')
-    }
-
     let flag = ''
     const scrollTask = btf.throttle(() => {
       const currentTop = window.scrollY || document.documentElement.scrollTop
       const isDown = scrollDirection(currentTop)
+      
+      // 确保页面加载后立即设置正确的导航状态
+      if (document.body.classList.contains('page-loading')) {
+        setCorrectNavState()
+        $header.classList.remove('force-visible') // 移除可能存在的force-visible类
+        return
+      }
       
       if (currentTop > 56) {
         if (flag === '') {
@@ -466,28 +487,26 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         flag = ''
         if (currentTop === 0) {
-          $header.classList.remove('nav-fixed')
-          $header.classList.add('nav-visible')
+          $header.classList.remove('nav-fixed', 'nav-visible')
         }
         $rightside.classList.remove('rightside-show')
       }
 
       isShowPercent && rightsideScrollPercent(currentTop)
       checkDocumentHeight()
-    }, 300)
+    }, 100) // 降低节流时间，使滚动反应更灵敏
 
     btf.addEventListenerPjax(window, 'scroll', scrollTask, { passive: true })
     
-    // 页面加载后确保菜单项可见并执行滚动任务
-    setTimeout(() => {
-      ensureMenuVisible()
-      scrollTask()
-    }, 100)
+    // 页面加载时立即执行一次scrollTask以设置正确的状态
+    scrollTask()
     
-    // 在页面完全加载后再次确保菜单项可见
-    window.addEventListener('load', () => {
-      ensureMenuVisible()
-      setTimeout(() => document.body.classList.remove('page-refresh'), 500)
+    // 为了确保在页面切换时导航栏状态正确，监听popstate事件
+    window.addEventListener('popstate', setCorrectNavState)
+    
+    // 监听页面pjax:complete事件，确保页面切换后导航状态正确
+    document.addEventListener('pjax:complete', () => {
+      setTimeout(setCorrectNavState, 50)
     })
   }
 
@@ -929,6 +948,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshFn = () => {
     initAdjust()
     justifiedIndexPostUI()
+
+    // 添加页面刷新标记，使用全局设置函数
+    setCorrectNavState()
 
     if (GLOBAL_CONFIG_SITE.pageType === 'post') {
       addPostOutdateNotice()

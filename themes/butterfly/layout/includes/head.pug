@@ -75,35 +75,3 @@ if theme.blog_title_font && theme.blog_title_font.font_link
 include ./head/config_site.pug
 
 !=fragment_cache('injectHead', function(){return injectHtml(theme.inject.head)})
-
-script.
-  // 优化导航栏状态切换
-  (function() {
-    // 添加page-refresh类，确保刷新时总是显示菜单项
-    document.body.classList.add('page-refresh');
-    
-    // 立即检查滚动位置并设置导航栏状态
-    (function() {
-      var scrollTop = window.scrollY || document.documentElement.scrollTop;
-      var header = document.getElementById('page-header');
-      if (!header) return;
-      
-      // 如果不在顶部，立即添加nav-fixed类
-      if (scrollTop > 56) {
-        header.classList.add('nav-fixed');
-      }
-      
-      // 无论在哪个位置，都确保显示菜单项
-      header.classList.add('nav-visible');
-    })();
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      var header = document.getElementById('page-header');
-      if (header) header.classList.add('nav-visible');
-      
-      // 页面加载后移除page-refresh类
-      setTimeout(function() {
-        document.body.classList.remove('page-refresh');
-      }, 500);
-    });
-  })();

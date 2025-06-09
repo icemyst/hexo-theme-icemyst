@@ -1,12 +1,10 @@
 /* 网站标题 */
-
-
 #blog-info .nav-site-title .site-name {
-    display: inline-flex;
+    display: inline;
     justify-content: center;
     align-items: center;
     position: relative;
-    padding: 0.1em 0.5em;
+    padding: 0.2em 0.5em;
     margin: 0;
     transition: all 0.3s;
     border-radius: 25px;
@@ -102,15 +100,15 @@
     pointer-events: none;
     border-radius: 25px;
     will-change: transform, opacity;
-    padding: 0.3em 0.8em;
+    padding: 0 0.8em;
     max-width: 80%; /* 限制最大宽度 */
     text-align: center;
 }
 
 #name-container a {
+    display: inline;
     position: relative;
     height: 100%;
-    display: flex;
     align-items: center;
     justify-content: center;
     transition: all .3s ease;
@@ -201,7 +199,10 @@
 /* 修改：确保页面加载时默认显示菜单项，而不是站点名称 */
 .nav-fixed.nav-visible #name-container,
 #page-header:not(.nav-fixed) #name-container,
-#page-header.nav-visible #name-container {
+#page-header.nav-visible #name-container,
+body.page-loading #page-header #name-container,
+body.page-refresh #page-header #name-container,
+#page-header.force-visible #name-container {
     transform: translate(-50%, 30px);
     opacity: 0;
     pointer-events: none;
@@ -210,7 +211,10 @@
 
 .nav-fixed.nav-visible #menus .menus_items,
 #page-header:not(.nav-fixed) #menus .menus_items,
-#page-header.nav-visible #menus .menus_items {
+#page-header.nav-visible #menus .menus_items,
+body.page-loading #page-header #menus .menus_items,
+body.page-refresh #page-header #menus .menus_items,
+#page-header.force-visible #menus .menus_items {
     transform: translateX(-50%);
     opacity: 1;
     pointer-events: auto;
@@ -253,19 +257,14 @@
     border-radius: 50px !important;
 }
 
-/* 确保页面刷新和强制可见状态下导航栏正确显示 */
-body.page-refresh #page-header #name-container,
-#page-header.force-visible #name-container {
-    transform: translate(-50%, 30px) !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transition: none !important;
+/* 确保菜单项在所有状态下都能正常响应 */
+.nav-fixed.nav-visible #menus .menus_items .menus_item,
+#page-header:not(.nav-fixed) #menus .menus_items .menus_item,
+#page-header.nav-visible #menus .menus_items .menus_item {
+    pointer-events: auto !important;
 }
 
-body.page-refresh #page-header #menus .menus_items,
-#page-header.force-visible #menus .menus_items {
-    transform: translateX(-50%) !important;
-    opacity: 1 !important;
+/* 确保回顶部按钮在滚动状态下正常显示 */
+.nav-fixed:not(.nav-visible) #name-container a {
     pointer-events: auto !important;
-    transition: none !important;
 }

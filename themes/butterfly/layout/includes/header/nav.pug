@@ -8,16 +8,17 @@ nav#nav
     if globalPageType === 'post' && theme.nav.display_page_title === true
       a.nav-page-title(href=url_for('/'))
         span.site-name=(page.title || config.title)
-  
+  //- 站点项（居中显示）
+  .mask-name-container
+    #name-container
+      a(href='javascript:btf.scrollToDest(0, 300);')
+        span.site-name#current-page-title
+        //- span.site-name=(page.title || config.title)
+  //- 菜单项
   #menus
     if theme.menu
       != partial('includes/header/menu_item', {}, {cache: true})
   
-  .mask-name-container
-    #name-container
-      a(href='javascript:btf.scrollToDest();')
-        span.site-name=(page.title || config.title)
-
   if theme.search.use
     #search-button
       span.site-page.social-icon.search
@@ -27,3 +28,6 @@ nav#nav
   #toggle-menu
     span.site-page
       i.fas.fa-bars.fa-fw
+
+script.
+  document.getElementById("current-page-title").innerText = document.title.split(" | ")[0];

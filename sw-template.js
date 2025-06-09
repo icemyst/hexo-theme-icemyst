@@ -70,10 +70,14 @@ class CDNManager {
     this.status = new Map();
     this.pending = new Map();
     this.cache = new Map();
-    this.TTL = 3600000; // 1小时缓存有效期
-    this.PENDING_TIMEOUT = 30000; // 30秒挂起超时
-    this.STATUS_TIMEOUT = 86400000; // 24小时状态超时
-    this.cleanupInterval = setInterval(() => this.clean(), 60000); // 每分钟清理一次
+    this.config = {
+      ttl: 3600000,          // 1小时缓存有效期
+      pendingTimeout: 30000, // 30秒挂起超时
+      statusTimeout: 86400000 // 24小时状态超时
+    };
+    
+    // 每分钟清理一次过期数据
+    this.cleanupInterval = setInterval(() => this.clean(), 60000);
   }
 
   getCDN(url) {
@@ -81,7 +85,7 @@ class CDNManager {
     
     // 检查缓存
     const cached = this.cache.get(url);
-    if (cached && (Date.now() - cached.time < this.TTL)) return cached.value;
+    if (cached && (Date.now() - cached.time < this.config.ttl)) return cached.value;
 
     // 匹配CDN规则
     for (const rule of Object.values(CDN_MAP)) {
@@ -129,25 +133,25 @@ class CDNManager {
     }
   }
 
+  // 简化挂起状态管理
   isPending(url) { return this.pending.has(url); }
   markPending(url) { this.pending.set(url, Date.now()); }
   clearPending(url) { this.pending.delete(url); }
 
   clean() {
     const now = Date.now();
-    // 清理过期的挂起请求
-    this.pending.forEach((time, key) => { 
-      if (now - time > this.PENDING_TIMEOUT) this.pending.delete(key); 
-    });
     
-    // 清理过期的缓存
-    this.cache.forEach((value, key) => { 
-      if (now - value.time > this.TTL) this.cache.delete(key); 
-    });
-    
-    // 清理过期的状态
-    this.status.forEach((value, key) => { 
-      if (now - value.timestamp > this.STATUS_TIMEOUT) this.status.delete(key); 
+    // 使用简洁的方式遍历和清理各个Map
+    this.cleanMap(this.pending, now, this.config.pendingTimeout);
+    this.cleanMap(this.cache, now, this.config.ttl, 'time');
+    this.cleanMap(this.status, now, this.config.statusTimeout, 'timestamp');
+  }
+  
+  // 辅助方法，用于清理过期项目
+  cleanMap(map, now, timeout, timeKey) {
+    map.forEach((value, key) => {
+      const timestamp = timeKey ? value[timeKey] : value;
+      if (now - timestamp > timeout) map.delete(key);
     });
   }
 }
