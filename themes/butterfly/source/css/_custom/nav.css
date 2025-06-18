@@ -152,6 +152,7 @@
 
 /* 菜单项美化 */
 #menus .menus_items .menus_item {
+    font-weight: bold;
     padding: 0 8px;
     transition: all .3s ease;
 }
@@ -248,13 +249,30 @@ body.page-refresh #page-header #menus .menus_items,
 
 /* 子菜单项水平居中 */
 #nav .menus_items .menus_item .menus_item_child:not(#sidebar-menus ul) {
+    padding: 3px;
     left: 50%;
     translate: -50%;
+}
+
+#nav .menus_items .menus_item .menus_item_child:not(#sidebar-menus ul)::before {
+    height: 30px; /* 增加高度以确保鼠标可以顺利移动到子菜单 */
+    top: -16px;
+}
+
+#nav .menus_items .menus_item .menus_item_child:not(#sidebar-menus ul):hover {
+    border: 1px solid rgb(73, 177, 245);
+    display: flex;
 }
 
 #nav .menus_items .menus_item .menus_item_child li:not(#sidebar-menus li):not(#sidebar-menus li) {
     float: left;
     border-radius: 50px !important;
+}
+
+#nav .menus_items .menus_item .menus_item_child li a:hover {
+    padding: 3px 16px;
+    transform: scale(1) !important;
+    transition: .3s !important;
 }
 
 /* 确保菜单项在所有状态下都能正常响应 */

@@ -67,7 +67,7 @@ social:
 favicon: /img/siteicon/favicon.ico
 
 avatar:
-  img: https://q1.qlogo.cn/g?b=qq&nk=1580777927&s=5
+  img: https://q.qlogo.cn/headimg_dl?dst_uin=1580777927&spec=640&img_type=jpg # https://q1.qlogo.cn/g?b=qq&nk=1580777927&s=5
   effect: false
 
 # 禁用所有横幅图片
@@ -814,7 +814,7 @@ preloader:
   # 源
   # 1. fullpage-loading
   # 2. pace（进度条）
-  source: 2
+  source: 1
   # pace主题 (见 https://codebyzach.github.io/pace/)
   pace_css_url:
 

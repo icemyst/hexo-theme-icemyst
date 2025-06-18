@@ -43,6 +43,6 @@ source/css/_tags/site-card.styl
 source/css/_tags/span.styl
 source/css/_tags/tip.styl
 source/css/_tags/typing.styl
-source/img/
-source/js/custom/
-source/css/_custom/
+# source/img/
+# source/js/custom/
+# source/css/_custom/
