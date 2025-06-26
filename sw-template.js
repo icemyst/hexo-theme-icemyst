@@ -43,6 +43,11 @@ const CDN_MAP = {
     replacement: '//npm.elemecdn.com',
     fallbacks: ['//cdn.jsdmirror.com/npm', '//cdn.onmicrosoft.cn/npm', '//npm.onmicrosoft.cn', '//unpkg.com']
   },
+  jsdmirror: {
+    pattern: /^https?:\/\/cdn\.jsdmirror\.com\/gh/,
+    replacement: '//cdn.jsdmirror.cn/gh',
+    fallbacks: ['//gcore.jsdelivr.net/gh', '//cdn.jsdmirror.com/gh']
+  },
   SMMS: {
     pattern: /^https?:\/\/s2\.loli\.net/,
     replacements: [

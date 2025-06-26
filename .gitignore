@@ -9,3 +9,4 @@ public/
 .idea
 _multiconfig.yml
 source/_posts/
+.cursor/rules/

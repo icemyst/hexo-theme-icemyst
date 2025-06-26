@@ -13,7 +13,6 @@ nav:
   # Navigation bar logo image
   logo:
   display_title: true
-  display_page_title: true
   # Whether to fix navigation bar
   fixed: false
 
@@ -705,9 +704,9 @@ umami_analytics:
 
 # https://www.googletagmanager.com/
 google_tag_manager:
-  tag_id: 
+  tag_id:
   # optional
-  domain: 
+  domain:
 
 # --------------------------------------
 # Advertisement
