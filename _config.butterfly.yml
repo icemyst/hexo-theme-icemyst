@@ -814,6 +814,7 @@ preloader:
   # 源
   # 1. fullpage-loading
   # 2. pace（进度条）
+  # 3. 混合模式（初始化使用fullpage-loading，跳转其它页面使用pace进度条）
   source: 3
   # pace主题 (见 https://codebyzach.github.io/pace/)
   pace_css_url:

@@ -1,5 +1,71 @@
 if theme.preloader.enable
   if theme.preloader.source === 1
     include ./fullpage-loading.pug
-  else
+  else if theme.preloader.source === 2
     include ./pace.pug
+  else if theme.preloader.source === 3
+    #loading-box
+      .loading-left-bg
+      .loading-right-bg
+      .spinner-box
+        .configure-border-1
+          .configure-core
+        .configure-border-2
+          .configure-core
+        .loading-word= _p('loading')
+
+    script.
+      (()=>{
+        const $loadingBox = document.getElementById('loading-box')
+        const $body = document.body
+        const preloader = {
+          endLoading: () => {
+            $body.style.overflow = ''
+            $loadingBox.classList.add('loaded')
+          },
+          initLoading: () => {
+            $body.style.overflow = 'hidden'
+            $loadingBox.classList.remove('loaded')
+          }
+        }
+
+        preloader.initLoading()
+        
+        // 添加一个最大加载时间限制，3秒后强制结束加载动画
+        const maxLoadingTime = setTimeout(() => {
+          preloader.endLoading()
+        }, 3000)
+        
+        window.addEventListener('load', () => {
+          preloader.endLoading()
+          clearTimeout(maxLoadingTime)
+        })
+
+        // 混合模式：初始化使用fullpage-loading，跳转页面使用pace
+        if (!{theme.pjax && theme.pjax.enable}) {
+          // 动态加载pace所需的资源，只在PJAX时使用
+          document.addEventListener('pjax:send', function() {
+            if (!window.Pace) {
+              // 如果Pace尚未加载，则加载Pace资源
+              const paceStyle = document.createElement('link')
+              paceStyle.rel = 'stylesheet'
+              paceStyle.href = '!{url_for(theme.preloader.pace_css_url || theme.asset.pace_default_css)}'
+              document.head.appendChild(paceStyle)
+              
+              const paceScript = document.createElement('script')
+              paceScript.src = '!{url_for(theme.asset.pace_js)}'
+              paceScript.onload = function() {
+                // Pace加载完成后配置并启动
+                window.paceOptions = {
+                  restartOnPushState: false
+                }
+                Pace.restart()
+              }
+              document.head.appendChild(paceScript)
+            } else {
+              // 如果Pace已加载，则直接重启
+              Pace.restart()
+            }
+          })
+        }
+      })()
