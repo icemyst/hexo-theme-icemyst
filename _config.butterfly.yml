@@ -1031,6 +1031,16 @@ lazyload:
   placeholder: /img/loading.webp
   blur: true
 
+lazyload:
+  enable: false
+  # 使用浏览器的原生延迟加载而不是 vanilla-lazyload
+  native: false
+  # 指定使用懒加载的字段（网站（site）或文章（post））
+  field: site
+  placeholder:
+  blur: false
+
+
 # PWA
 # See https://github.com/JLHwung/hexo-offline
 # ---------------
