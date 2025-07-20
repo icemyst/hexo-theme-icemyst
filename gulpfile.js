@@ -5,9 +5,6 @@ const htmlclean = require('gulp-htmlclean');
 const workbox = require("workbox-build");
 const terser = require('gulp-terser');
 const chalk = require('chalk');
-// const fs = require('fs');
-// const path = require('path');
-// const imagemin = require('gulp-imagemin');
 
 // 日志输出工具
 const log = (() => {
@@ -63,14 +60,21 @@ const config = {
     removeStyleLinkTypeAttributes: true,
     minifyJS: true, 
     minifyCSS: true, 
-    minifyURLs: true
+    minifyURLs: true,
+    processConditionalComments: true
   },
   cleanCSS: {
-    level: 2, 
-    compatibility: 'ie11', 
-    mergeIdents: false, 
-    reduceIdents: false, 
-    discardUnused: false
+    level: {
+      1: { all: true },
+      2: { 
+        restructureRules: true,
+        mergeMedia: true,
+        removeEmpty: true,
+        mergeSemantically: true,
+        overrideProperties: true
+      }
+    }, 
+    compatibility: 'ie11'
   }
 };
 
@@ -155,11 +159,13 @@ gulp.task('generate-service-worker', () => {
 });
 
 // 创建资源压缩任务
-[
+const tasks = [
   ['compress', ['./public/**/*.js', '!./public/**/*.min.js'], terser(config.terser)],
   ['minify-css', ['./public/**/*.css'], cleanCSS(config.cleanCSS)],
-  ['minify-html', './public/**/*.html', htmlclean().pipe(htmlMin(config.html))]
-].forEach(([name, src, processor]) => createMinifyTask(name, src, processor));
+  ['minify-html', './public/**/*.html', htmlMin(config.html)]
+];
+
+tasks.forEach(([name, src, processor]) => createMinifyTask(name, src, processor));
 
 // 图片优化任务（当前禁用）
 // 当需要图片优化时，请取消下面代码的注释并安装imagemin依赖

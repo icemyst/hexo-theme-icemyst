@@ -35,13 +35,13 @@ const CACHE_RULES = [
 const CDN_MAP = {
   jsdelivr_gh: {
     pattern: /^https?:\/\/cdn\.jsdelivr\.net\/gh/,
-    replacement: '//gcore.jsdelivr.net/gh',
-    fallbacks: ['//cdn1.tianli0.top/gh', '//cdn.jsdmirror.com/gh', '//cdn.jsdmirror.cn/gh', '//jsd.cdn.zzko.cn/gh', '//cdn.staticaly.com/gh']
+    replacement: '//fastly.jsdelivr.net/gh',
+    fallbacks: ['//gcore.jsdelivr.net/gh', '//cdn.jsdmirror.cn/gh', '//jsd.cdn.zzko.cn/gh', '//cdn1.tianli0.top/gh', '//cdn.staticaly.com/gh']
   },
   jsdelivr_npm: {
     pattern: /^https?:\/\/cdn\.jsdelivr\.net\/npm/,
-    replacement: '//npm.elemecdn.com',
-    fallbacks: ['//cdn.jsdmirror.com/npm', '//cdn.onmicrosoft.cn/npm', '//npm.onmicrosoft.cn', '//unpkg.com']
+    replacement: '//fastly.jsdelivr.net/npm',
+    fallbacks: ['//npm.elemecdn.com', '//cdn.jsdmirror.com/npm', '//cdn.onmicrosoft.cn/npm', '//npm.onmicrosoft.cn', '//unpkg.com']
   },
   jsdmirror: {
     pattern: /^https?:\/\/cdn\.jsdmirror\.com\/gh/,
@@ -80,19 +80,19 @@ const CDN_MAP = {
   },
   cdnjs: {
     pattern: /^https?:\/\/cdnjs\.cloudflare\.com\/ajax\/libs/,
-    replacement: '//s4.zstatic.net/ajax/libs',
-    fallbacks: ['//cdnjs.webstatic.cn/ajax/libs', '//cdnjs.loli.net/ajax/libs', '//lib.baomitu.com']
+    replacement: '//cdnjs.cloudflare.com/ajax/libs',
+    fallbacks: ['//s4.zstatic.net/ajax/libs', '//cdnjs.webstatic.cn/ajax/libs', '//cdnjs.loli.net/ajax/libs', '//lib.baomitu.com']
   },
   unpkg: {
     pattern: /^https?:\/\/unpkg\.com/,
-    replacement: '//s4.zstatic.net/npm',
-    fallbacks: ['//cdn.onmicrosoft.cn/npm', '//npm.onmicrosoft.cn', '//npm.elemecdn.com']
+    replacement: '//unpkg.com',
+    fallbacks: ['//s4.zstatic.net/npm', '//npm.elemecdn.com', '//cdn.onmicrosoft.cn/npm', '//npm.onmicrosoft.cn']
   }
 };
 
 class CDNManager {
   #config = {
-    ttl: 3600000,
+    ttl: 7200000, // 增加到2小时
     pendingTimeout: 30000,
     statusTimeout: 86400000
   };
@@ -102,7 +102,7 @@ class CDNManager {
   #cache = new Map();
 
   constructor() {
-    setInterval(() => this.#clean(), 60000);
+    setInterval(() => this.#clean(), 300000); // 增加到5分钟
   }
 
   getCDN(url) {
@@ -176,7 +176,10 @@ class CDNManager {
 const cdnManager = new CDNManager();
 
 // Service Worker 事件处理
-self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('install', event => {
+  self.skipWaiting();
+});
+
 self.addEventListener('activate', event => {
   event.waitUntil(
     Promise.all([
@@ -200,20 +203,8 @@ self.addEventListener('message', event => {
 
 async function handleFetch(request, newUrl) {
   try {
-    const cached = await caches.match(request);
-    if (cached) {
-      cdnManager.clearPending(request.url);
-      return cached;
-    }
-
     const response = await fetch(newUrl, { mode: 'no-cors', credentials: 'omit' });
     cdnManager.updateStatus(newUrl, true);
-    
-    if (response.ok || response.type === 'opaque') {
-      const cache = await caches.open(CACHE_CONFIG.NAMES.MAIN);
-      await cache.put(request, response.clone());
-    }
-    
     cdnManager.clearPending(request.url);
     return response;
   } catch (error) {
@@ -241,28 +232,46 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox
 const { core, precaching, routing, strategies, expiration, cacheableResponse } = workbox;
 
 core.setCacheNameDetails({ prefix: "冰梦" });
-core.skipWaiting();
 core.clientsClaim();
 precaching.cleanupOutdatedCaches();
-precaching.precacheAndRoute(self.__WB_MANIFEST || []);
 
+const precacheManifest = self.__WB_MANIFEST || [];
+precaching.precacheAndRoute(precacheManifest, {
+  ignoreURLParametersMatching: [/.*/]
+});
+
+// 统一的缓存策略
+const createCacheStrategy = (cacheName, strategy, maxEntries, maxAge) => {
+  const strategyName = strategy.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase());
+  return new strategies[strategyName]({
+    cacheName,
+    plugins: [
+      new expiration.ExpirationPlugin({
+        maxEntries,
+        maxAgeSeconds: maxAge,
+        purgeOnQuotaError: true
+      }),
+      new cacheableResponse.CacheableResponsePlugin({ statuses: [0, 200] })
+    ]
+  });
+};
+
+// 注册路由策略
 CACHE_RULES.forEach(rule => {
-  const strategyName = rule.strategy.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase());
   const cacheType = rule.type.split('-').pop();
-  
   routing.registerRoute(
     rule.match,
-    new strategies[strategyName]({
-      cacheName: rule.type,
-      plugins: [
-        new expiration.ExpirationPlugin({
-          maxEntries: CACHE_CONFIG.MAX_ENTRIES[cacheType] || 500,
-          maxAgeSeconds: CACHE_CONFIG.MAX_AGE[cacheType] || 604800
-        }),
-        new cacheableResponse.CacheableResponsePlugin({ statuses: [0, 200] })
-      ]
-    })
+    createCacheStrategy(
+      rule.type,
+      rule.strategy,
+      CACHE_CONFIG.MAX_ENTRIES[cacheType] || 500,
+      CACHE_CONFIG.MAX_AGE[cacheType] || 604800
+    )
   );
 });
 
-workbox.googleAnalytics.initialize();
+// 导航缓存
+routing.registerRoute(
+  ({ request }) => request.mode === 'navigate',
+  createCacheStrategy(CACHE_CONFIG.NAMES.STATIC, 'network-first', 50, 86400)
+);

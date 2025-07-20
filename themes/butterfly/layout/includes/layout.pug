@@ -45,6 +45,12 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     script.
       // Service Worker Registration
       if ('serviceWorker' in navigator) {
+        const showUpdatePopup = () => {
+          const popup = document.getElementById('sw-update-popup');
+          popup.classList.add('show');
+          setTimeout(() => popup.classList.contains('show') && popup.classList.remove('show'), 60000);
+        };
+
         const registerSW = async () => {
           try {
             const registration = await navigator.serviceWorker.register('/sw.js', {
@@ -52,28 +58,11 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
               updateViaCache: 'none'
             });
             
-            // 检查更新
             registration.addEventListener('updatefound', () => {
               const newWorker = registration.installing;
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // 显示更新通知
-                  const popup = document.getElementById('sw-update-popup');
-                  popup.classList.add('show');
-                  
-                  // 60秒后自动隐藏
-                  setTimeout(() => {
-                    if (popup.classList.contains('show')) {
-                      popup.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                      popup.style.transform = 'translateY(20px) scale(0.9)';
-                      popup.style.opacity = '0';
-                      setTimeout(() => {
-                        popup.classList.remove('show');
-                        popup.style.transform = '';
-                        popup.style.opacity = '';
-                      }, 300);
-                    }
-                  }, 60000);
+                  showUpdatePopup();
                 }
               });
             });
