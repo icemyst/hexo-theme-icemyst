@@ -32,6 +32,7 @@ const CACHE_RULES = [
   }
 ];
 
+// CDN 映射配置，用于自动替换资源 URL 到更快的镜像
 const CDN_MAP = {
   jsdelivr_gh: {
     pattern: /^https?:\/\/cdn\.jsdelivr\.net\/gh/,
@@ -76,7 +77,13 @@ const CDN_MAP = {
   github_raw: {
     pattern: /^https?:\/\/raw\.githubusercontent\.com/,
     replacement: '//raw.gitmirror.com',
-    fallbacks: ['//cdn.staticaly.com/gh', '//ghproxy.net/raw.githubusercontent.com']
+    fallbacks: [
+      '//cdn.staticaly.com/gh', 
+      '//ghproxy.net/raw.githubusercontent.com', 
+      '//raw.fastgit.org', 
+      '//raw.fastgit.cn',
+      '//raw-gh.gcdn.mirr.one'
+    ]
   },
   cdnjs: {
     pattern: /^https?:\/\/cdnjs\.cloudflare\.com\/ajax\/libs/,

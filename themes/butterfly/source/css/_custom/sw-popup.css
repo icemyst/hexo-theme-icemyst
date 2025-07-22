@@ -21,24 +21,7 @@
   }
 }
 
-[data-theme='light'] .sw-update-popup {
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 
-    0 10px 30px -10px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(0, 0, 0, 0.05),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-  color: #1a1a1a;
-}
-
-[data-theme='dark'] .sw-update-popup {
-  background: rgba(28, 28, 35, 0.7);
-  box-shadow: 
-    0 10px 30px -10px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  color: #e1e1e1;
-}
-
+/* 基础样式 */
 .sw-update-popup {
   position: fixed;
   right: 24px;
@@ -58,10 +41,31 @@
   width: calc(100% - 48px);
 }
 
+/* 主题样式 */
+[data-theme='light'] .sw-update-popup {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    0 10px 30px -10px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  color: #1a1a1a;
+}
+
+[data-theme='dark'] .sw-update-popup {
+  background: rgba(28, 28, 35, 0.7);
+  box-shadow: 
+    0 10px 30px -10px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  color: #e1e1e1;
+}
+
+/* 动画样式 */
 .sw-update-popup.show {
   animation: sw-notification-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+/* 消息容器 */
 .sw-update-popup .message-container {
   flex: 1;
   min-width: 0;
@@ -91,6 +95,15 @@
   text-overflow: ellipsis;
 }
 
+/* 图标样式 */
+.sw-update-popup .message::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  flex-shrink: 0;
+}
+
 [data-theme='light'] .sw-update-popup .message::before {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'/%3E%3C/svg%3E") no-repeat center;
 }
@@ -99,12 +112,19 @@
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e1e1e1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'/%3E%3C/svg%3E") no-repeat center;
 }
 
-.sw-update-popup .message::before {
-  content: '';
-  width: 16px;
-  height: 16px;
-  background-size: contain;
+/* 按钮样式 */
+.sw-update-popup .refresh-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
   flex-shrink: 0;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme='light'] .sw-update-popup .refresh-btn {
@@ -139,20 +159,6 @@
   animation: sw-pulse 1s infinite;
 }
 
-.sw-update-popup .refresh-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  font-weight: 600;
-  font-size: 14px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  letter-spacing: 0.3px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
 .sw-update-popup .refresh-btn:hover {
   transform: translateY(-2px);
 }
@@ -161,6 +167,7 @@
   transform: translateY(0);
 }
 
+/* 响应式设计 */
 @media (max-width: 768px) {
   .sw-update-popup {
     right: 16px;
