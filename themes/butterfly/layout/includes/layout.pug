@@ -45,13 +45,7 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     script.
       // Service Worker Registration
       if ('serviceWorker' in navigator) {
-        const showUpdatePopup = () => {
-          const popup = document.getElementById('sw-update-popup');
-          popup.classList.add('show');
-          setTimeout(() => popup.classList.contains('show') && popup.classList.remove('show'), 60000);
-        };
-
-        window.addEventListener('load', async () => {
+        const registerServiceWorker = async () => {
           try {
             const registration = await navigator.serviceWorker.register('/sw.js', {
               scope: '/',
@@ -63,17 +57,27 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
               const newWorker = registration.installing;
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  showUpdatePopup();
+                  document.getElementById('sw-update-popup').classList.add('show');
                 }
               });
             });
 
-            // 检查是否有现有的 Service Worker 更新
+            // 检查现有更新
             if (registration.waiting && navigator.serviceWorker.controller) {
-              showUpdatePopup();
+              document.getElementById('sw-update-popup').classList.add('show');
             }
           } catch (error) {
             console.debug('Service Worker 注册失败:', error);
           }
+        };
+
+        window.addEventListener('load', registerServiceWorker);
+        
+        // 60秒后自动隐藏更新提示
+        document.getElementById('sw-update-popup').addEventListener('show', () => {
+          setTimeout(() => {
+            const popup = document.getElementById('sw-update-popup');
+            if (popup.classList.contains('show')) popup.classList.remove('show');
+          }, 60000);
         });
       } 

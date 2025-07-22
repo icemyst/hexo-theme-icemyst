@@ -5,8 +5,8 @@ const CACHE_CONFIG = {
     MEDIA: 'icemyst-media'
   },
   MAX_AGE: {
-    STATIC: 604800,
-    MEDIA: 2592000
+    STATIC: 604800,  // 7天
+    MEDIA: 2592000   // 30天
   },
   MAX_ENTRIES: {
     STATIC: 1000,
@@ -32,7 +32,7 @@ const CACHE_RULES = [
   }
 ];
 
-// CDN 映射配置，用于自动替换资源 URL 到更快的镜像
+// CDN 映射配置
 const CDN_MAP = {
   jsdelivr_gh: {
     pattern: /^https?:\/\/cdn\.jsdelivr\.net\/gh/,
@@ -77,13 +77,7 @@ const CDN_MAP = {
   github_raw: {
     pattern: /^https?:\/\/raw\.githubusercontent\.com/,
     replacement: '//raw.gitmirror.com',
-    fallbacks: [
-      '//cdn.staticaly.com/gh', 
-      '//ghproxy.net/raw.githubusercontent.com', 
-      '//raw.fastgit.org', 
-      '//raw.fastgit.cn',
-      '//raw-gh.gcdn.mirr.one'
-    ]
+    fallbacks: ['//cdn.staticaly.com/gh', '//ghproxy.net/raw.githubusercontent.com', '//raw.fastgit.org']
   },
   cdnjs: {
     pattern: /^https?:\/\/cdnjs\.cloudflare\.com\/ajax\/libs/,
@@ -98,44 +92,49 @@ const CDN_MAP = {
 };
 
 class CDNManager {
-  #config = {
-    ttl: 7200000, // 增加到2小时
-    pendingTimeout: 30000,
-    statusTimeout: 86400000
-  };
-
-  #status = new Map();
-  #pending = new Map();
-  #cache = new Map();
-
   constructor() {
-    setInterval(() => this.#clean(), 300000); // 增加到5分钟
+    this.config = {
+      ttl: 7200000,           // 2小时
+      pendingTimeout: 30000,  // 30秒
+      statusTimeout: 86400000 // 24小时
+    };
+    this.status = new Map();
+    this.pending = new Map();
+    this.cache = new Map();
+    
+    // 定期清理缓存
+    setInterval(() => this.clean(), 300000); // 5分钟
   }
 
   getCDN(url) {
     if (!url) return null;
     
-    const cached = this.#cache.get(url);
-    if (cached?.time && Date.now() - cached.time < this.#config.ttl) {
+    // 检查缓存
+    const cached = this.cache.get(url);
+    if (cached?.time && Date.now() - cached.time < this.config.ttl) {
       return cached.value;
     }
 
+    // 查找匹配规则
     const rule = Object.values(CDN_MAP).find(r => r.pattern.test(url));
     if (!rule) return null;
 
-    const newUrl = this.#generateNewUrl(url, rule);
+    // 生成新URL
+    const newUrl = this.generateNewUrl(url, rule);
     if (newUrl) {
-      this.#cache.set(url, { value: newUrl, time: Date.now() });
+      this.cache.set(url, { value: newUrl, time: Date.now() });
     }
     return newUrl;
   }
 
-  #generateNewUrl(url, rule) {
+  generateNewUrl(url, rule) {
+    // 处理多替换模式
     if (rule.replacements) {
       return url.replace(rule.pattern, rule.replacements[Math.floor(Math.random() * rule.replacements.length)]);
     }
 
-    const state = this.#status.get(rule.replacement);
+    // 处理单替换+备选模式
+    const state = this.status.get(rule.replacement);
     const useFallback = state?.failCount > 2 && rule.fallbacks?.length;
     const cdn = useFallback
       ? rule.fallbacks[Math.floor(Math.random() * rule.fallbacks.length)]
@@ -147,32 +146,33 @@ class CDNManager {
   updateStatus(url, success) {
     try {
       const host = '//' + new URL(url).host;
-      const old = this.#status.get(host) || { failCount: 0 };
+      const old = this.status.get(host) || { failCount: 0 };
       
-      this.#status.set(host, {
+      this.status.set(host, {
         health: success,
         failCount: success ? 0 : old.failCount + 1,
         timestamp: Date.now()
       });
 
-      if (!success) this.#cache.clear();
+      // 清除缓存，以便重新选择CDN
+      if (!success) this.cache.clear();
     } catch (error) {
       console.error('Failed to update CDN status:', error);
     }
   }
 
-  isPending(url) { return this.#pending.has(url); }
-  markPending(url) { this.#pending.set(url, Date.now()); }
-  clearPending(url) { this.#pending.delete(url); }
+  isPending(url) { return this.pending.has(url); }
+  markPending(url) { this.pending.set(url, Date.now()); }
+  clearPending(url) { this.pending.delete(url); }
 
-  #clean() {
+  clean() {
     const now = Date.now();
-    this.#cleanMap(this.#pending, now, this.#config.pendingTimeout);
-    this.#cleanMap(this.#cache, now, this.#config.ttl, 'time');
-    this.#cleanMap(this.#status, now, this.#config.statusTimeout, 'timestamp');
+    this.cleanMap(this.pending, now, this.config.pendingTimeout);
+    this.cleanMap(this.cache, now, this.config.ttl, 'time');
+    this.cleanMap(this.status, now, this.config.statusTimeout, 'timestamp');
   }
 
-  #cleanMap(map, now, timeout, timeKey) {
+  cleanMap(map, now, timeout, timeKey) {
     map.forEach((value, key) => {
       const timestamp = timeKey ? value[timeKey] : value;
       if (now - timestamp > timeout) map.delete(key);
@@ -183,9 +183,7 @@ class CDNManager {
 const cdnManager = new CDNManager();
 
 // Service Worker 事件处理
-self.addEventListener('install', event => {
-  self.skipWaiting();
-});
+self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', event => {
   event.waitUntil(
@@ -242,6 +240,7 @@ core.setCacheNameDetails({ prefix: "冰梦" });
 core.clientsClaim();
 precaching.cleanupOutdatedCaches();
 
+// 预缓存清单
 const precacheManifest = self.__WB_MANIFEST || [];
 precaching.precacheAndRoute(precacheManifest, {
   ignoreURLParametersMatching: [/.*/]
