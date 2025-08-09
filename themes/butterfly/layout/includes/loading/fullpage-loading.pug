@@ -14,6 +14,7 @@ script.
     const $body = document.body
     const preloader = {
       endLoading: () => {
+        if ($loadingBox.classList.contains('loaded')) return
         $body.style.overflow = ''
         $loadingBox.classList.add('loaded')
       },
@@ -24,16 +25,15 @@ script.
     }
 
     preloader.initLoading()
-    
-    // 添加一个最大加载时间限制，3秒后强制结束加载动画
-    const maxLoadingTime = setTimeout(() => {
+
+    if (document.readyState === 'complete') {
       preloader.endLoading()
-    }, 3000)
-    
-    window.addEventListener('load', () => {
-      preloader.endLoading()
-      clearTimeout(maxLoadingTime)
-    })
+    } else {
+      window.addEventListener('load', preloader.endLoading)
+      document.addEventListener('DOMContentLoaded', preloader.endLoading)
+      // Add timeout protection: force end after 7 seconds
+      setTimeout(preloader.endLoading, 7000)
+    }
 
     if (!{theme.pjax && theme.pjax.enable}) {
       btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')

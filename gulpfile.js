@@ -1,33 +1,16 @@
 const gulp = require('gulp');
 const cleanCSS = require('gulp-clean-css');
 const htmlMin = require('gulp-html-minifier-terser');
-const htmlclean = require('gulp-htmlclean');
+
 const workbox = require("workbox-build");
 const terser = require('gulp-terser');
 const chalk = require('chalk');
 
-// 日志输出工具
+// 简化日志输出
 const logger = {
-  styles: {
-    info: { prefix: '│ ', color: chalk.cyan },
-    success: { prefix: '│ ', color: chalk.green },
-    error: { prefix: '│ ', color: chalk.red },
-    start: { prefix: '┌ ', color: chalk.blue },
-    end: { prefix: '└', color: chalk.blue }
-  },
-  
-  log(type, msg) {
-    const { prefix, color } = this.styles[type];
-    const output = type === 'error' ? console.error : console.log;
-    output(color(prefix) + color(msg));
-  },
-  
-  info(msg) { this.log('info', msg) },
-  success(msg) { this.log('success', msg) },
-  error(msg) { this.log('error', msg) },
-  taskStart(name) { this.log('start', name) },
-  taskEnd() { this.log('end', '') },
-  stats(label, value) { console.log(chalk.cyan('│ ') + chalk.gray(label + ':') + ' ' + chalk.white(value)) }
+  info(msg) { console.log(chalk.cyan(msg)) },
+  success(msg) { console.log(chalk.green('✓ ' + msg)) },
+  error(msg) { console.error(chalk.red('✗ ' + msg)) }
 };
 
 // 配置对象
@@ -39,8 +22,8 @@ const CONFIG = {
   },
   sw: {
     globPatterns: [
-      "index.html", 
-      "css/index.css", 
+      "index.html",
+      "css/index.css",
       "js/main.js",
       "404.html",
       "manifest.json",
@@ -50,13 +33,13 @@ const CONFIG = {
   optimization: {
     terser: {
       compress: {
-        sequences: 50, 
-        unsafe: true, 
-        unsafe_math: true, 
+        sequences: 50,
+        unsafe: true,
+        unsafe_math: true,
         pure_getters: true,
-        ecma: true, 
-        drop_console: true, 
-        module: true, 
+        ecma: true,
+        drop_console: true,
+        module: true,
         toplevel: true,
         pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
       },
@@ -64,30 +47,30 @@ const CONFIG = {
       format: { comments: false }
     },
     html: {
-      removeComments: true, 
-      collapseWhitespace: true, 
+      removeComments: true,
+      collapseWhitespace: true,
       collapseBooleanAttributes: true,
-      removeAttributeQuotes: true, 
-      removeRedundantAttributes: true, 
+      removeAttributeQuotes: true,
+      removeRedundantAttributes: true,
       removeEmptyAttributes: true,
-      removeScriptTypeAttributes: true, 
+      removeScriptTypeAttributes: true,
       removeStyleLinkTypeAttributes: true,
-      minifyJS: true, 
-      minifyCSS: true, 
-      minifyURLs: true, 
+      minifyJS: true,
+      minifyCSS: true,
+      minifyURLs: true,
       processConditionalComments: true
     },
     css: {
       level: {
         1: { all: true },
-        2: { 
-          restructureRules: true, 
-          mergeMedia: true, 
-          removeEmpty: true, 
-          mergeSemantically: true, 
-          overrideProperties: true 
+        2: {
+          restructureRules: true,
+          mergeMedia: true,
+          removeEmpty: true,
+          mergeSemantically: true,
+          overrideProperties: true
         }
-      }, 
+      },
       compatibility: 'ie11'
     }
   }
@@ -101,11 +84,10 @@ const utils = {
     const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), sizes.length - 1);
     return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
   },
-  
   getSizeChangeInfo(original, minified) {
     if (original === minified) return '未变化';
     const ratio = ((minified - original) / original * 100).toFixed(2);
-    return minified > original ? `增大 ${Math.abs(ratio)}%` : `减小 ${Math.abs(ratio)}%`;
+    return `${minified > original ? '增大' : '减小'} ${Math.abs(ratio)}%`;
   }
 };
 
@@ -113,8 +95,7 @@ const utils = {
 function createMinifyTask(taskName, src, processor) {
   gulp.task(taskName, () => {
     const stats = { originalSize: 0, minifiedSize: 0, fileCount: 0 };
-    logger.taskStart(taskName);
-    
+
     return gulp.src(src)
       .on('data', file => {
         if (!file.isNull()) {
@@ -123,7 +104,7 @@ function createMinifyTask(taskName, src, processor) {
         }
       })
       .on('error', error => {
-        logger.error(`错误: ${error.message}`);
+        logger.error(`${taskName}失败: ${error.message}`);
         this.emit('end');
       })
       .pipe(processor)
@@ -133,19 +114,13 @@ function createMinifyTask(taskName, src, processor) {
       })
       .on('end', () => {
         const sizeChange = utils.getSizeChangeInfo(stats.originalSize, stats.minifiedSize);
-        
-        logger.success(`${taskName}完成`);
-        logger.stats('文件数', stats.fileCount);
-        logger.stats('大小', `${utils.formatSize(stats.originalSize)} → ${utils.formatSize(stats.minifiedSize)} (${sizeChange})`);
-        logger.taskEnd();
+        logger.success(`${taskName}完成: ${stats.fileCount}个文件, ${utils.formatSize(stats.originalSize)} → ${utils.formatSize(stats.minifiedSize)} (${sizeChange})`);
       });
   });
 }
 
 // Service Worker生成任务
 gulp.task('generate-service-worker', () => {
-  logger.taskStart('生成Service Worker');
-  
   return workbox.injectManifest({
     swSrc: CONFIG.paths.swTemplate,
     swDest: CONFIG.paths.swDest,
@@ -153,35 +128,18 @@ gulp.task('generate-service-worker', () => {
     globPatterns: CONFIG.sw.globPatterns,
     modifyURLPrefix: { "": "./" }
   })
-    .then(({count, size}) => {
-      logger.success('Service Worker生成成功');
-      logger.stats('预缓存', `${count}个文件, ${utils.formatSize(size)}`);
-      logger.taskEnd();
-    })
-    .catch(err => {
-      logger.error(`生成失败: ${err}`);
-      logger.taskEnd();
-    });
+    .then(({ count, size }) => logger.success(`Service Worker生成完成: 缓存${count}个文件, ${utils.formatSize(size)}`))
+    .catch(err => logger.error(`Service Worker生成失败: ${err}`));
 });
 
 // 创建资源压缩任务
-[
-  {
-    name: 'compress-js',
-    src: ['./public/**/*.js', '!./public/**/*.min.js'],
-    processor: terser(CONFIG.optimization.terser)
-  },
-  {
-    name: 'minify-css',
-    src: ['./public/**/*.css'],
-    processor: cleanCSS(CONFIG.optimization.css)
-  },
-  {
-    name: 'minify-html',
-    src: './public/**/*.html',
-    processor: htmlMin(CONFIG.optimization.html)
-  }
-].forEach(({ name, src, processor }) => createMinifyTask(name, src, processor));
+const minifyTasks = [
+  { name: 'compress-js', src: ['./public/**/*.js', '!./public/**/*.min.js'], processor: terser(CONFIG.optimization.terser) },
+  { name: 'minify-css', src: ['./public/**/*.css'], processor: cleanCSS(CONFIG.optimization.css) },
+  { name: 'minify-html', src: './public/**/*.html', processor: htmlMin(CONFIG.optimization.html) }
+];
+
+minifyTasks.forEach(({ name, src, processor }) => createMinifyTask(name, src, processor));
 
 // 默认任务
 gulp.task('default', gulp.series(

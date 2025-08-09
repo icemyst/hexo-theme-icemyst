@@ -1,283 +1,285 @@
-const CACHE_CONFIG = {
-  NAMES: {
-    MAIN: 'icemyst-main',
-    STATIC: 'icemyst-static',
-    MEDIA: 'icemyst-media'
-  },
-  MAX_AGE: {
-    STATIC: 604800,  // 7天
-    MEDIA: 2592000   // 30天
-  },
-  MAX_ENTRIES: {
-    STATIC: 1000,
-    MEDIA: 500
-  }
+const workboxVersion = '7.3.0';
+
+importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${workboxVersion}/workbox-sw.js`);
+
+// Workbox 核心配置
+workbox.core.setCacheNameDetails({
+    prefix: "冰梦"
+});
+workbox.core.skipWaiting();
+workbox.core.clientsClaim();
+
+// 预缓存配置（资源列表在gulpfile.js中配置）
+workbox.precaching.precacheAndRoute(self.__WB_MANIFEST, {
+    directoryIndex: null
+});
+workbox.precaching.cleanupOutdatedCaches();
+
+// Workbox 路由配置
+// 通用缓存配置
+const commonCacheConfig = {
+    maxEntries: 1000,
+    maxAgeSeconds: 60 * 60 * 24 * 30 // 30天
 };
 
-const CACHE_RULES = [
-  {
-    type: CACHE_CONFIG.NAMES.STATIC,
-    match: /\.(?:js|css|html|json|xml)$/i,
-    strategy: 'stale-while-revalidate'
-  },
-  {
-    type: CACHE_CONFIG.NAMES.MEDIA,
-    match: /\.(?:png|jpe?g|gif|webp|svg|ico|bmp|eot|ttf|woff2?)$/i,
-    strategy: 'cache-first'
-  },
-  {
-    type: CACHE_CONFIG.NAMES.STATIC,
-    match: /\.(?:mp3|mp4|webm|ogg|flac|wav|aac)$/i,
-    strategy: 'network-first'
-  }
+const cacheFirstWithExpiration = (cacheName) => {
+    return new workbox.strategies.CacheFirst({
+        cacheName: cacheName,
+        plugins: [
+            new workbox.expiration.ExpirationPlugin(commonCacheConfig),
+            new workbox.cacheableResponse.CacheableResponsePlugin({
+                statuses: [0, 200]
+            })
+        ]
+    });
+};
+
+// 批量注册缓存路由
+const cacheRoutes = [
+    { pattern: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/, cacheName: "images" },
+    { pattern: /\.(?:eot|ttf|woff|woff2)$/, cacheName: "fonts" },
+    { pattern: /^https:\/\/fonts\.gstatic\.com/, cacheName: "google-fonts-webfonts" },
+    { pattern: /^https:\/\/cdn\.jsdelivr\.net/, cacheName: "static-libs" }
 ];
 
-// CDN 映射配置
-const CDN_MAP = {
-  jsdelivr_gh: {
-    pattern: /^https?:\/\/cdn\.jsdelivr\.net\/gh/,
-    replacement: '//fastly.jsdelivr.net/gh',
-    fallbacks: ['//gcore.jsdelivr.net/gh', '//cdn.jsdmirror.cn/gh', '//jsd.cdn.zzko.cn/gh', '//cdn1.tianli0.top/gh', '//cdn.staticaly.com/gh']
-  },
-  jsdelivr_npm: {
-    pattern: /^https?:\/\/cdn\.jsdelivr\.net\/npm/,
-    replacement: '//fastly.jsdelivr.net/npm',
-    fallbacks: ['//npm.elemecdn.com', '//cdn.jsdmirror.com/npm', '//cdn.onmicrosoft.cn/npm', '//npm.onmicrosoft.cn', '//unpkg.com']
-  },
-  jsdmirror: {
-    pattern: /^https?:\/\/cdn\.jsdmirror\.com\/gh/,
-    replacement: '//cdn.jsdmirror.cn/gh',
-    fallbacks: ['//gcore.jsdelivr.net/gh', '//cdn.jsdmirror.com/gh']
-  },
-  SMMS: {
-    pattern: /^https?:\/\/s2\.loli\.net/,
-    replacements: [
-      '//cdn.statically.io/img/s2.loli.net',
-      '//images.weserv.nl/?url=s2.loli.net',
-      '//image.baidu.com/search/down?url=https://s2.loli.net',
-      '//i0.wp.com/s2.loli.net',
-      '//wsrv.nl/?url=s2.loli.net'
-    ]
-  },
-  google_fonts: {
-    pattern: /^https?:\/\/fonts\.googleapis\.com/,
-    replacement: '//fonts.loli.net',
-    fallbacks: ['//fonts.geekzu.org', '//fonts.css.network']
-  },
-  gstatic: {
-    pattern: /^https?:\/\/fonts\.gstatic\.com/,
-    replacement: '//gstatic.loli.net',
-    fallbacks: ['//gapis.geekzu.org/g-fonts', '//fonts.gstatic.cn']
-  },
-  gravatar: {
-    pattern: /^https?:\/\/www\.gravatar\.com\/avatar/,
-    replacement: '//gravatar.loli.net/avatar',
-    fallbacks: ['//cravatar.cn/avatar', '//sdn.geekzu.org/avatar', '//gravatar.inwao.com/avatar']
-  },
-  github_raw: {
-    pattern: /^https?:\/\/raw\.githubusercontent\.com/,
-    replacement: '//raw.gitmirror.com',
-    fallbacks: ['//cdn.staticaly.com/gh', '//ghproxy.net/raw.githubusercontent.com', '//raw.fastgit.org']
-  },
-  cdnjs: {
-    pattern: /^https?:\/\/cdnjs\.cloudflare\.com\/ajax\/libs/,
-    replacement: '//cdnjs.cloudflare.com/ajax/libs',
-    fallbacks: ['//s4.zstatic.net/ajax/libs', '//cdnjs.webstatic.cn/ajax/libs', '//cdnjs.loli.net/ajax/libs', '//lib.baomitu.com']
-  },
-  unpkg: {
-    pattern: /^https?:\/\/unpkg\.com/,
-    replacement: '//unpkg.com',
-    fallbacks: ['//s4.zstatic.net/npm', '//npm.elemecdn.com', '//cdn.onmicrosoft.cn/npm', '//npm.onmicrosoft.cn']
-  }
-};
+cacheRoutes.forEach(({ pattern, cacheName }) => {
+    workbox.routing.registerRoute(pattern, cacheFirstWithExpiration(cacheName));
+});
 
-class CDNManager {
-  constructor() {
-    this.config = {
-      ttl: 7200000,           // 2小时
-      pendingTimeout: 30000,  // 30秒
-      statusTimeout: 86400000 // 24小时
-    };
-    this.status = new Map();
-    this.pending = new Map();
-    this.cache = new Map();
-    
-    // 定期清理缓存
-    setInterval(() => this.clean(), 300000); // 5分钟
-  }
+// 谷歌字体样式表使用不同策略
+workbox.routing.registerRoute(
+    /^https:\/\/fonts\.googleapis\.com/,
+    new workbox.strategies.StaleWhileRevalidate({
+        cacheName: "google-fonts-stylesheets"
+    })
+);
 
-  getCDN(url) {
-    if (!url) return null;
-    
-    // 检查缓存
-    const cached = this.cache.get(url);
-    if (cached?.time && Date.now() - cached.time < this.config.ttl) {
-      return cached.value;
+// 初始化Google Analytics离线支持
+workbox.googleAnalytics.initialize();
+
+// ===== 自定义缓存系统配置 =====
+/** 缓存库（数据）名称 */
+const CACHE_NAME = 'icemystCache'
+/** 缓存库（时间戳）名称 */
+const VERSION_CACHE_NAME = 'icemystCacheTime'
+/** 缓存离线超时时间（10天） */
+const MAX_ACCESS_CACHE_TIME = 60 * 60 * 24 * 10
+
+// 获取当前时间戳
+const time = () => new Date().getTime();
+
+// 缓存数据库辅助函数
+const dbHelper = {
+    read: (key) => {
+        return new Promise((resolve) => {
+            caches.match(key).then(function (res) {
+                if (!res) resolve(null);
+                res.text().then(text => resolve(text));
+            }).catch(() => {
+                resolve(null);
+            });
+        });
+    },
+    write: (key, value) => {
+        return new Promise((resolve, reject) => {
+            caches.open(VERSION_CACHE_NAME).then(function (cache) {
+                cache.put(key, new Response(value));
+                resolve();
+            }).catch(() => {
+                reject();
+            });
+        });
+    },
+    delete: (key) => {
+        caches.match(key).then(response => {
+            if (response) caches.open(VERSION_CACHE_NAME).then(cache => cache.delete(key));
+        });
     }
-
-    // 查找匹配规则
-    const rule = Object.values(CDN_MAP).find(r => r.pattern.test(url));
-    if (!rule) return null;
-
-    // 生成新URL
-    const newUrl = this.generateNewUrl(url, rule);
-    if (newUrl) {
-      this.cache.set(url, { value: newUrl, time: Date.now() });
-    }
-    return newUrl;
-  }
-
-  generateNewUrl(url, rule) {
-    // 处理多替换模式
-    if (rule.replacements) {
-      return url.replace(rule.pattern, rule.replacements[Math.floor(Math.random() * rule.replacements.length)]);
-    }
-
-    // 处理单替换+备选模式
-    const state = this.status.get(rule.replacement);
-    const useFallback = state?.failCount > 2 && rule.fallbacks?.length;
-    const cdn = useFallback
-      ? rule.fallbacks[Math.floor(Math.random() * rule.fallbacks.length)]
-      : rule.replacement;
-
-    return url.replace(rule.pattern, cdn);
-  }
-
-  updateStatus(url, success) {
-    try {
-      const host = '//' + new URL(url).host;
-      const old = this.status.get(host) || { failCount: 0 };
-      
-      this.status.set(host, {
-        health: success,
-        failCount: success ? 0 : old.failCount + 1,
-        timestamp: Date.now()
-      });
-
-      // 清除缓存，以便重新选择CDN
-      if (!success) this.cache.clear();
-    } catch (error) {
-      console.error('Failed to update CDN status:', error);
-    }
-  }
-
-  isPending(url) { return this.pending.has(url); }
-  markPending(url) { this.pending.set(url, Date.now()); }
-  clearPending(url) { this.pending.delete(url); }
-
-  clean() {
-    const now = Date.now();
-    this.cleanMap(this.pending, now, this.config.pendingTimeout);
-    this.cleanMap(this.cache, now, this.config.ttl, 'time');
-    this.cleanMap(this.status, now, this.config.statusTimeout, 'timestamp');
-  }
-
-  cleanMap(map, now, timeout, timeKey) {
-    map.forEach((value, key) => {
-      const timestamp = timeKey ? value[timeKey] : value;
-      if (now - timestamp > timeout) map.delete(key);
-    });
-  }
 }
 
-const cdnManager = new CDNManager();
+// 辅助函数：创建虚拟请求URL
+const createVirtualRequest = (prefix, key) => new Request(`https://${prefix}/${encodeURIComponent(key)}`);
 
-// Service Worker 事件处理
+/** 存储缓存入库时间 */
+const dbTime = {
+    read: (key) => dbHelper.read(createVirtualRequest('LOCALCACHE', key)),
+    write: (key, value) => dbHelper.write(createVirtualRequest('LOCALCACHE', key), value),
+    delete: (key) => dbHelper.delete(createVirtualRequest('LOCALCACHE', key))
+};
+
+/** 存储缓存最后一次访问的时间 */
+const dbAccess = {
+    update: (key) => dbHelper.write(createVirtualRequest('ACCESS-CACHE', key), time()),
+    check: async (key) => {
+        const realKey = createVirtualRequest('ACCESS-CACHE', key);
+        const value = await dbHelper.read(realKey);
+        if (value) {
+            dbHelper.delete(realKey);
+            return time() - value < MAX_ACCESS_CACHE_TIME;
+        } 
+        return false;
+    }
+}
+
+// Service Worker 安装事件（Workbox已处理，这里是自定义部分的补充）
 self.addEventListener('install', () => self.skipWaiting());
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    Promise.all([
-      caches.keys()
-        .then(keys => Promise.all(
-          keys
-            .filter(key => {
-              const validCaches = Object.values(CACHE_CONFIG.NAMES);
-              return !validCaches.includes(key) && !key.startsWith('workbox-');
-            })
-            .map(key => caches.delete(key))
-        )),
-      self.clients.claim()
-    ])
-  );
-});
-
-self.addEventListener('message', event => {
-  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
-});
-
-async function handleFetch(request, newUrl) {
-  try {
-    const response = await fetch(newUrl, { mode: 'no-cors', credentials: 'omit' });
-    cdnManager.updateStatus(newUrl, true);
-    cdnManager.clearPending(request.url);
-    return response;
-  } catch (error) {
-    cdnManager.updateStatus(newUrl, false);
-    cdnManager.clearPending(request.url);
-    return fetch(request);
-  }
-}
-
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  
-  const url = event.request.url;
-  if (cdnManager.isPending(url)) return;
-  
-  const newUrl = cdnManager.getCDN(url);
-  if (!newUrl) return;
-
-  cdnManager.markPending(url);
-  event.respondWith(handleFetch(event.request, newUrl));
-});
-
-// Workbox 配置
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js');
-const { core, precaching, routing, strategies, expiration, cacheableResponse } = workbox;
-
-core.setCacheNameDetails({ prefix: "冰梦" });
-core.clientsClaim();
-precaching.cleanupOutdatedCaches();
-
-// 预缓存清单
-const precacheManifest = self.__WB_MANIFEST || [];
-precaching.precacheAndRoute(precacheManifest, {
-  ignoreURLParametersMatching: [/.*/]
-});
-
-// 统一的缓存策略
-const createCacheStrategy = (cacheName, strategy, maxEntries, maxAge) => {
-  const strategyName = strategy.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase());
-  return new strategies[strategyName]({
-    cacheName,
-    plugins: [
-      new expiration.ExpirationPlugin({
-        maxEntries,
-        maxAgeSeconds: maxAge,
-        purgeOnQuotaError: true
-      }),
-      new cacheableResponse.CacheableResponsePlugin({ statuses: [0, 200] })
-    ]
-  });
+/**
+ * 自定义缓存配置列表
+ * @typedef {Object} CacheConfig
+ * @property {RegExp} url - 匹配规则（正则表达式）
+ * @property {number} time - 缓存有效时间（秒）
+ * @property {boolean} clean - 清理缓存时是否无视最终访问时间直接删除
+ */
+const DAY = 60 * 60 * 24;
+const cacheList = {
+    images: { url: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg|ico)$/, time: DAY * 30, clean: false },
+    assets: { url: /\.(?:css|js)$/, time: DAY * 7, clean: true },
+    fonts: { url: /\.(?:woff|woff2|eot|ttf|otf)$/, time: DAY * 30, clean: false },
+    data: { url: /\.json$/, time: DAY, clean: true },
+    pages: { url: /\.(?:html|xml)$/, time: DAY / 2, clean: true }
 };
 
-// 注册路由策略
-CACHE_RULES.forEach(rule => {
-  const cacheType = rule.type.split('-').pop();
-  routing.registerRoute(
-    rule.match,
-    createCacheStrategy(
-      rule.type,
-      rule.strategy,
-      CACHE_CONFIG.MAX_ENTRIES[cacheType] || 500,
-      CACHE_CONFIG.MAX_AGE[cacheType] || 604800
-    )
-  );
-});
+/**
+ * 链接替换配置列表（用于CDN回源等场景）
+ * @typedef {Object} ReplaceConfig
+ * @property {string[]} source - 源链接匹配模式数组
+ * @property {string} dist - 目标链接替换模式
+ */
+const replaceList = {
+    sample: { source: ['//s2.loli.net'], dist: '//images.weserv.nl/?url=s2.loli.net' },
+    googleFonts: { source: ['//fonts.googleapis.com', '//fonts.gstatic.com'], dist: '//fonts.loli.net' },
+    gravatar: { source: ['//www.gravatar.com/avatar', '//secure.gravatar.com/avatar'], dist: '//gravatar.loli.net/avatar' },
+    github: { source: ['//raw.githubusercontent.com'], dist: '//cdn.jsdelivr.net/gh' },
+    npm: { source: ['//unpkg.com'], dist: '//cdn.jsdelivr.net/npm' },
+    jsdelivr: { source: ['//cdn.jsdelivr.net/gh'], dist: '//cdn.jsdmirror.cn/gh'}
+}
 
-// 导航缓存
-routing.registerRoute(
-  ({ request }) => request.mode === 'navigate',
-  createCacheStrategy(CACHE_CONFIG.NAMES.STATIC, 'network-first', 50, 86400)
-);
+/**
+ * 判断指定url匹配哪一种缓存配置，都没有匹配则返回null
+ * @param {string} url - 请求URL
+ * @returns {CacheConfig|null} 匹配的缓存配置或null
+ */
+const findCache = (url) => {
+    for (const key in cacheList) {
+        const value = cacheList[key];
+        if (url.match(value.url)) return value;
+    }
+    return null;
+};
+
+/**
+ * 检查连接是否需要重定向至另外的链接
+ * @param {Request} request - 原始请求
+ * @returns {Request|null} 新的请求对象或null（不需要替换）
+ * 
+ * 该函数会顺序匹配replaceList中的所有项目，支持链式替换
+ * 例如：http://abc.com/ → https://abc.com/ → https://abc.net/
+ * @see {ReplaceConfig}
+ */
+const replaceRequest = (request) => {
+    let url = request.url;
+    let flag = false;
+    
+    for (const key in replaceList) {
+        const value = replaceList[key];
+        for (const source of value.source) {
+            if (url.match(source)) {
+                url = url.replace(source, value.dist);
+                flag = true;
+            }
+        }
+    }
+    
+    return flag ? new Request(url) : null;
+};
+
+/**
+ * 判断是否拦截指定的request
+ * @param {Request} request - 请求对象
+ * @returns {boolean} 是否拦截
+ */
+const blockRequest = (request) => {
+    // 可在此添加拦截规则
+    return false;
+}
+
+/**
+ * 处理自定义缓存的请求
+ * @param {Request} request - 请求对象
+ * @param {Response} response - 缓存的响应（如果有）
+ * @param {CacheConfig} cacheDist - 缓存配置
+ * @returns {Promise<Response>} 响应对象
+ * @see {CacheConfig}
+ */
+async function fetchEvent(request, response, cacheDist) {
+    const NOW_TIME = time();
+    // 更新访问时间
+    dbAccess.update(request.url);
+    const maxTime = cacheDist.time;
+    let remove = false;
+    
+    // 检查缓存是否有效
+    if (response) {
+        const cachedTime = await dbTime.read(request.url);
+        if (cachedTime) {
+            const difTime = NOW_TIME - cachedTime;
+            // 如果缓存未过期，直接返回
+            if (difTime < maxTime) return response;
+        }
+        remove = true;
+    }
+    
+    // 网络请求函数
+    const fetchFunction = () => fetch(request).then(response => {
+        // 记录缓存时间
+        dbTime.write(request.url, NOW_TIME);
+        
+        // 如果响应正常则缓存
+        // status为0的情况可能出现在某些跨域请求或特殊响应中
+        if (response.ok || response.status === 0) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+        }
+        return response;
+    });
+    
+    // 如果不需要移除旧缓存，直接获取新数据
+    if (!remove) return fetchFunction();
+    
+    // 如果需要移除旧缓存，设置超时竞速，优先使用缓存数据
+    const timeOut = () => new Promise(resolve => setTimeout(() => resolve(response), 400));
+    
+    return Promise.race([
+        timeOut(),
+        fetchFunction()
+    ]).catch(err => console.error(`不可达的链接：${request.url}\n错误信息：${err}`));
+}
+
+/**
+ * Service Worker 的 fetch 事件处理
+ * 处理所有网络请求，根据配置决定是否使用缓存或替换请求
+ */
+self.addEventListener('fetch', async event => {
+    // 检查是否需要替换请求URL（例如CDN回源）
+    const replace = replaceRequest(event.request);
+    const request = replace === null ? event.request : replace;
+    
+    // 检查是否匹配自定义缓存规则
+    const cacheDist = findCache(request.url);
+    
+    // 处理请求的三种情况
+    if (blockRequest(request)) {
+        // 1. 拦截请求（返回空响应）
+        event.respondWith(new Response(null, {status: 204}));
+    } else if (cacheDist !== null) {
+        // 2. 使用自定义缓存策略处理请求
+        event.respondWith(caches.match(request)
+            .then(async (response) => fetchEvent(request, response, cacheDist))
+        );
+    } else if (replace !== null) {
+        // 3. 使用替换后的URL发起请求
+        event.respondWith(fetch(request));
+    }
+    // 其他情况由浏览器默认处理
+})
