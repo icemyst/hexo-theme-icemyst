@@ -6,11 +6,11 @@ const workbox = require("workbox-build");
 const terser = require('gulp-terser');
 const chalk = require('chalk');
 
-// 简化日志输出
+// 日志输出
 const logger = {
-  info(msg) { console.log(chalk.cyan(msg)) },
-  success(msg) { console.log(chalk.green('✓ ' + msg)) },
-  error(msg) { console.error(chalk.red('✗ ' + msg)) }
+  info: msg => console.log(chalk.cyan(msg)),
+  success: msg => console.log(chalk.green('✓ ' + msg)),
+  error: msg => console.error(chalk.red('✗ ' + msg))
 };
 
 // 配置对象
@@ -78,13 +78,13 @@ const CONFIG = {
 
 // 工具函数
 const utils = {
-  formatSize(bytes) {
-    if (bytes === 0) return '0 B';
+  formatSize: bytes => {
+    if (!bytes) return '0 B';
     const sizes = ['B', 'KB', 'MB'];
     const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), sizes.length - 1);
     return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
   },
-  getSizeChangeInfo(original, minified) {
+  getSizeChangeInfo: (original, minified) => {
     if (original === minified) return '未变化';
     const ratio = ((minified - original) / original * 100).toFixed(2);
     return `${minified > original ? '增大' : '减小'} ${Math.abs(ratio)}%`;
@@ -92,10 +92,9 @@ const utils = {
 };
 
 // 通用压缩任务工厂
-function createMinifyTask(taskName, src, processor) {
+const createMinifyTask = (taskName, src, processor) => {
   gulp.task(taskName, () => {
     const stats = { originalSize: 0, minifiedSize: 0, fileCount: 0 };
-
     return gulp.src(src)
       .on('data', file => {
         if (!file.isNull()) {
@@ -103,7 +102,7 @@ function createMinifyTask(taskName, src, processor) {
           stats.fileCount++;
         }
       })
-      .on('error', error => {
+      .on('error', function(error) {
         logger.error(`${taskName}失败: ${error.message}`);
         this.emit('end');
       })
@@ -117,7 +116,7 @@ function createMinifyTask(taskName, src, processor) {
         logger.success(`${taskName}完成: ${stats.fileCount}个文件, ${utils.formatSize(stats.originalSize)} → ${utils.formatSize(stats.minifiedSize)} (${sizeChange})`);
       });
   });
-}
+};
 
 // Service Worker生成任务
 gulp.task('generate-service-worker', () => {

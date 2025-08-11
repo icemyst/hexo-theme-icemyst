@@ -52,14 +52,11 @@
   width: calc(100% - 48px);
   pointer-events: none; /* 隐藏状态下禁止交互 */
   visibility: hidden; /* 完全隐藏元素 */
-}
-
-/* 主题样式 */
-.sw-update-popup {
+  
+  /* 主题样式 */
   --popup-bg: rgba(255, 255, 255, 0.7);
   --popup-color: #1a1a1a;
   --popup-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-  
   background: var(--popup-bg);
   box-shadow: var(--popup-shadow);
   color: var(--popup-color);
@@ -146,15 +143,12 @@
   border-radius: 50%;
   opacity: 0.7;
   transition: all 0.2s ease;
+  color: var(--popup-color);
 }
 
 .close-btn i {
   font-size: 14px;
   line-height: 1;
-}
-
-.close-btn {
-  color: var(--popup-color);
 }
 
 .close-btn:hover {
@@ -184,9 +178,6 @@
   background: var(--btn-hover-bg);
   box-shadow: var(--btn-hover-shadow);
   animation: sw-pulse 1s infinite;
-}
-
-.sw-update-popup .refresh-btn:hover {
   transform: translateY(-2px);
 }
 
@@ -204,6 +195,7 @@
     width: auto;
     max-width: none;
     border-radius: 16px;
+    --popup-bg: rgba(255, 255, 255, 0.8);
   }
   
   .sw-update-popup .message {
@@ -217,10 +209,6 @@
   .sw-update-popup .refresh-btn {
     padding: 8px 16px;
     font-size: 13px;
-  }
-  
-  .sw-update-popup {
-    --popup-bg: rgba(255, 255, 255, 0.8);
   }
   
   [data-theme='dark'] .sw-update-popup {
