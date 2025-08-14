@@ -16,8 +16,7 @@ const CONFIG = {
     VERSION_CACHE_NAME: 'icemystCacheTime',
     MAX_ACCESS_CACHE_TIME: 60 * 60 * 24 * 10, // 10天
     CACHE_TIMEOUT: 400,
-    DAY: 60 * 60 * 24,
-    HOUR: 60 * 60
+    DAY: 60 * 60 * 24
 };
 
 const getCurrentTime = () => Math.floor(Date.now() / 1000);
@@ -101,8 +100,7 @@ self.addEventListener('install', () => self.skipWaiting());
 // 本地资源缓存配置
 const LOCAL_CACHE_CONFIG = {
     html: { pattern: /\.html$/i, maxAge: CONFIG.DAY },
-    pages: { pattern: /\/(categories|tags|about|archives|link)\/?$/i, maxAge: CONFIG.DAY },
-    api: { pattern: /\/api\//i, maxAge: CONFIG.HOUR }
+    pages: { pattern: /\/(categories|tags|about|archives|link)\/?$/i, maxAge: CONFIG.DAY }
 };
 
 // URL替换配置
