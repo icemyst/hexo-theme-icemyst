@@ -1046,12 +1046,12 @@ instantpage: true
 # 懒加载
 # https://github.com/verlok/vanilla-lazyload
 lazyload:
-  enable: false
+  enable: true
   # 使用浏览器的原生延迟加载而不是 vanilla-lazyload
   native: false
   # 指定使用懒加载的字段（网站（site）或文章（post））
   field: site
-  placeholder:
+  placeholder: /img/loading.webp
   blur: false
 
 
@@ -1081,7 +1081,11 @@ Open_Graph_meta:
 
 # 结构化数据
 # https://developers.google.com/search/docs/guides/intro-structured-data
-structured_data: true
+structured_data:
+  enable: true
+  # 网站的备用名称，用于结构化数据
+  # 格式：['name1','name2']
+  alternate_name:
 
 # 添加供应商前缀以确保兼容性
 css_prefix: true
@@ -1094,6 +1098,9 @@ inject:
   bottom:
     # 网络状态显示
     - <script src="/js/custom/network-status.js"></script>
+    # Service Worker 管理脚本
+    - <script defer src="/js/custom/sw-popup.js"></script>
+
 
 # CDN设置
 # 除非您知道它们的工作原理，否则请勿修改以下设置
@@ -1116,17 +1123,17 @@ CDN:
     # abcjs_basic_js:
     # activate_power_mode:
     # algolia_js:
-    algolia_search: https://cdnjs.webstatic.cn/ajax/libs/algoliasearch/5.20.2/lite/builds/browser.umd.js  # https://cdn.jsdelivr.net/npm/algoliasearch@5.20.3/dist/lite/builds/browser.umd.js
-    # aplayer_css:
-    # aplayer_js:
+    algolia_search: //cdnjs.webstatic.cn/ajax/libs/algoliasearch/5.34.1/lite/builds/browser.umd.js  # https://cdn.jsdelivr.net/npm/algoliasearch@5.20.3/dist/lite/builds/browser.umd.js
+    aplayer_css: //cdnjs.webstatic.cn/ajax/libs/aplayer/1.10.1/APlayer.min.css
+    aplayer_js: //cdnjs.webstatic.cn/ajax/libs/aplayer/1.10.1/APlayer.min.js
     # artalk_css:
     # artalk_js:
     # blueimp_md5:
-    busuanzi: https://events.vercount.one/js # //busuanzi.sukap.cn/busuanzi.pure.mini.js # //busuanzi.9420.ltd/js  //api.busuanzi.cc/static/3.6.9/busuanzi.min.js
+    busuanzi: //events.vercount.one/js # //api.busuanzi.cc/static/3.6.9/busuanzi.min.js  # //busuanzi.sukap.cn/busuanzi.pure.mini.js # //busuanzi.9420.ltd/js  
     # canvas_fluttering_ribbon:
     # canvas_nest:
     # canvas_ribbon:
-    # chartjs:
+    chartjs: //cdnjs.webstatic.cn/ajax/libs/Chart.js/4.5.0/chart.umd.js
     # click_heart:
     # clickShowText:
     # disqusjs:
@@ -1134,36 +1141,36 @@ CDN:
     # docsearch_css:
     # docsearch_js:
     # egjs_infinitegrid:
-    # fancybox: https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.js
-    # fancybox_css: https://cdn1.tianli0.top/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.min.css
-    # fireworks:
-    fontawesome: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css
+    fancybox: //cdnjs.webstatic.cn/ajax/libs/fancyapps-ui/6.0.17/fancybox/fancybox.umd.js
+    fancybox_css: //cdnjs.webstatic.cn/ajax/libs/fancyapps-ui/6.0.17/fancybox/fancybox.min.css
+    fireworks: //cdnjs.webstatic.cn/ajax/libs/butterfly-extsrc/1.1.4/fireworks.min.js
+    fontawesome: //cdnjs.webstatic.cn/ajax/libs/font-awesome/6.7.2/css/all.min.css
     # gitalk:
     # gitalk_css:
     # giscus:
-    # instantpage:
-    instantsearch: https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.79.2/instantsearch.production.min.js # https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instantsearch.js/4.39.0/instantsearch.production.min.js # https://cdn.cbd.int/instantsearch.js@4.77.3/dist/instantsearch.production.min.js  # https://s4.zstatic.net/ajax/libs/instantsearch.js/4.75.7/instantsearch.production.min.js
+    # instantpage: //s4.zstatic.net/ajax/libs/instant.page/5.2.0/instantpage.js
+    instantsearch: //cdnjs.webstatic.cn/ajax/libs/instantsearch.js/4.79.2/instantsearch.production.min.js # https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instantsearch.js/4.39.0/instantsearch.production.min.js # https://cdn.cbd.int/instantsearch.js@4.77.3/dist/instantsearch.production.min.js  # https://s4.zstatic.net/ajax/libs/instantsearch.js/4.75.7/instantsearch.production.min.js
     # katex:
     # katex_copytex:
-    # lazyload: https://cdn1.tianli0.top/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js
+    lazyload: //cdnjs.webstatic.cn/ajax/libs/vanilla-lazyload/19.1.3/lazyload.min.js
     # local_search:
     # main:
     # main_css:
     # mathjax:
     # medium_zoom:
     # mermaid:
-    # meting_js:
+    meting_js: //cdnjs.webstatic.cn/ajax/libs/butterfly-extsrc/1.1.4/metingjs/dist/Meting.min.js
     # prismjs_autoloader:
     # prismjs_js:
     # prismjs_lineNumber_js:
-    # pjax: https://cdn1.tianli0.top/npm/pjax@0.2.8/pjax.min.js
+    pjax: //cdnjs.webstatic.cn/ajax/libs/pjax/0.2.8/pjax.min.js
     # sharejs:
     # sharejs_css:
     # snackbar:
     # snackbar_css:
     # translate:
-    twikoo: https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.44/twikoo.all.min.js # https://cdn1.tianli0.top/npm/js-heo@1.0.3/twikoo/twikoo.all.min.js
-    # typed:
+    twikoo: //cdnjs.webstatic.cn/ajax/libs/twikoo/1.6.44/twikoo.all.min.js # https://cdn1.tianli0.top/npm/js-heo@1.0.3/twikoo/twikoo.all.min.js
+    typed: //cdnjs.webstatic.cn/ajax/libs/typed.js/2.1.0/typed.umd.js
     # utils:
     # valine:
     # waline_css:

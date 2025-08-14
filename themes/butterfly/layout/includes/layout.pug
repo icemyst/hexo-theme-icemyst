@@ -36,6 +36,7 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
     include ./rightside.pug
     include ./additional-js.pug
     
+    //- Service Worker 更新提示弹窗
     #sw-update-popup.sw-update-popup
       .message-container
         p.message 发现新版本
@@ -43,63 +44,3 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
       button.refresh-btn(onclick="window.location.reload()") 立即更新
       button.close-btn
         i.fas.fa-times
-      
-    script.
-      if ('serviceWorker' in navigator) {
-        const updatePopup = document.getElementById('sw-update-popup');
-        
-        // 隐藏更新提示
-        const hideUpdateNotification = () => {
-          updatePopup.style.animation = 'sw-notification-out 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
-          updatePopup.classList.remove('show');
-          setTimeout(() => {
-            if (!updatePopup.classList.contains('show')) {
-              updatePopup.style.pointerEvents = 'none';
-              updatePopup.style.visibility = 'hidden';
-              updatePopup.style.animation = '';
-            }
-          }, 500);
-        };
-        
-        // 显示更新提示
-        const showUpdateNotification = () => {
-          updatePopup.style.visibility = 'visible';
-          updatePopup.style.pointerEvents = 'auto';
-          updatePopup.classList.add('show');
-          setTimeout(hideUpdateNotification, 30000);
-        };
-        
-        // 初始化
-        document.addEventListener('DOMContentLoaded', () => {
-          if (!updatePopup.classList.contains('show')) {
-            updatePopup.style.pointerEvents = 'none';
-            updatePopup.style.visibility = 'hidden';
-          }
-          updatePopup.querySelector('.close-btn').addEventListener('click', hideUpdateNotification);
-        });
-        
-        // 注册 Service Worker
-        navigator.serviceWorker.register('/sw.js', { 
-          scope: '/', 
-          updateViaCache: 'none' 
-        })
-        .then(registration => {
-          const handleUpdate = () => showUpdateNotification();
-          
-          registration.addEventListener('updatefound', () => {
-            const newWorker = registration.installing;
-            if (newWorker) {
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  handleUpdate();
-                }
-              });
-            }
-          });
-          
-          if (registration.waiting && navigator.serviceWorker.controller) {
-            handleUpdate();
-          }
-        })
-        .catch(error => console.debug('Service Worker 注册失败:', error));
-      }
