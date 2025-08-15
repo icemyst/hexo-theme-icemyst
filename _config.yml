@@ -146,8 +146,6 @@ bangumi: # 追番设置
   show: 1
   lazyload: false
   srcValue: '__image__'
-  lazyloadAttrName: 'data-src=__image__'
-  loading: /img/friend_404.gif
   showMyComment: false
   pagination: false
   metaColor:
@@ -175,8 +173,6 @@ cinema: # 追剧设置
   show: 1
   lazyload: false
   srcValue: '__image__'
-  lazyloadAttrName: 'data-src=__image__'
-  loading: /img/friend_404.gif
   metaColor:
   color:
   webp:
@@ -200,8 +196,6 @@ game: # 游戏设置，仅支持source: bgmv0
   show: 1
   lazyload: true
   srcValue: '__image__'
-  lazyloadAttrName: 'data-src=__image__'
-  loading:
   metaColor:
   color:
   webp:
@@ -211,4 +205,4 @@ game: # 游戏设置，仅支持source: bgmv0
   order:
   extra_options:
     key: value
-  coverMirror: # https://images.weserv.nl/?url=
+  coverMirror:
