@@ -1034,7 +1034,7 @@ Open_Graph_meta:
 # Structured Data
 # https://developers.google.com/search/docs/guides/intro-structured-data
 structured_data:
-  enable: true
+  enable: false
   # Alternate name for the site, used in structured data
   # Format: ['name1', 'name2']
   alternate_name:
