@@ -62,8 +62,8 @@ script.
           const pagePV = document.getElementById('umamiPV')
           if (pagePV) {
             const data = await getData(true)
-            if (data && data.pageviews && typeof data.pageviews.value !== 'undefined') {
-              pagePV.textContent = data.pageviews.value
+            if (data && data.pageviews) {
+              pagePV.textContent = typeof data.pageviews.value !== 'undefined' ? data.pageviews.value : data.pageviews
             } else {
               console.warn('Umami Analytics: Invalid page view data received')
             }
@@ -75,8 +75,8 @@ script.
 
           if (config.site_uv) {
             const siteUV = document.getElementById('umami-site-uv')
-            if (siteUV && data && data.visitors && typeof data.visitors.value !== 'undefined') {
-              siteUV.textContent = data.visitors.value
+            if (siteUV && data && data.visitors) {
+              siteUV.textContent = typeof data.visitors.value !== 'undefined' ? data.visitors.value : data.visitors
             } else if (siteUV) {
               console.warn('Umami Analytics: Invalid site UV data received')
             }
@@ -84,8 +84,8 @@ script.
 
           if (config.site_pv) {
             const sitePV = document.getElementById('umami-site-pv')
-            if (sitePV && data && data.pageviews && typeof data.pageviews.value !== 'undefined') {
-              sitePV.textContent = data.pageviews.value
+            if (sitePV && data && data.pageviews) {
+              sitePV.textContent = typeof data.pageviews.value !== 'undefined' ? data.pageviews.value : data.pageviews
             } else if (sitePV) {
               console.warn('Umami Analytics: Invalid site PV data received')
             }

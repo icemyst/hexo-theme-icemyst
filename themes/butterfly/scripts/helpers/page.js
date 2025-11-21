@@ -157,3 +157,12 @@ hexo.extend.helper.register('getVersion', () => {
   const { version } = require('../../package.json')
   return { hexo: hexo.version, theme: version }
 })
+
+hexo.extend.helper.register('safeJSON', data => {
+  // Safely serialize JSON for embedding in <script> tags
+  return JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
+})

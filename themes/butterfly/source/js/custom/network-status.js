@@ -25,7 +25,7 @@ class NetworkStatusManager {
       }
 
       const message = config.messages[Math.floor(Math.random() * config.messages.length)];
-      
+
       if (this.offlineTimer) {
         clearTimeout(this.offlineTimer);
         this.offlineTimer = null;
@@ -53,7 +53,7 @@ class NetworkStatusManager {
     // 监听网络状态变化
     window.addEventListener('online', () => this.showNotification('online'));
     window.addEventListener('offline', () => this.showNotification('offline'));
-    
+
     // 初始化检查网络状态
     if (!navigator.onLine) {
       this.showNotification('offline');

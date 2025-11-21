@@ -30,22 +30,31 @@ jobs:
         node-version: "20.x"
         registry-url: https://registry.npmjs.org/
 
+    - name: 安装 pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
     - name: 安装 Hexo
       run: |
         export TZ='Asia/Shanghai'
-        npm install hexo-cli -g
+        pnpm add -g hexo-cli
 
-    - name: 缓存 Hexo
+    - name: 缓存 pnpm 依赖
       uses: actions/cache@v4
       id: cache
       with:
-        path: node_modules
-        key: ${{runner.OS}}-${{hashFiles('**/package-lock.json')}}
+        path: |
+          **/node_modules
+          ~/.pnpm-store
+        key: ${{runner.OS}}-pnpm-${{hashFiles('**/pnpm-lock.yaml')}}
+        restore-keys: |
+          ${{runner.OS}}-pnpm-
 
     - name: 安装依赖
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        npm install --save
+        pnpm install
 
     - name: 拉取私有仓库文章内容
       run: |

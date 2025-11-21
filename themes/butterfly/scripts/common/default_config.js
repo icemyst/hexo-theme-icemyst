@@ -290,10 +290,10 @@ module.exports = {
   share: {
     use: 'sharejs',
     sharejs: {
-      sites: 'facebook,twitter,wechat,weibo,qq'
+      sites: 'facebook,x,wechat,weibo,qq'
     },
     addtoany: {
-      item: 'facebook,twitter,wechat,sina_weibo,facebook_messenger,email,copy_link'
+      item: 'facebook,x,wechat,sina_weibo,facebook_messenger,email,copy_link'
     }
   },
   comments: {
@@ -591,7 +591,7 @@ module.exports = {
   CDN: {
     internal_provider: 'local',
     third_party_provider: 'jsdelivr',
-    version: false,
+    version: true,
     custom_format: null,
     option: null
   }

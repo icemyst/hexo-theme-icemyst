@@ -361,10 +361,10 @@
         margin-top: 8px
         padding: 0
         width: max-content
-        background-color: var(--msgbox-chat-background)
+        background-color: var(--sidebar-bg)
         box-shadow: 0 5px 20px -4px rgba($dark-black, .5)
         animation: sub_menus .3s .1s ease both
-        addBorderRadius(25)
+        addBorderRadius(5)
 
         &:before
           position: absolute
@@ -378,7 +378,7 @@
           list-style: none
 
           &:hover
-            background: #49b1f5
+            background: var(--text-bg-hover)
 
           if hexo-config('rounded_corners_ui')
             &:first-child
@@ -391,7 +391,7 @@
 
           a
             display: inline-block
-            padding: 5px 13px
+            padding: 8px 16px
             width: 100%
             color: var(--font-color) !important
             text-shadow: none !important

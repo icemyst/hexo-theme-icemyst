@@ -2,39 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let headerContentWidth, $nav
   let mobileSidebarOpen = false
 
-  // 添加页面加载类，确保刷新时菜单项可见
-  document.body.classList.add('page-loading')
-  
-  // 设置正确的导航状态（全局可用函数）
-  const setCorrectNavState = () => {
-    const $header = document.getElementById('page-header')
-    const $rightside = document.getElementById('rightside')
-    
-    if (window.scrollY > 56) {
-      $header.classList.add('nav-fixed', 'nav-visible')
-      $rightside && $rightside.classList.add('rightside-show')
-    } else {
-      if (window.scrollY === 0) {
-        $header.classList.remove('nav-fixed', 'nav-visible')
-      } else {
-        $header.classList.remove('nav-fixed')
-        $header.classList.add('nav-visible')
-      }
-      $rightside && $rightside.classList.remove('rightside-show')
-    }
-  }
-  
-  // 立即执行一次，确保DOM加载后导航状态正确
-  setCorrectNavState()
-  
-  // 页面完全加载后移除加载类
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.body.classList.remove('page-loading')
-      setCorrectNavState()
-    }, 300)
-  })
-
   const adjustMenu = init => {
     const getAllWidth = ele => Array.from(ele).reduce((width, i) => width + i.offsetWidth, 0)
 
@@ -101,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isPrismjs = plugin === 'prismjs'
     const highlightShrinkClass = isHighlightShrink === true ? 'closed' : ''
     const highlightShrinkEle = isHighlightShrink !== undefined ? '<i class="fas fa-angle-down expand"></i>' : ''
-    const highlightCopyEle = highlightCopy ? '<div class="copy-notice"></div><i class="fas fa-paste copy-button"></i>' : ''
+    const highlightCopyEle = highlightCopy ? '<i class="fas fa-paste copy-button"></i>' : ''
     const highlightMacStyleEle = '<div class="macStyle"><div class="mac-close"></div><div class="mac-minimize"></div><div class="mac-maximize"></div></div>'
     const highlightFullpageEle = highlightFullpage ? '<i class="fa-solid fa-up-right-and-down-left-from-center fullpage-button"></i>' : ''
 
@@ -109,9 +76,42 @@ document.addEventListener('DOMContentLoaded', () => {
       if (GLOBAL_CONFIG.Snackbar !== undefined) {
         btf.snackbarShow(text)
       } else {
-        ele.textContent = text
-        ele.style.opacity = 1
-        setTimeout(() => { ele.style.opacity = 0 }, 800)
+        const newEle = document.createElement('div')
+        newEle.className = 'copy-notice'
+        newEle.textContent = text
+        document.body.appendChild(newEle)
+
+        const buttonRect = ele.getBoundingClientRect()
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
+        const finalLeft = buttonRect.left + scrollLeft + buttonRect.width / 2
+
+        // Show tooltip below button if too close to top
+        const normalTop = buttonRect.top + scrollTop - 40
+        const shouldShowBelow = buttonRect.top < 60 || normalTop < 10
+
+        const topValue = shouldShowBelow ? buttonRect.top + scrollTop + buttonRect.height + 10 : normalTop
+
+        newEle.style.cssText = `
+      top: ${topValue + 10}px;
+      left: ${finalLeft}px;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s ease, top 0.3s ease;
+    `
+
+        requestAnimationFrame(() => {
+          newEle.style.opacity = '1'
+          newEle.style.top = `${topValue}px`
+        })
+
+        setTimeout(() => {
+          newEle.style.opacity = '0'
+          newEle.style.top = `${topValue + 10}px`
+          setTimeout(() => {
+            newEle?.remove()
+          }, 300)
+        }, 800)
       }
     }
 
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const preCodeSelector = isPrismjs ? 'pre code' : 'table .code pre'
       const codeElement = $buttonParent.querySelector(preCodeSelector)
       if (!codeElement) return
-      copy(codeElement.innerText, clickEle.previousElementSibling)
+      copy(codeElement.innerText, clickEle)
       $buttonParent.classList.remove('copy-true')
     }
 
@@ -457,14 +457,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollTask = btf.throttle(() => {
       const currentTop = window.scrollY || document.documentElement.scrollTop
       const isDown = scrollDirection(currentTop)
-      
-      // 确保页面加载后立即设置正确的导航状态
-      if (document.body.classList.contains('page-loading')) {
-        setCorrectNavState()
-        $header.classList.remove('force-visible') // 移除可能存在的force-visible类
-        return
-      }
-      
       if (currentTop > 56) {
         if (flag === '') {
           $header.classList.add('nav-fixed')
@@ -494,20 +486,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       isShowPercent && rightsideScrollPercent(currentTop)
       checkDocumentHeight()
-    }, 100) // 降低节流时间，使滚动反应更灵敏
+    }, 300)
 
     btf.addEventListenerPjax(window, 'scroll', scrollTask, { passive: true })
-    
-    // 页面加载时立即执行一次scrollTask以设置正确的状态
-    scrollTask()
-    
-    // 为了确保在页面切换时导航栏状态正确，监听popstate事件
-    window.addEventListener('popstate', setCorrectNavState)
-    
-    // 监听页面pjax:complete事件，确保页面切换后导航状态正确
-    document.addEventListener('pjax:complete', () => {
-      setTimeout(setCorrectNavState, 50)
-    })
   }
 
   /**
@@ -750,7 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const addCopyright = () => {
     const { limitCount, languages } = GLOBAL_CONFIG.copyright
 
-    const handleCopy = (e) => {
+    const handleCopy = e => {
       e.preventDefault()
       const copyFont = window.getSelection(0).toString()
       let textFont = copyFont
@@ -948,9 +929,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshFn = () => {
     initAdjust()
     justifiedIndexPostUI()
-
-    // 添加页面刷新标记，使用全局设置函数
-    setCorrectNavState()
 
     if (GLOBAL_CONFIG_SITE.pageType === 'post') {
       addPostOutdateNotice()

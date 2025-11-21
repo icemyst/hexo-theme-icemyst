@@ -3,13 +3,12 @@ const cleanCSS = require('gulp-clean-css');
 const htmlMin = require('gulp-html-minifier-terser');
 const workbox = require('workbox-build');
 const terser = require('gulp-terser');
-const chalk = require('chalk');
 
 // 日志工具
 const logger = {
-  info: msg => console.log(chalk.cyan(msg)),
-  success: msg => console.log(chalk.green('✓ ' + msg)),
-  error: msg => console.error(chalk.red('✗ ' + msg))
+  info: msg => console.log('\x1b[36m%s\x1b[0m', '[INFO] ' + msg),      // 青色
+  success: msg => console.log('\x1b[32m%s\x1b[0m', '[SUCCESS] ' + msg), // 绿色
+  error: msg => console.log('\x1b[31m%s\x1b[0m', '[ERROR] ' + msg)      // 红色
 };
 
 // 配置常量

@@ -32,21 +32,16 @@ function postSiteCard(args) {
   }
   // 布局
   let result = '';
-  result += '<a class="site-card" href="' + url + '">';
-  result += '<div class="img"><img class="no-lightbox" src="' + screenshot + '"/></div>';
+  result += `<a class="site-card" href="${url}" data-title=${description}>`;
+  result += '<div class="wrapper cover"><img class="cover fadeIn" src="' + screenshot + '"/></div>';
   result += '<div class="info">';
   if (avatar.length > 0) {
-    result += '<img class="no-lightbox" src="' + avatar + '"/>';
+    result += `<img class="flink-avatar" src="${avatar}"/>`;
   } else {
 
   }
 
-  result += '<span class="title">' + title + '</span>';
-  if (description.length > 0) {
-    result += '<span class="desc">' + description + '</span>';
-  } else {
-
-  }
+  result += '<span class="site-title">' + title + '</span>';
 
   result += '</div></a>';
   return result;
