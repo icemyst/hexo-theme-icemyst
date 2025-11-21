@@ -1,4 +1,4 @@
-const WORKBOX_VERSION = '7.3.0';
+const WORKBOX_VERSION = '7.4.0';
 
 importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${WORKBOX_VERSION}/workbox-sw.js`);
 
@@ -38,9 +38,9 @@ const EXTERNAL_ROUTES = [
 EXTERNAL_ROUTES.forEach(({ pattern, strategy, cacheName, plugins }) => {
     workbox.routing.registerRoute(
         pattern,
-        new workbox.strategies[strategy]({ 
-            cacheName, 
-            plugins: plugins || createDefaultPlugins() 
+        new workbox.strategies[strategy]({
+            cacheName,
+            plugins: plugins || createDefaultPlugins()
         })
     );
 });
@@ -50,7 +50,7 @@ class CacheManager {
     static createKey(prefix, key) {
         return new Request(`https://${prefix}/${encodeURIComponent(key)}`);
     }
-    
+
     static async cacheOperation(operation, key, value) {
         try {
             const cache = await caches.open(CONFIG.VERSION_CACHE_NAME);
@@ -70,20 +70,20 @@ class CacheManager {
             return null;
         }
     }
-    
+
     // 简化的时间戳和访问时间操作
     static async readTime(key) {
         return this.cacheOperation('read', this.createKey('LOCALCACHE', key));
     }
-    
+
     static async writeTime(key, value) {
         return this.cacheOperation('write', this.createKey('LOCALCACHE', key), value);
     }
-    
+
     static async updateAccess(key) {
         return this.cacheOperation('write', this.createKey('ACCESS-CACHE', key), getCurrentTime());
     }
-    
+
     static async checkAccess(key) {
         const realKey = this.createKey('ACCESS-CACHE', key);
         const value = await this.cacheOperation('read', realKey);
@@ -115,7 +115,7 @@ const STATIC_RESOURCE_PATTERN = /\.(js|css|jpg|jpeg|png|gif|webp|ico|svg|woff|wo
 // 查找匹配的缓存配置
 function findCacheConfig(url) {
     if (STATIC_RESOURCE_PATTERN.test(url)) return null;
-    
+
     for (const config of Object.values(LOCAL_CACHE_CONFIG)) {
         if (config.pattern.test(url)) return config;
     }
@@ -125,7 +125,7 @@ function findCacheConfig(url) {
 // URL替换处理
 function replaceRequestUrl(request) {
     let url = request.url;
-    
+
     for (const { sources, target } of URL_REPLACEMENTS) {
         const matchedSource = sources.find(source => url.includes(source));
         if (matchedSource) {
@@ -141,7 +141,7 @@ function replaceRequestUrl(request) {
             });
         }
     }
-    
+
     return null;
 }
 
@@ -160,9 +160,9 @@ function shouldBlockRequest(url) {
 async function handleCustomCache(request, cachedResponse, config) {
     const now = getCurrentTime();
     const url = request.url;
-    
+
     CacheManager.updateAccess(url);
-    
+
     // 检查缓存有效性
     if (cachedResponse) {
         const cacheTime = await CacheManager.readTime(url);
@@ -170,36 +170,36 @@ async function handleCustomCache(request, cachedResponse, config) {
             return cachedResponse;
         }
     }
-    
+
     // 网络请求处理
     const fetchAndCache = async () => {
         try {
             const networkResponse = await fetch(request);
-            
+
             if (networkResponse.ok) {
                 await CacheManager.writeTime(url, now);
                 const cache = await caches.open(CONFIG.CACHE_NAME);
                 await cache.put(request, networkResponse.clone());
             }
-            
+
             return networkResponse;
         } catch (error) {
             console.error(`网络请求失败: ${url}`, error);
-            return cachedResponse || new Response('网络不可用', { 
-                status: 503, 
-                statusText: 'Service Unavailable' 
+            return cachedResponse || new Response('网络不可用', {
+                status: 503,
+                statusText: 'Service Unavailable'
             });
         }
     };
-    
+
     // 缓存竞速策略
     if (cachedResponse) {
-        const cacheTimeout = new Promise(resolve => 
+        const cacheTimeout = new Promise(resolve =>
             setTimeout(() => resolve(cachedResponse), CONFIG.CACHE_TIMEOUT)
         );
         return Promise.race([cacheTimeout, fetchAndCache()]);
     }
-    
+
     return fetchAndCache();
 }
 
@@ -208,13 +208,13 @@ self.addEventListener('fetch', event => {
     const originalRequest = event.request;
     const replacedRequest = replaceRequestUrl(originalRequest);
     const request = replacedRequest || originalRequest;
-    
+
     // 拦截不需要的请求
     if (shouldBlockRequest(request.url)) {
         event.respondWith(new Response(null, { status: 204 }));
         return;
     }
-    
+
     // 自定义缓存处理
     const cacheConfig = findCacheConfig(request.url);
     if (cacheConfig) {
@@ -224,12 +224,12 @@ self.addEventListener('fetch', event => {
         );
         return;
     }
-    
+
     // URL替换请求
     if (replacedRequest) {
         event.respondWith(fetch(request));
         return;
     }
-    
+
     // 其他请求由Workbox处理
 });
