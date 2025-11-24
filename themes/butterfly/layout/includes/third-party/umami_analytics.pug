@@ -31,7 +31,7 @@ script.
     const getData = async (isPost) => {
       try {
         const now = Date.now()
-        const keyUrl = isPost ? `&url=${window.location.pathname}` : ''
+        const keyUrl = isPost ? `&url=${window.location.pathname}&path=${window.location.pathname}` : ''
         const headerList = { 'Accept': 'application/json' }
 
         if (!{isServerURL}) {
