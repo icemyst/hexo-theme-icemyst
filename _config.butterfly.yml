@@ -102,7 +102,9 @@ category_per_img: false
 footer_img: transparent
 
 # 网站背景
-# 可以设置为颜色或图片网址 https://r2.img.cdn.loliloli.net/19d48d1c0382158a62dfb072681f2190/2025/04/08/LIHuq.png
+# 可以设置为颜色、图片 URL 或包含颜色和/或图片 URL 的数组
+# 如果提供的是数组，则每次加载时都会从数组中随机选择一个背景。
+# https://r2.img.cdn.loliloli.net/19d48d1c0382158a62dfb072681f2190/2025/04/08/LIHuq.png
 background: https://r2.img.cdn.loliloli.net/19d48d1c0382158a62dfb072681f2190/2025/04/08/LIHuq.png # https://t.alcy.cc/ycy # https://cdn.seovx.com/d/?mom=302
  # https://www.dmoe.cc/random.php # https://t.alcy.cc/ycy # https://www.loliapi.com/acg/ # https://image.smallbottle2.top/landscape # https://api.boxmoe.com/random.php?size=large
 
