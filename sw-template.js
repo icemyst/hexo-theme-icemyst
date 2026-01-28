@@ -25,7 +25,11 @@ workbox.precaching.cleanupOutdatedCaches();
  */
 const replaceList = {
     jsdelivr: {
-        source: ['//cdn.jsdelivr.net/gh', '//jsd.onmicrosoft.cn/gh'],
+        source: ['//cdn.jsdelivr.net/gh'],
+        dist: '//cdn.jsdmirror.cn/gh'
+    },
+    jsdelivr2: {
+        source: ['//jsd.onmicrosoft.cn/gh'],
         dist: '//cdn.jsdmirror.cn/gh'
     },
     npm: {

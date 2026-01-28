@@ -12,7 +12,7 @@ nav:
   # 导航栏logo图片
   logo:
   display_title: true
-  display_post_title: false
+  display_post_title: true
   # 是否固定导航栏
   fixed: true
 
@@ -340,7 +340,6 @@ aside:
     content: # https://images.weserv.nl/?url=https://s2.loli.net/2025/03/15/8k1YPzW4msxlFtq.webp https://ps.ssl.qhimg.com/t02dce7be76c34edd5e.jpg
       - <div><a style='display:flex;height:100%;width:100%;' href='https://hcer.top'><img style="height:100%;width:100%;" src="https://cdn.jsdmirror.com/gh/eudav/bingm-static/img/hcer.webp" alt="https://hcer.top" style="border-radius:0;"></a></div>
         <b>GitHub站点：</b><a href='https://icemyst.github.io'>https://icemyst.github.io</a>
-        <div>CDN赞助者：@xinpro(鸣谢)</div><div>赞助者博客：<a href="https://xinpro.cn">https://xinpro.cn</a></div>
   card_recent_post:
     enable: true
     # 如果设置为0，将显示全部
@@ -367,6 +366,7 @@ aside:
     # 如果设置为0，将显示全部
     limit: 40
     color: true
+    custom_colors:
     # 标签排序, random（随机）/name（名称）/length（长度）
     orderby: random
     # 排序类型。1 表示升序；-1 表示降序
@@ -987,6 +987,10 @@ mermaid:
   theme:
     light: default
     dark: dark
+  # 启用“在新标签页中打开”按钮，即可在单独的窗口中查看图表。
+  open_in_new_tab: true
+  # 启用图表的缩放和漫游交互
+  zoom_pan: true
 
 # chartjs
 # see https://www.chartjs.org/docs/latest/
@@ -1114,7 +1118,7 @@ CDN:
   # 两者的选项: local/jsdelivr/unpkg/cdnjs/elemecdn/onmicrosoft/cbd/custom
   # 注意: 开发版本只能使用'local'用于内部脚本
   # 注意: 当将第三方脚本设置为'local'时，您需要安装hexo-butterfly-extjs
-  internal_provider: local
+  internal_provider: jsdelivr
   third_party_provider: jsdelivr
 
   # 向网址添加版本号，true 或 false

@@ -37,6 +37,8 @@
     margin: 0
     color: var(--white)
     font-size: 1.85em
+    @extend .limit-more-line
+    -webkit-line-clamp: 3
 
     +minWidth768()
       font-size: 2.85em
@@ -341,7 +343,6 @@
     .menus_item
       position: relative
       display: inline-block
-      padding: 0 0 0 14px
 
       &:hover
         .menus_item_child
@@ -419,23 +420,6 @@
     text-shadow: 1px 1px 2px rgba($dark-black, .3)
     font-size: .78em
     cursor: pointer
-
-    &:not(.child)
-      &:after
-        position: absolute
-        bottom: 0
-        left: 0
-        z-index: -1
-        width: 0
-        height: 3px
-        background-color: lighten($theme-color, 30%)
-        content: ''
-        transition: all .3s ease-in-out
-        addBorderRadius()
-
-      &:hover
-        &:after
-          width: 100%
 
   .nav-page-title
     position: relative

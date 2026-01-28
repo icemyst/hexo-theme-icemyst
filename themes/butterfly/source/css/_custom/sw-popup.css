@@ -108,7 +108,7 @@
 /* 图标样式 */
 .sw-update-popup .message::before {
   content: '\f2f1';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 7 Free';
   font-weight: 900;
   width: 16px;
   height: 16px;

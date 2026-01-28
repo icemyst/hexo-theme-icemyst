@@ -71,7 +71,7 @@ const getSizeChangeInfo = (original, minified) => {
 const createMinifyTask = (taskName, src, processor) => {
   return gulp.task(taskName, () => {
     const stats = { originalSize: 0, minifiedSize: 0, fileCount: 0 };
-    
+
     const trackStats = (isOriginal) => (file) => {
       if (!file.isNull()) {
         const size = file.contents.length;
@@ -83,10 +83,10 @@ const createMinifyTask = (taskName, src, processor) => {
         }
       }
     };
-    
-    return gulp.src(src)
+
+    return gulp.src(src, { since: gulp.lastRun(taskName) })
       .on('data', trackStats(true))
-      .on('error', function(error) {
+      .on('error', function (error) {
         logger.error(`${taskName}失败: ${error.message}`);
         this.emit('end');
       })
@@ -109,7 +109,7 @@ gulp.task('generate-service-worker', () => {
     globPatterns: CONFIG.sw.globPatterns,
     modifyURLPrefix: { '': './' }
   })
-    .then(({ count, size }) => 
+    .then(({ count, size }) =>
       logger.success(`Service Worker生成完成: 缓存${count}个文件, ${formatSize(size)}`)
     )
     .catch(err => logger.error(`Service Worker生成失败: ${err}`));
@@ -118,8 +118,8 @@ gulp.task('generate-service-worker', () => {
 // 压缩任务配置和创建
 const MINIFY_TASKS = [
   ['compress-js', ['./public/**/*.js', '!./public/**/*.min.js'], terser(CONFIG.optimization.terser)],
-  ['minify-css', ['./public/**/*.css'], cleanCSS(CONFIG.optimization.css)],
-  ['minify-html', './public/**/*.html', htmlMin(CONFIG.optimization.html)]
+  ['minify-css', ['./public/**/*.css', '!./public/**/*.min.css'], cleanCSS(CONFIG.optimization.css)],
+  ['minify-html', ['./public/**/*.html', '!./public/**/*.min.html'], htmlMin(CONFIG.optimization.html)]
 ];
 
 // 创建所有压缩任务

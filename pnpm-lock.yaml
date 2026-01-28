@@ -21,8 +21,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       hexo-bilibili-bangumi:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.0.4
+        version: 2.0.4
       hexo-generator-archive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -947,8 +947,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  baseline-browser-mapping@2.8.23:
-    resolution: {integrity: sha512-616V5YX4bepJFzNyOfce5Fa8fDJMfoxzOIzDCZwaGL8MKVpFrXqfNUoIpRn9YMI5pXf/VKgzjB4htFMsFKKdiQ==}
+  baseline-browser-mapping@2.9.18:
+    resolution: {integrity: sha512-e23vBV1ZLfjb9apvfPk4rHVu2ry6RIr2Wfs+O324okSidrX7pTAnEJPCh/O5BtRlr7QtZI7ktOP3vsqr7Z5XoA==}
     hasBin: true
 
   basic-auth@2.0.1:
@@ -1599,8 +1599,8 @@ packages:
     resolution: {integrity: sha512-QbzB6M/ZByidBeeNyhTMC7zMl8BddG+ovobO6VjK7HufUW2iHSLZYG93gi3Fri2xji0mTn6c80Q6G60U1ILq+Q==}
     engines: {node: '>=18'}
 
-  hexo-bilibili-bangumi@2.0.1:
-    resolution: {integrity: sha512-vlyQhowuIwBX9Sfv6+W50vDtZW3HEnIIY2Wo6EaHIR5oYnm25ez+LAPN0/S5bJ1pe2730pSqlKe/BalCcHLdqg==}
+  hexo-bilibili-bangumi@2.0.4:
+    resolution: {integrity: sha512-iba7lpSIiHtPwqwlyC6gAoFYPlj+Sc83GXqSQFuiZX2DDQHFKBhJN5NaTmxXLPToxW3NqtSM7b/qVL5prdsvbg==}
 
   hexo-cli@4.3.2:
     resolution: {integrity: sha512-druJeBgLpG9ncDS5AhBHdAXk0G4CFj8Qes09pApyZ6bR+nJW1JYiDMuilhudaKDdq+1l49jWXVTidkcb7p0Jbw==}
@@ -4103,7 +4103,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  baseline-browser-mapping@2.8.23: {}
+  baseline-browser-mapping@2.9.18: {}
 
   basic-auth@2.0.1:
     dependencies:
@@ -4136,7 +4136,7 @@ snapshots:
 
   browserslist@4.27.0:
     dependencies:
-      baseline-browser-mapping: 2.8.23
+      baseline-browser-mapping: 2.9.18
       caniuse-lite: 1.0.30001752
       electron-to-chromium: 1.5.244
       node-releases: 2.0.27
@@ -4896,7 +4896,7 @@ snapshots:
       algoliasearch: 4.20.0
       striptags: 3.2.0
 
-  hexo-bilibili-bangumi@2.0.1:
+  hexo-bilibili-bangumi@2.0.4:
     dependencies:
       '@babel/runtime': 7.28.4
       axios: 1.12.2

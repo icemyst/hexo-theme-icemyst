@@ -13,14 +13,15 @@ nav#nav
           span= '  ' + _p('post.back_to_home')
 
   #menus
-    if theme.search.use
-      #search-button
-        span.site-page.social-icon.search
-          i.fas.fa-search.fa-fw
-          span= ' ' + _p('search.title')
     if theme.menu
       != partial('includes/header/menu_item', {}, {cache: true})
 
       #toggle-menu
         span.site-page
           i.fas.fa-bars.fa-fw
+
+  if theme.search.use
+    #search-button
+      span.site-page.social-icon.search
+        i.fas.fa-search.fa-fw
+        //- span= ' ' + _p('search.title')
